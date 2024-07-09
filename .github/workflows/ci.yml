@@ -10,11 +10,11 @@ jobs:
     steps:
       - name: Clone Repo
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18' # Use the Node.js version compatible with your Next.js project
+          node-version: "18" # Use the Node.js version compatible with your Next.js project
 
       - name: Install Dependencies
         run: npm install
@@ -27,11 +27,11 @@ jobs:
     steps:
       - name: Clone Repo
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18' # Use the Node.js version compatible with your Next.js project
+          node-version: "18" # Use the Node.js version compatible with your Next.js project
 
       - name: Install Dependencies
         run: npm install
@@ -44,15 +44,14 @@ jobs:
     steps:
       - name: Clone Repo
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18' # Use the Node.js version compatible with your Next.js project
+          node-version: "18" # Use the Node.js version compatible with your Next.js project
 
       - name: Install Dependencies
         run: npm install
 
       - name: Build Project
         run: npm run build
-
