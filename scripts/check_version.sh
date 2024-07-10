@@ -14,48 +14,40 @@ then
 fi
 
 get_version() {
-    if [ ! -f package.json ]; then
-        echo "Error: package.json not found."
-        exit 1
-    fi
     local VERSION=$(grep -oP '"version":\s*"\K[0-9]+\.[0-9]+\.[0-9]+' package.json)
-    if [ -z "$VERSION" ]; then
-        echo "Error: version not found in package.json."
-        exit 1
-    fi
+    VERSION=$(echo $VERSION | cut -d'"' -f2)
     echo $VERSION
 }
 
-THIS_BRANCH_VERSION=$(get_version)
+
+# setting versions as env variables instead of passing to node script as arguments
+export THIS_BRANCH_VERSION=$(get_version)
 
 cd ..
 if [ -d "chessticulate-fe_main" ]; then
     rm -rf chessticulate-fe_main
 fi
-
-git clone -b main --single-branch https://github.com/chessticulate/chessticulate-fe.git chessticulate-fe_main > /dev/null
+git clone -b main --single-branch https://github.com/chessticulate/chessticulate-fe.git chessticulate-fe_main > /dev/null 2>&1
 cd chessticulate-fe_main
 
-npm install semver
+npm install --silent semver 
 
-MAIN_BRANCH_VERSION=$(get_version)
+export MAIN_BRANCH_VERSION=$(get_version)
 
 # Compare versions using a Node.js script
-NODE_COMPARE_VERS="\
-const semver = require('semver');\
-const mainVersion = process.argv[2];\
-const thisVersion = process.argv[3];\
-if (!mainVersion || !thisVersion) {\
-    console.error('Error: Invalid version input.');\
-    process.exit(1);\
-}\
-if (semver.gt(thisVersion, mainVersion)) {\
-    process.exit(0);\
-} else {\
-    process.exit(1);\
-}"
+NODE_COMPARE_VERS="
+const semver = require('semver');
+const mainVersion = process.env.MAIN_BRANCH_VERSION;
+const thisVersion = process.env.THIS_BRANCH_VERSION;
 
-node -e "$NODE_COMPARE_VERS" $MAIN_BRANCH_VERSION $THIS_BRANCH_VERSION
+if (semver.gt(thisVersion, mainVersion)) {
+    process.exit(0);
+} else {
+    process.exit(1);
+}
+"
+
+node -e "$NODE_COMPARE_VERS" 
 
 EXIT_CODE=$?
 
