@@ -39,18 +39,18 @@ jobs:
       - name: Run ESLint
         run: npx eslint . --ext .js,.jsx,.ts,.tsx
 
-    check-version:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Clone Repo
-          uses: actions/checkout@v4
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Repo
+        uses: actions/checkout@v4
 
-        - name: Setup Node.js
-          uses: actions/setup-node@v3
-          with:
-            node-version: "18"
-        - name: Check Version Increment
-          run: scripts/check_version.sh
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+      - name: Check Version Increment
+        run: scripts/check_version.sh
 
   build:
     runs-on: ubuntu-latest
