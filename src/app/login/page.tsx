@@ -3,17 +3,17 @@
 import Image from "next/image";
 import Navbar from "../../components/navbar";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, ChangeEvent } from "react";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleUsernameChange = (e) => {
+  const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
   };
 
-  const handlePasswordChange = (e) => {
+  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
 

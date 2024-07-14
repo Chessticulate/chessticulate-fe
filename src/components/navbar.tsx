@@ -1,5 +1,5 @@
 import Link from "next/link";
-import config from "../config.js";
+import config from "../../config.js";
 
 export default function Navbar() {
   return (
