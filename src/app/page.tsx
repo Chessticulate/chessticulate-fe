@@ -1,15 +1,19 @@
 import Image from "next/image";
 import Navbar from "../components/navbar";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <main>
+    <div>
       <div className="flex justify-between items-center px-4 py-2 bg-gray-800 text-white">
-          <h1 className="text-4xl"> Chessticulate </h1>
-          <div>
-              <Navbar/>
-          </div>
+        <Link href="/" passHref className="text-4xl">
+          {" "}
+          Chessticulate{" "}
+        </Link>
+        <div>
+          <Navbar />
+        </div>
       </div>
-    </main>
+    </div>
   );
 }
