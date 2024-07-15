@@ -6,8 +6,9 @@ import Link from "next/link";
 import { useState, ChangeEvent, FormEvent } from "react";
 import config from "../../../config.js";
 
-export default function Login() {
+export default function Signup() {
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -18,17 +19,22 @@ export default function Login() {
     setPassword(e.target.value);
   };
 
+  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${config.chessticulate_api_url}/login`, {
+      const response = await fetch(`${config.chessticulate_api_url}/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           name: username,
+          email: email,
           password: password,
         }),
       });
@@ -68,6 +74,14 @@ export default function Login() {
                 onChange={handleUsernameChange}
               />
             </div>
+            <div className="flex flex-col items-center pb-5 text-black">
+              <input
+                type="text"
+                placeholder="email"
+                value={email}
+                onChange={handleEmailChange}
+              />
+            </div>
             <div className="flex flex-col items-center text-black">
               <input
                 type="text"
@@ -80,8 +94,14 @@ export default function Login() {
               type="submit"
               className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md"
             >
-              Log in
+              Sign up
             </button>
+            <div className="flex flex-col items-center pt-6">
+              Already have an account?
+              <Link href="/login" passHref className="text-blue-500">
+                Log in
+              </Link>
+            </div>
           </div>
         </form>
       </main>
