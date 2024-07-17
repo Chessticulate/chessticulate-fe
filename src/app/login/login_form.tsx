@@ -3,13 +3,16 @@
 import Image from "next/image";
 import Navbar from "../../components/navbar";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, ChangeEvent, FormEvent } from "react";
 import config from "../../../config.js";
 
-export default function Signup_Form() {
+export default function Login_Form() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [token, setToken] = useState("");
+
+  const router = useRouter();
 
   const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
@@ -45,6 +48,8 @@ export default function Signup_Form() {
       const data = await response.json();
       setToken(data.jwt);
       console.log("Success:", data);
+
+      router.push("/profile");
     } catch (error) {
       console.error("Error:", error);
     }
