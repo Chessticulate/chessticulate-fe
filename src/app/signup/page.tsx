@@ -1,8 +1,6 @@
-import Image from "next/image";
 import Navbar from "../../components/navbar";
 import Signup_Form from "./signup_form";
 import Link from "next/link";
-import config from "../../../config.js";
 
 export default function Signup() {
   return (

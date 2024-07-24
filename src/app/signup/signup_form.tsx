@@ -1,11 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Navbar from "../../components/navbar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, ChangeEvent, FormEvent } from "react";
-import config from "../../../config.js";
 
 export default function Signup_Form() {
   const [username, setUsername] = useState("");
@@ -30,15 +28,15 @@ export default function Signup_Form() {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${config.chessticulate_api_url}/signup`, {
+      const response = await fetch("/api/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: username,
-          email: email,
-          password: password,
+          username,
+          email,
+          password,
         }),
       });
 

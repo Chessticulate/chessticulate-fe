@@ -1,17 +1,13 @@
 "use client";
 
-import Image from "next/image";
-import Navbar from "../../components/navbar";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState, ChangeEvent, FormEvent } from "react";
-import config from "../../../config.js";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Navbar from "../../components/navbar";
 
-export default function Login_Form() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [token, setToken] = useState("");
-
+export default function LoginForm() {
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const router = useRouter();
 
   const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -22,31 +18,23 @@ export default function Login_Form() {
     setPassword(e.target.value);
   };
 
-  const handleTokenChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setToken(e.target.value);
-  };
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${config.chessticulate_api_url}/login`, {
+      const response = await fetch("/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          name: username,
-          password: password,
-        }),
+        body: JSON.stringify({ username, password }),
       });
 
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error("Network response is trippin");
       }
 
       const data = await response.json();
-      setToken(data.jwt);
       console.log("Success:", data);
 
       router.push("/profile");
@@ -56,11 +44,14 @@ export default function Login_Form() {
   };
 
   return (
-    <div>
-      <main>
-        <form onSubmit={handleSubmit}>
-          <div className="flex flex-col">
-            <div className="pb-5 text-black">
+    <div className="min-h-screen flex flex-col">
+      <main className="flex justify-center pt-10">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col space-y-4 items-center"
+        >
+          <div className="flex flex-col space-y-center">
+            <div className="flex flex-col items-center pb-5 text-black">
               <input
                 type="text"
                 placeholder="username"
@@ -68,9 +59,9 @@ export default function Login_Form() {
                 onChange={handleUsernameChange}
               />
             </div>
-            <div className="text-black">
+            <div className="flex flex-col items-center text-black">
               <input
-                type="text"
+                type="password"
                 placeholder="password"
                 value={password}
                 onChange={handlePasswordChange}

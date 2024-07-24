@@ -2,8 +2,6 @@ import Image from "next/image";
 import Navbar from "../../components/navbar";
 import Login_Form from "./login_form";
 import Link from "next/link";
-import { useState, ChangeEvent, FormEvent } from "react";
-import config from "../../../config.js";
 
 export default function Login() {
   return (
