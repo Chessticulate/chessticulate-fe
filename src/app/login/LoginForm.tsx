@@ -3,7 +3,7 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Navbar from "@/components/navbar";
+import Navbar from "@/components/Navbar";
 
 export default function LoginForm() {
   const [username, setUsername] = useState<string>("");
