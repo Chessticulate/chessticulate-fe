@@ -1,5 +1,5 @@
-import Navbar from "../../components/navbar";
-import Signup_Form from "./signup_form";
+import Navbar from "@/components/Navbar";
+import SignupForm from "./SignupForm";
 import Link from "next/link";
 
 export default function Signup() {
@@ -14,7 +14,7 @@ export default function Signup() {
         </div>
       </header>
       <main className="flex justify-center pt-10">
-        <Signup_Form />
+        <SignupForm />
       </main>
     </div>
   );

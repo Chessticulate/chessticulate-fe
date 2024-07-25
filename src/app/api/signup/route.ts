@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   const { username, email, password } = await request.json();
-  console.log(username, email, password);
   try {
     const response = await fetch(
       `${process.env.CHESSTICULATE_API_URL}/signup`,
@@ -18,8 +17,6 @@ export async function POST(request: NextRequest) {
         }),
       },
     );
-
-    console.log(response);
 
     if (response.status !== 201) {
       return new NextResponse("Network response was not ok", { status: 500 });

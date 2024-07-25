@@ -1,6 +1,6 @@
 import Image from "next/image";
-import Navbar from "../../components/navbar";
-import Login_Form from "./login_form";
+import Navbar from "@/components/Navbar";
+import LoginForm from "./LoginForm";
 import Link from "next/link";
 
 export default function Login() {
@@ -15,7 +15,7 @@ export default function Login() {
         </div>
       </header>
       <main className="flex justify-center pt-10">
-        <Login_Form />
+        <LoginForm />
       </main>
     </div>
   );

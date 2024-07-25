@@ -1,11 +1,11 @@
 "use client";
 
-import Navbar from "../../components/navbar";
+import Navbar from "@/components/navbar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, ChangeEvent, FormEvent } from "react";
 
-export default function Signup_Form() {
+export default function SignupForm() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
