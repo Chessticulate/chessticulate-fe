@@ -1,8 +1,9 @@
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
+import AuthWrapper from "@/auth/AuthWrapper";
 
-export default function Profile() {
+function Profile() {
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow flex items-center justify-center">
@@ -11,3 +12,5 @@ export default function Profile() {
     </div>
   );
 }
+
+export default AuthWrapper(Profile);
