@@ -2,26 +2,42 @@
 
 import { useEffect, useState } from "react";
 
-interface Data {
+interface Info {
+  name: string;
   wins: number;
   draws: number;
   losses: number;
 }
 
 export default function DataFetchingComponent() {
-  const [data, setData] = useState<Data | null>(null);
+  const [info, setInfo] = useState<Info | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/users/self"); // Replace with your API endpoint
+        const response = await fetch("/api/users/self", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
+
         const result = await response.json();
-        setData(result);
+
+        setInfo({
+          name: result.data.name,
+          wins: result.data.wins,
+          draws: result.data.draws,
+          losses: result.data.losses,
+        });
+
+        console.log(result);
       } catch (error) {
         setError("Failed to fetch data");
         console.error("There was a problem with the fetch operation:", error);
@@ -31,16 +47,21 @@ export default function DataFetchingComponent() {
     };
 
     fetchData();
-  }, []); // Empty dependency array means this effect runs once on mount
+  }, []);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
-  if (!data) return <div>No data</div>;
+  if (!info) return <div>No data</div>;
 
   return (
-    <div>
-      <h1>Data:</h1>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
-    </div>
+    <main className="p-5">
+      <h1>User Info:</h1>
+      <ul>
+        <li>Username: {info.name}</li>
+        <li>Wins: {info.wins}</li>
+        <li>Draws: {info.draws}</li>
+        <li>Losses: {info.losses}</li>
+      </ul>
+    </main>
   );
 }

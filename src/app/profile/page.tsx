@@ -6,9 +6,9 @@ import ProfileInfo from "./ProfileInfo";
 
 function Profile() {
   return (
-    <div className="min-h-screen flex flex-col">
-      <main className="flex-grow flex items-center justify-center">
-        <div>
+    <div className="flex flex-col">
+      <main className="flex-grow flex items-center">
+        <div className="ml-10 mt-10 border-2">
           <ProfileInfo />
         </div>
       </main>
