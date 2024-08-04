@@ -38,7 +38,6 @@ export default function DataFetchingComponent() {
         });
 
         console.log(result);
-
       } catch (error) {
         setError("Failed to fetch data");
         console.error("There was a problem with the fetch operation:", error);
@@ -59,7 +58,7 @@ export default function DataFetchingComponent() {
       <h1>User Info:</h1>
       <ul>
         <li>Username: {info.name}</li>
-	<li>Games Played: {info.wins + info.draws + info.losses}</li>
+        <li>Games Played: {info.wins + info.draws + info.losses}</li>
         <li>Wins: {info.wins}</li>
         <li>Draws: {info.draws}</li>
         <li>Losses: {info.losses}</li>
