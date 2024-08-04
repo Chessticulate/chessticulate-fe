@@ -31,13 +31,14 @@ export default function DataFetchingComponent() {
         const result = await response.json();
 
         setInfo({
-          name: result.data.name,
-          wins: result.data.wins,
-          draws: result.data.draws,
-          losses: result.data.losses,
+          name: result.userData.name,
+          wins: result.userData.wins,
+          draws: result.userData.draws,
+          losses: result.userData.losses,
         });
 
         console.log(result);
+
       } catch (error) {
         setError("Failed to fetch data");
         console.error("There was a problem with the fetch operation:", error);
@@ -58,6 +59,7 @@ export default function DataFetchingComponent() {
       <h1>User Info:</h1>
       <ul>
         <li>Username: {info.name}</li>
+	<li>Games Played: {info.wins + info.draws + info.losses}</li>
         <li>Wins: {info.wins}</li>
         <li>Draws: {info.draws}</li>
         <li>Losses: {info.losses}</li>
