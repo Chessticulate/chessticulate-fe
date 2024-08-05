@@ -38,6 +38,9 @@ export default function LoginForm() {
       console.log("Success:", data);
 
       router.push("/profile");
+
+      // refresh server components
+      router.refresh();
     } catch (error) {
       console.error("Error:", error);
     }
