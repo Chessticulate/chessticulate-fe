@@ -1,7 +1,7 @@
-import Image from "next/image";
-import Navbar from "@/components/Navbar";
-import Link from "next/link";
+import AuthWrapper from "@/auth/AuthWrapper";
 
-export default function Home() {
+function Home() {
   return <div></div>;
 }
+
+export default AuthWrapper(Home);

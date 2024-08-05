@@ -73,6 +73,12 @@ export default function LoginForm() {
             >
               Log in
             </button>
+            <div className="flex flex-col items-center pt-6">
+              Don&apos;t have an account?
+              <Link href="/signup" passHref className="text-blue-500">
+                Sign up
+              </Link>
+            </div>
           </div>
         </form>
       </main>

@@ -1,5 +1,5 @@
 import Navbar from "@/components/Navbar";
-import SignupForm from "./SignupForm";
+import SignupForm from "@/components/SignupForm";
 import Link from "next/link";
 
 export default function Signup() {

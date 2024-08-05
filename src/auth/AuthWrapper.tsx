@@ -6,7 +6,7 @@ const AuthWrapper = (WrappedComponent: React.ComponentType) => {
     const token = cookies().get("token");
 
     if (!token) {
-      redirect("/login");
+      redirect("/signup");
     }
 
     return <WrappedComponent {...props} />;
