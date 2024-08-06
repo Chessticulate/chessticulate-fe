@@ -37,7 +37,7 @@ export default function LoginForm() {
       const data = await response.json();
       console.log("Success:", data);
 
-      router.push("/profile");
+      router.push("/");
 
       // refresh server components
       router.refresh();
