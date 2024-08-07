@@ -47,44 +47,41 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <main className="flex justify-center pt-10">
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col space-y-4 items-center"
-        >
-          <div className="flex flex-col space-y-center">
-            <div className="flex flex-col items-center pb-5 text-black">
-              <input
-                type="text"
-                placeholder="username"
-                value={username}
-                onChange={handleUsernameChange}
-              />
-            </div>
-            <div className="flex flex-col items-center text-black">
-              <input
-                type="password"
-                placeholder="password"
-                value={password}
-                onChange={handlePasswordChange}
-              />
-            </div>
-            <button
-              type="submit"
-              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md"
-            >
-              Log in
-            </button>
-            <div className="flex flex-col items-center pt-6">
-              Don&apos;t have an account?
-              <Link href="/signup" passHref className="text-blue-500">
-                Sign up
-              </Link>
-            </div>
+    <main>
+      <form onSubmit={handleSubmit}>
+        <div className="flex flex-col text-black">
+          <div className="pb-5">
+            <input
+              type="text"
+              placeholder="username"
+              value={username}
+              onChange={handleUsernameChange}
+              className="placeholder:text-slate-600 rounded-md h-8 pl-2"
+            />
           </div>
-        </form>
-      </main>
-    </div>
+          <div>
+            <input
+              type="password"
+              placeholder="password"
+              value={password}
+              onChange={handlePasswordChange}
+              className="placeholder:text-slate-600 rounded-md h-8 pl-2"
+            />
+          </div>
+          <button
+            type="submit"
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md"
+          >
+            Log in
+          </button>
+          <div className="flex flex-col items-center pt-6 text-white">
+            Don&apos;t have an account?
+            <Link href="/signup" passHref className="text-blue-500">
+              Sign up
+            </Link>
+          </div>
+        </div>
+      </form>
+    </main>
   );
 }

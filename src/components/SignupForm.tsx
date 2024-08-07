@@ -54,49 +54,50 @@ export default function SignupForm() {
   };
 
   return (
-    <div>
-      <main>
-        <form onSubmit={handleSubmit}>
-          <div className="flex flex-col">
-            <div className="pb-5 text-black">
-              <input
-                type="text"
-                placeholder="username"
-                value={username}
-                onChange={handleUsernameChange}
-              />
-            </div>
-            <div className="pb-5 text-black">
-              <input
-                type="text"
-                placeholder="email"
-                value={email}
-                onChange={handleEmailChange}
-              />
-            </div>
-            <div className="text-black">
-              <input
-                type="text"
-                placeholder="password"
-                value={password}
-                onChange={handlePasswordChange}
-              />
-            </div>
-            <button
-              type="submit"
-              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md"
-            >
-              Sign up
-            </button>
-            <div className="flex flex-col items-center pt-6">
-              Already have an account?
-              <Link href="/login" passHref className="text-blue-500">
-                Log in
-              </Link>
-            </div>
+    <main>
+      <form onSubmit={handleSubmit}>
+        <div className="flex flex-col text-black">
+          <div className="pb-5">
+            <input
+              type="text"
+              placeholder="username"
+              value={username}
+              onChange={handleUsernameChange}
+              className="placeholder:text-slate-600 rounded-md h-8 pl-2"
+            />
           </div>
-        </form>
-      </main>
-    </div>
+          <div className="pb-5">
+            <input
+              type="text"
+              placeholder="email"
+              value={email}
+              onChange={handleEmailChange}
+              className="placeholder:text-slate-600 rounded-md h-8 pl-2"
+            />
+          </div>
+          <div>
+            <input
+              type="text"
+              placeholder="password"
+              value={password}
+              onChange={handlePasswordChange}
+              className="placeholder:text-slate-600 rounded-md h-8 pl-2"
+            />
+          </div>
+          <button
+            type="submit"
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md"
+          >
+            Sign up
+          </button>
+          <div className="flex flex-col items-center pt-6 text-white">
+            Already have an account?
+            <Link href="/login" passHref className="text-blue-500">
+              Log in
+            </Link>
+          </div>
+        </div>
+      </form>
+    </main>
   );
 }
