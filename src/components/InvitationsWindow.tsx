@@ -9,7 +9,7 @@ interface Info {
   losses: number;
 }
 
-export default function ProfileInfo() {
+export default function DataFetchingComponent() {
   const [info, setInfo] = useState<Info | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -37,6 +37,7 @@ export default function ProfileInfo() {
           losses: result.userData.losses,
         });
 
+        console.log(result);
       } catch (error) {
         setError("Failed to fetch data");
         console.error("There was a problem with the fetch operation:", error);

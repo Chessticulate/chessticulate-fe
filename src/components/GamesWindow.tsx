@@ -2,22 +2,21 @@
 
 import { useEffect, useState } from "react";
 
-interface Info {
-  name: string;
-  wins: number;
-  draws: number;
-  losses: number;
+interface GameInfo {
+  white: number;
+  black: number;
+  whomst: number;
 }
 
-export default function ProfileInfo() {
-  const [info, setInfo] = useState<Info | null>(null);
+export default function GamesWindow() {
+  const [games, setGames] = useState<Info | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/users/self", {
+        const response = await fetch("/api/games", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -30,12 +29,13 @@ export default function ProfileInfo() {
 
         const result = await response.json();
 
-        setInfo({
-          name: result.userData.name,
-          wins: result.userData.wins,
-          draws: result.userData.draws,
-          losses: result.userData.losses,
+        setGames({
+          white: result.games.player_1,
+          black: result.games.player_2,
+          whomst: result.games.whomst,
         });
+
+        console.log(result);
 
       } catch (error) {
         setError("Failed to fetch data");
@@ -50,17 +50,15 @@ export default function ProfileInfo() {
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
-  if (!info) return <div>No data</div>;
+  if (!games) return <div>No data</div>;
 
   return (
     <main className="p-5">
       <h1>User Info:</h1>
       <ul>
-        <li>Username: {info.name}</li>
-        <li>Games Played: {info.wins + info.draws + info.losses}</li>
-        <li>Wins: {info.wins}</li>
-        <li>Draws: {info.draws}</li>
-        <li>Losses: {info.losses}</li>
+        <li>White: {games.player_1}</li>
+        <li>Black: {games.player_2}</li>
+        <li>Whomst: {games.whomst}</li>
       </ul>
     </main>
   );
