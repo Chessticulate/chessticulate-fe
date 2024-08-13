@@ -31,7 +31,6 @@ export async function POST(request: NextRequest) {
     cookies().set({
       name: "token",
       value: data.jwt,
-      userID: jwt["user_id"],
       maxAge: jwt["exp"],
       path: "/",
       httpOnly: true,

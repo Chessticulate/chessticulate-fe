@@ -1,13 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { jwtDecode } from "jwt-decode";
+
+interface myJwt {
+  exp: number;
+  user_name: string;
+  user_id: number;
+}
 
 export async function GET(request: NextRequest) {
-  const token = cookies().get("token")?.value;
-  const userID = token["user_id"];
+  const token = cookies().get("token")?.value as string;
+  const decodedToken = jwtDecode<myJwt>(token);
 
   try {
     const response = await fetch(
-      `${process.env.CHESSTICULATE_API_URL}/games?whomst=${userID}`,
+      `${process.env.CHESSTICULATE_API_URL}/games?whomst=${decodedToken.user_id}`,
       {
         method: "GET",
         headers: {

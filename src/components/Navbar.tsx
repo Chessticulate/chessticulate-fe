@@ -7,19 +7,19 @@ export default function Navbar() {
 
   return (
     <div className="text-2xl py-3 pr-10">
-        {!token ? (
-          <>
-            <Link href="/signup" passHref>
-              Sign up
-            </Link>
-            <> | </>
-            <Link href="/login" passHref>
-              Log in
-            </Link>
-          </>
-        ) : (
-          <LogoutButton />
-        )}
+      {!token ? (
+        <>
+          <Link href="/signup" passHref>
+            Sign up
+          </Link>
+          <> | </>
+          <Link href="/login" passHref>
+            Log in
+          </Link>
+        </>
+      ) : (
+        <LogoutButton />
+      )}
     </div>
   );
 }

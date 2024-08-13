@@ -36,7 +36,6 @@ export default function ProfileInfo() {
           draws: result.userData.draws,
           losses: result.userData.losses,
         });
-
       } catch (error) {
         setError("Failed to fetch data");
         console.error("There was a problem with the fetch operation:", error);
