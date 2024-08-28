@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const response = await fetch(
-      `${process.env.CHESSTICULATE_API_URL}/games?whomst=${decodedToken.user_id}`,
+      `${process.env.CHESSTICULATE_API_URL}/invitations?to_id=${decodedToken.user_id}`,
       {
         method: "GET",
         headers: {
@@ -30,15 +30,10 @@ export async function GET(request: NextRequest) {
 
     const data = await response.json();
 
-    console.log(data);
-
-    console.log("user token", decodedToken);
-    console.log("game data from user id", data);
-
     const res = new NextResponse(
       JSON.stringify({
-        message: "Successfully retrieved game info",
-        games: data,
+        message: "Successfully retrieved invitations info",
+        invitations: data,
       }),
       { status: 200 },
     );

@@ -2,15 +2,15 @@
 
 import { useEffect, useState } from "react";
 
-interface Info {
+type UserData = {
   name: string;
   wins: number;
   draws: number;
   losses: number;
-}
+};
 
 export default function ProfileInfo() {
-  const [info, setInfo] = useState<Info | null>(null);
+  const [info, setInfo] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -36,6 +36,8 @@ export default function ProfileInfo() {
           draws: result.userData.draws,
           losses: result.userData.losses,
         });
+
+        console.log(result);
       } catch (error) {
         setError("Failed to fetch data");
         console.error("There was a problem with the fetch operation:", error);
@@ -47,9 +49,9 @@ export default function ProfileInfo() {
     fetchData();
   }, []);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!info) return <div>No data</div>;
+  if (isLoading) return <>Loading...</>;
+  if (error) return <>Error: {error}</>;
+  if (!info) return <>No data</>;
 
   return (
     <main className="p-5">
