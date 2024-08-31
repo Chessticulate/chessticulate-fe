@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import InvitationRow from "@/components/invitations/InvitationRow";
 
 interface InvitationData {
+  id: number;
   to_id: number;
   from_id: number;
   white_username: string;
@@ -33,6 +34,8 @@ export default function InvitationsWindow() {
         const result = await response.json();
 
         setInvitations(result.invitations);
+
+        console.log("invitations", result.invitations);
       } catch (error) {
         setError("Failed to fetch data");
         console.error("There was a problem with the fetch operation:", error);
@@ -54,6 +57,7 @@ export default function InvitationsWindow() {
       {invitations.map((invitation, index) => (
         <InvitationRow
           key={index}
+          invitation_id={invitation.id}
           to_id={invitation.to_id}
           from_id={invitation.from_id}
           white_username={invitation.white_username}
