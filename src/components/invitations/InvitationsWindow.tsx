@@ -17,7 +17,7 @@ export default function InvitationsWindow() {
   const [received, setReceived] = useState<InvitationData[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"sent" | "received">("received"); // Track active tab
+  const [activeTab, setActiveTab] = useState<"sent" | "received">("received");
 
   useEffect(() => {
     const fetchData = async () => {

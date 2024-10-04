@@ -1,7 +1,6 @@
 import AuthWrapper from "@/auth/AuthWrapper";
 import ProfileInfo from "@/components/ProfileInfo";
-import ActiveGamesWindow from "@/components/games/ActiveGamesWindow";
-import PastGamesWindow from "@/components/games/PastGamesWindow";
+import GamesWindow from "@/components/games/GamesWindow";
 import InvitationsWindow from "@/components/invitations/InvitationsWindow";
 
 function Home() {
@@ -12,10 +11,7 @@ function Home() {
       </div>
       <div className="flex-grow flex-col border-r-4 border-indigo-400">
         <div className="flex-grow">
-          <ActiveGamesWindow />
-        </div>
-        <div className="flex-grow">
-          <PastGamesWindow />
+          <GamesWindow />
         </div>
       </div>
       <div className="flex-grow flex-col">
