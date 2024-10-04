@@ -13,9 +13,11 @@ interface InvitationData {
 }
 
 export default function InvitationsWindow() {
-  const [invitations, setInvitations] = useState<InvitationData[] | null>(null); // Correctly typed
+  const [sent, setSent] = useState<InvitationData[] | null>(null);
+  const [received, setReceived] = useState<InvitationData[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"sent" | "received">("received"); // Track active tab
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,9 +35,10 @@ export default function InvitationsWindow() {
 
         const result = await response.json();
 
-        setInvitations(result.invitations);
+        console.log("result", result);
 
-        console.log("invitations", result.invitations);
+        setSent(result.sent);
+        setReceived(result.received);
       } catch (error) {
         setError("Failed to fetch data");
         console.error("There was a problem with the fetch operation:", error);
@@ -49,22 +52,81 @@ export default function InvitationsWindow() {
 
   if (isLoading) return <>Loading...</>;
   if (error) return <>Error: {error}</>;
-  if (!invitations || invitations.length === 0) return <>No data</>;
+  if ((!sent || sent.length === 0) && (!received || received.length === 0))
+    return <>No data</>;
 
   return (
     <div>
-      <h1 className=""> Invitations: </h1>
-      {invitations.map((invitation, index) => (
-        <InvitationRow
-          key={index}
-          invitation_id={invitation.id}
-          to_id={invitation.to_id}
-          from_id={invitation.from_id}
-          white_username={invitation.white_username}
-          black_username={invitation.black_username}
-          status={invitation.status}
-        />
-      ))}
+      {/* Tabs */}
+      <ul className="flex flex-wrap text-sm text-center">
+        <li className="me-2">
+          <button
+            onClick={() => setActiveTab("received")}
+            className={`inline-block p-4 ${
+              activeTab === "received"
+                ? "bg-gray-100 active dark:bg-gray-800"
+                : "hover:bg-gray-50 dark:hover:bg-gray-800"
+            }`}
+          >
+            Received Invitations
+          </button>
+        </li>
+        <li className="me-2">
+          <button
+            onClick={() => setActiveTab("sent")}
+            className={`inline-block p-4 ${
+              activeTab === "sent"
+                ? "bg-gray-100 active dark:bg-gray-800"
+                : "hover:bg-gray-50 dark:hover:bg-gray-800"
+            }`}
+          >
+            Sent Invitations
+          </button>
+        </li>
+      </ul>
+
+      {/* Tab Content */}
+      <div>
+        {activeTab === "received" ? (
+          <div>
+            {received && received.length > 0 ? (
+              received?.map((invitation, index) => (
+                <InvitationRow
+                  key={index}
+                  type={"received"}
+                  invitation_id={invitation.id}
+                  to_id={invitation.to_id}
+                  from_id={invitation.from_id}
+                  white_username={invitation.white_username}
+                  black_username={invitation.black_username}
+                  status={invitation.status}
+                />
+              ))
+            ) : (
+              <div>No received invitations</div>
+            )}
+          </div>
+        ) : (
+          <div>
+            {sent && sent.length > 0 ? (
+              sent?.map((invitation, index) => (
+                <InvitationRow
+                  key={index}
+                  type={"sent"}
+                  invitation_id={invitation.id}
+                  to_id={invitation.to_id}
+                  from_id={invitation.from_id}
+                  white_username={invitation.white_username}
+                  black_username={invitation.black_username}
+                  status={invitation.status}
+                />
+              ))
+            ) : (
+              <div>No sent invitations</div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

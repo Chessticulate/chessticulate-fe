@@ -8,15 +8,19 @@ interface myJwt {
   user_id: number;
 }
 
-export async function GET(request: NextRequest) {
+export async function PUT(request: NextRequest) {
+  const invRequest = await request.json();
+  const invitation_id = invRequest["invitation_id"];
   const token = cookies().get("token")?.value as string;
   const decodedToken = jwtDecode<myJwt>(token);
 
+  console.log("invitation_id", invitation_id);
+
   try {
     const response = await fetch(
-      `${process.env.CHESSTICULATE_API_URL}/invitations?to_id=${decodedToken.user_id}&status=PENDING`,
+      `${process.env.CHESSTICULATE_API_URL}/invitations/${invitation_id}/cancel`,
       {
-        method: "GET",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -32,8 +36,8 @@ export async function GET(request: NextRequest) {
 
     const res = new NextResponse(
       JSON.stringify({
-        message: "Successfully retrieved invitations info",
-        invitations: data,
+        message: "Successfully canceled game invitation",
+        data: data,
       }),
       { status: 200 },
     );

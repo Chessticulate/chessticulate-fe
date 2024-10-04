@@ -8,12 +8,15 @@ interface myJwt {
   user_id: number;
 }
 
+// this route handler makes two separate fetches to get invitations
+// the purpose is to receive a complete list of invitations relating to the user
+
 export async function GET(request: NextRequest) {
   const token = cookies().get("token")?.value as string;
   const decodedToken = jwtDecode<myJwt>(token);
 
   try {
-    const response = await fetch(
+    const toInvitations = await fetch(
       `${process.env.CHESSTICULATE_API_URL}/invitations?to_id=${decodedToken.user_id}&status=PENDING`,
       {
         method: "GET",
@@ -24,16 +27,34 @@ export async function GET(request: NextRequest) {
       },
     );
 
-    if (response.status !== 200) {
+    if (toInvitations.status !== 200) {
       return new NextResponse("Network response was not ok", { status: 500 });
     }
 
-    const data = await response.json();
+    const received = await toInvitations.json();
+
+    const fromInvitations = await fetch(
+      `${process.env.CHESSTICULATE_API_URL}/invitations?from_id=${decodedToken.user_id}&status=PENDING`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    if (fromInvitations.status !== 200) {
+      return new NextResponse("Network response was not ok", { status: 500 });
+    }
+
+    const sent = await fromInvitations.json();
 
     const res = new NextResponse(
       JSON.stringify({
         message: "Successfully retrieved invitations info",
-        invitations: data,
+        received: received,
+        sent: sent,
       }),
       { status: 200 },
     );
