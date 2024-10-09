@@ -55,6 +55,18 @@ export default function InvitationsWindow() {
   if ((!sent || sent.length === 0) && (!received || received.length === 0))
     return <>No data</>;
 
+  const handleAnswer = (invitationId: number) => {
+    setReceived(
+      (prevInv) => prevInv?.filter((inv) => inv.id != invitationId) || [],
+    );
+  };
+
+  const handleCancel = (invitationId: number) => {
+    setSent(
+      (prevInv) => prevInv?.filter((inv) => inv.id != invitationId) || [],
+    );
+  };
+
   return (
     <div>
       {/* Tabs */}
@@ -100,6 +112,8 @@ export default function InvitationsWindow() {
                   white_username={invitation.white_username}
                   black_username={invitation.black_username}
                   status={invitation.status}
+                  onAnswer={handleAnswer}
+                  onCancel={handleCancel}
                 />
               ))
             ) : (
@@ -119,6 +133,8 @@ export default function InvitationsWindow() {
                   white_username={invitation.white_username}
                   black_username={invitation.black_username}
                   status={invitation.status}
+                  onAnswer={handleAnswer}
+                  onCancel={handleCancel}
                 />
               ))
             ) : (

@@ -10,6 +10,8 @@ type InvitationProps = {
   white_username: string;
   black_username: string;
   status: string;
+  onAnswer: (invitationId: number) => void;
+  onCancel: (invitationId: number) => void;
 };
 
 export default function InvitationRow({
@@ -20,6 +22,8 @@ export default function InvitationRow({
   white_username,
   black_username,
   status,
+  onAnswer,
+  onCancel,
 }: InvitationProps) {
   const answerInvite = async (answer: string) => {
     try {
@@ -36,6 +40,7 @@ export default function InvitationRow({
       }
 
       const result = await response.json();
+      answer === "cancel" ? onCancel(invitation_id) : onAnswer(invitation_id);
 
       console.log(result);
     } catch (error) {

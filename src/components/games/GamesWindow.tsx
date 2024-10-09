@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import GameRow from "@/components/games/GameRow";
 
 type GameData = {
+  id: number;
   white: number;
   black: number;
   white_username: string;
@@ -12,7 +13,7 @@ type GameData = {
   is_active: boolean;
 };
 
-export default function ActiveGamesWindow() {
+export default function GamesWindow() {
   const [games, setGames] = useState<GameData[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -52,10 +53,13 @@ export default function ActiveGamesWindow() {
   if (!games) return <>No data</>;
 
   const activeGames = games.filter((game) => game.is_active);
-
   const completedGames = games.filter((game) => !game.is_active);
 
-  console.log("activeGames", activeGames);
+  const handleForfeit = (gameId: number) => {
+    setGames(
+      (prevGames) => prevGames?.filter((game) => game.id != gameId) || [],
+    );
+  };
 
   return (
     <div>
@@ -93,6 +97,8 @@ export default function ActiveGamesWindow() {
           {activeGames.map((game, index) => (
             <GameRow
               key={index}
+              active={true}
+              game_id={game.id}
               white={game.white}
               black={game.black}
               white_username={game.white_username}
@@ -102,14 +108,19 @@ export default function ActiveGamesWindow() {
                   ? game.white_username
                   : game.black_username
               }
+              onForfeit={handleForfeit}
             />
           ))}
         </div>
       ) : (
         <div>
+          {/*type error is thrown here if onForfeit inst included in props, so its included even though it isnt usable for completed games*/}
+          {/*just a temporary fix*/}
           {completedGames.map((game, index) => (
             <GameRow
               key={index}
+              active={false}
+              game_id={game.id}
               white={game.white}
               black={game.black}
               white_username={game.white_username}
@@ -119,6 +130,7 @@ export default function ActiveGamesWindow() {
                   ? game.white_username
                   : game.black_username
               }
+              onForfeit={handleForfeit}
             />
           ))}
         </div>
