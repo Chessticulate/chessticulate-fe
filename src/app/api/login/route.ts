@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { jwtDecode } from "jwt-decode";
 
 export async function POST(request: NextRequest) {
   const { username, password } = await request.json();
@@ -20,6 +21,8 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await response.json();
+    const jwt = jwtDecode(data.jwt);
+
     const res = new NextResponse(
       JSON.stringify({ message: "Login successful" }),
       { status: 200 },
@@ -28,7 +31,7 @@ export async function POST(request: NextRequest) {
     cookies().set({
       name: "token",
       value: data.jwt,
-      maxAge: 7 * 24 * 60 * 60, // 1 week
+      maxAge: jwt["exp"],
       path: "/",
       httpOnly: true,
     });
