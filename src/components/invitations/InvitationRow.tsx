@@ -41,8 +41,6 @@ export default function InvitationRow({
 
       const result = await response.json();
       answer === "cancel" ? onCancel(invitation_id) : onAnswer(invitation_id);
-
-      console.log(result);
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
     }

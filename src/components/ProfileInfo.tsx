@@ -37,7 +37,7 @@ export default function ProfileInfo() {
           losses: result.userData.losses,
         });
 
-        console.log(result);
+        console.log("user info", result);
       } catch (error) {
         setError("Failed to fetch data");
         console.error("There was a problem with the fetch operation:", error);

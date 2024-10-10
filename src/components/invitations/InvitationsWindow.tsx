@@ -35,7 +35,7 @@ export default function InvitationsWindow() {
 
         const result = await response.json();
 
-        console.log("result", result);
+        console.log("invitations", result);
 
         setSent(result.sent);
         setReceived(result.received);

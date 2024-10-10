@@ -14,8 +14,6 @@ export async function POST(request: NextRequest) {
   const token = cookies().get("token")?.value as string;
   const decodedToken = jwtDecode<myJwt>(token);
 
-  console.log("game_id", game_id);
-
   try {
     const response = await fetch(
       `${process.env.CHESSTICULATE_API_URL}/games/${game_id}/forfeit`,

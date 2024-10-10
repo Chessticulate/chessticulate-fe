@@ -10,11 +10,12 @@ type GameData = {
   white_username: string;
   black_username: string;
   whomst: number;
-  is_active: boolean;
+  winner: number;
 };
 
 export default function GamesWindow() {
-  const [games, setGames] = useState<GameData[] | null>(null);
+  const [activeGames, setActiveGames] = useState<GameData[] | null>(null);
+  const [completedGames, setCompletedGames] = useState<GameData[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"active" | "completed">("active");
@@ -22,7 +23,7 @@ export default function GamesWindow() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/list-games", {
+        const response = await fetch("/api/games", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -34,7 +35,8 @@ export default function GamesWindow() {
         }
 
         const result = await response.json();
-        setGames(result.games);
+        setActiveGames(result.active);
+        setCompletedGames(result.completed);
 
         console.log("games", result);
       } catch (error) {
@@ -50,13 +52,10 @@ export default function GamesWindow() {
 
   if (isLoading) return <>Loading...</>;
   if (error) return <>Error: {error}</>;
-  if (!games) return <>No data</>;
-
-  const activeGames = games.filter((game) => game.is_active);
-  const completedGames = games.filter((game) => !game.is_active);
+  if (!activeGames && !completedGames) return <>No data</>;
 
   const handleForfeit = (gameId: number) => {
-    setGames(
+    setActiveGames(
       (prevGames) => prevGames?.filter((game) => game.id != gameId) || [],
     );
   };
@@ -94,45 +93,49 @@ export default function GamesWindow() {
       {/* Tab Content */}
       {activeTab === "active" ? (
         <div>
-          {activeGames.map((game, index) => (
-            <GameRow
-              key={index}
-              active={true}
-              game_id={game.id}
-              white={game.white}
-              black={game.black}
-              white_username={game.white_username}
-              black_username={game.black_username}
-              whomst={
-                game.whomst == game.white
-                  ? game.white_username
-                  : game.black_username
-              }
-              onForfeit={handleForfeit}
-            />
-          ))}
+          {activeGames &&
+            activeGames.map((game, index) => (
+              <GameRow
+                key={index}
+                active={true}
+                game_id={game.id}
+                white={game.white}
+                black={game.black}
+                white_username={game.white_username}
+                black_username={game.black_username}
+                winner={game.winner}
+                whomst={
+                  game.whomst == game.white
+                    ? game.white_username
+                    : game.black_username
+                }
+                onForfeit={handleForfeit}
+              />
+            ))}
         </div>
       ) : (
         <div>
           {/*type error is thrown here if onForfeit inst included in props, so its included even though it isnt usable for completed games*/}
           {/*just a temporary fix*/}
-          {completedGames.map((game, index) => (
-            <GameRow
-              key={index}
-              active={false}
-              game_id={game.id}
-              white={game.white}
-              black={game.black}
-              white_username={game.white_username}
-              black_username={game.black_username}
-              whomst={
-                game.whomst == game.white
-                  ? game.white_username
-                  : game.black_username
-              }
-              onForfeit={handleForfeit}
-            />
-          ))}
+          {completedGames &&
+            completedGames.map((game, index) => (
+              <GameRow
+                key={index}
+                active={false}
+                game_id={game.id}
+                white={game.white}
+                black={game.black}
+                white_username={game.white_username}
+                black_username={game.black_username}
+                winner={game.winner}
+                whomst={
+                  game.whomst == game.white
+                    ? game.white_username
+                    : game.black_username
+                }
+                onForfeit={handleForfeit}
+              />
+            ))}
         </div>
       )}
     </div>
