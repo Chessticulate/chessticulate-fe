@@ -45,7 +45,7 @@ export default function SignupForm() {
       }
 
       const data = await response.json();
-      console.log("Success:", data);
+      console.log("Successful signup:", data);
 
       router.push("/login");
     } catch (error) {

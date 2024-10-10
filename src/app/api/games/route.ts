@@ -13,8 +13,8 @@ export async function GET(request: NextRequest) {
   const decodedToken = jwtDecode<myJwt>(token);
 
   try {
-    const response = await fetch(
-      `${process.env.CHESSTICULATE_API_URL}/games?whomst=${decodedToken.user_id}`,
+    const activeGames = await fetch(
+      `${process.env.CHESSTICULATE_API_URL}/games?player_id=${decodedToken.user_id}&is_active=True`,
       {
         method: "GET",
         headers: {
@@ -24,21 +24,34 @@ export async function GET(request: NextRequest) {
       },
     );
 
-    if (response.status !== 200) {
+    if (activeGames.status !== 200) {
       return new NextResponse("Network response was not ok", { status: 500 });
     }
 
-    const data = await response.json();
+    const active = await activeGames.json();
 
-    console.log(data);
+    const completedGames = await fetch(
+      `${process.env.CHESSTICULATE_API_URL}/games?player_id=${decodedToken.user_id}&is_active=False`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
 
-    console.log("user token", decodedToken);
-    console.log("game data from user id", data);
+    if (completedGames.status !== 200) {
+      return new NextResponse("Network response was not ok", { status: 500 });
+    }
+
+    const completed = await completedGames.json();
 
     const res = new NextResponse(
       JSON.stringify({
         message: "Successfully retrieved game info",
-        games: data,
+        active: active,
+        completed: completed,
       }),
       { status: 200 },
     );

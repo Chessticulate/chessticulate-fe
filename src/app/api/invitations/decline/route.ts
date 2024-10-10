@@ -14,8 +14,6 @@ export async function PUT(request: NextRequest) {
   const token = cookies().get("token")?.value as string;
   const decodedToken = jwtDecode<myJwt>(token);
 
-  console.log("invitation_id", invitation_id);
-
   try {
     const response = await fetch(
       `${process.env.CHESSTICULATE_API_URL}/invitations/${invitation_id}/decline`,

@@ -35,7 +35,7 @@ export default function LoginForm() {
       }
 
       const data = await response.json();
-      console.log("Success:", data);
+      console.log("Successful login:", data);
 
       router.push("/");
 

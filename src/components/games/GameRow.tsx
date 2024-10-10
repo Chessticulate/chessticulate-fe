@@ -10,6 +10,7 @@ type GameRowProps = {
   white_username: string;
   black_username: string;
   whomst: string;
+  winner: number;
   onForfeit: (gameId: number) => void;
 };
 
@@ -21,6 +22,7 @@ export default function GameRow({
   white_username,
   black_username,
   whomst,
+  winner,
   onForfeit,
 }: GameRowProps) {
   const forfeitGame = async () => {
@@ -38,6 +40,8 @@ export default function GameRow({
       }
 
       const result = await response.json();
+
+      console.log("forfeit", result);
       // updates game window's games list to remove forfeited row
       onForfeit(game_id);
     } catch (error) {
@@ -49,11 +53,15 @@ export default function GameRow({
     <div className="flex pl-5 pr-5 pt-2 pb-2 border-2">
       <div className="p-1">White: {white_username}</div>
       <div className="p-1">Black: {black_username}</div>
-      <div className="p-1">{whomst}&apos;s turn</div>
-      {active && (
-        <button className="pl-2" onClick={forfeitGame}>
-          resign
-        </button>
+      {active ? (
+        <>
+          <div className="p-1">{whomst}&apos;s turn</div>
+          <button className="pl-2" onClick={forfeitGame}>
+            resign
+          </button>
+        </>
+      ) : (
+        <div className="p-1">Winner: {winner}</div>
       )}
     </div>
   );
