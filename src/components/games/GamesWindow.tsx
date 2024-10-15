@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import GameRow from "@/components/games/GameRow";
+import Chessboard from "@/components/Chessboard";
 
-type GameData = {
+export type GameData = {
   id: number;
   white: number;
   black: number;
@@ -15,10 +16,13 @@ type GameData = {
 
 export default function GamesWindow() {
   const [activeGames, setActiveGames] = useState<GameData[] | null>(null);
+  const [currentGame, setCurrentGame] = useState<GameData | null>(null);
   const [completedGames, setCompletedGames] = useState<GameData[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"active" | "completed">("active");
+  const [activeTab, setActiveTab] = useState<"active" | "completed" | "play">(
+    "active",
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,6 +64,54 @@ export default function GamesWindow() {
     );
   };
 
+  const handlePlay = (gameId: number) => {
+    setActiveTab("play");
+    setCurrentGame(activeGames?.find((game) => game.id == gameId) || null);
+  };
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case "active":
+        return (
+          <>
+            {activeGames &&
+              activeGames.map((game, index) => (
+                <GameRow
+                  key={index}
+                  game={game}
+                  active={true}
+                  onPlay={handlePlay}
+                  onForfeit={handleForfeit}
+                />
+              ))}
+          </>
+        );
+      case "completed":
+        return (
+          <>
+            {completedGames &&
+              completedGames.map((game, index) => (
+                <GameRow
+                  key={index}
+                  game={game}
+                  active={false}
+                  onPlay={handlePlay}
+                  onForfeit={handleForfeit}
+                />
+              ))}
+          </>
+        );
+      case "play":
+        return (
+          <div className="">
+            <Chessboard game={currentGame} />
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <div>
       {/* Tabs */}
@@ -91,53 +143,7 @@ export default function GamesWindow() {
       </ul>
 
       {/* Tab Content */}
-      {activeTab === "active" ? (
-        <div>
-          {activeGames &&
-            activeGames.map((game, index) => (
-              <GameRow
-                key={index}
-                active={true}
-                game_id={game.id}
-                white={game.white}
-                black={game.black}
-                white_username={game.white_username}
-                black_username={game.black_username}
-                winner={game.winner}
-                whomst={
-                  game.whomst == game.white
-                    ? game.white_username
-                    : game.black_username
-                }
-                onForfeit={handleForfeit}
-              />
-            ))}
-        </div>
-      ) : (
-        <div>
-          {/*type error is thrown here if onForfeit inst included in props, so its included even though it isnt usable for completed games*/}
-          {/*just a temporary fix*/}
-          {completedGames &&
-            completedGames.map((game, index) => (
-              <GameRow
-                key={index}
-                active={false}
-                game_id={game.id}
-                white={game.white}
-                black={game.black}
-                white_username={game.white_username}
-                black_username={game.black_username}
-                winner={game.winner}
-                whomst={
-                  game.whomst == game.white
-                    ? game.white_username
-                    : game.black_username
-                }
-                onForfeit={handleForfeit}
-              />
-            ))}
-        </div>
-      )}
+      {renderContent()}
     </div>
   );
 }
