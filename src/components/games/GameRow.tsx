@@ -1,30 +1,26 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { GameData } from "./GamesWindow";
 
 type GameRowProps = {
+  game: GameData;
   active: boolean;
-  game_id: number;
-  white: number;
-  black: number;
-  white_username: string;
-  black_username: string;
-  whomst: string;
-  winner: number;
   onForfeit: (gameId: number) => void;
+  onPlay: (gameId: number) => void;
 };
 
 export default function GameRow({
+  game,
   active,
-  game_id,
-  white,
-  black,
-  white_username,
-  black_username,
-  whomst,
-  winner,
   onForfeit,
+  onPlay,
 }: GameRowProps) {
+  const { id, white, black, white_username, black_username, whomst, winner } =
+    game;
+
+  const currentPlayer = whomst === white ? white_username : black_username;
+
   const forfeitGame = async () => {
     try {
       const response = await fetch("/api/games/forfeit", {
@@ -32,7 +28,7 @@ export default function GameRow({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ game_id }),
+        body: JSON.stringify({ id }),
       });
 
       if (!response.ok) {
@@ -43,10 +39,14 @@ export default function GameRow({
 
       console.log("forfeit", result);
       // updates game window's games list to remove forfeited row
-      onForfeit(game_id);
+      onForfeit(id);
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
     }
+  };
+
+  const playGame = () => {
+    onPlay(id);
   };
 
   return (
@@ -55,9 +55,12 @@ export default function GameRow({
       <div className="p-1">Black: {black_username}</div>
       {active ? (
         <>
-          <div className="p-1">{whomst}&apos;s turn</div>
+          <div className="p-1">{currentPlayer}&apos;s turn</div>
           <button className="pl-2" onClick={forfeitGame}>
             resign
+          </button>
+          <button className="pl-2" onClick={playGame}>
+            play
           </button>
         </>
       ) : (
