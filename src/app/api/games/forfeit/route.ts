@@ -10,7 +10,7 @@ interface myJwt {
 
 export async function POST(request: NextRequest) {
   const gameRequest = await request.json();
-  const game_id = gameRequest["game_id"];
+  const game_id = gameRequest["id"];
   const token = cookies().get("token")?.value as string;
   const decodedToken = jwtDecode<myJwt>(token);
 
