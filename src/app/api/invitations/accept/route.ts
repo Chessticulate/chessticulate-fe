@@ -10,7 +10,7 @@ interface myJwt {
 
 export async function PUT(request: NextRequest) {
   const invRequest = await request.json();
-  const invitation_id = invRequest["invitation_id"];
+  const invitation_id = invRequest["id"];
   const token = cookies().get("token")?.value as string;
   const decodedToken = jwtDecode<myJwt>(token);
 

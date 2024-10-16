@@ -3,14 +3,11 @@
 import { useEffect, useState } from "react";
 import InvitationRow from "@/components/invitations/InvitationRow";
 
-interface InvitationData {
+export type InvitationData = {
   id: number;
-  to_id: number;
-  from_id: number;
   white_username: string;
   black_username: string;
-  status: string;
-}
+};
 
 export default function InvitationsWindow() {
   const [sent, setSent] = useState<InvitationData[] | null>(null);
@@ -106,12 +103,7 @@ export default function InvitationsWindow() {
                 <InvitationRow
                   key={index}
                   type={"received"}
-                  invitation_id={invitation.id}
-                  to_id={invitation.to_id}
-                  from_id={invitation.from_id}
-                  white_username={invitation.white_username}
-                  black_username={invitation.black_username}
-                  status={invitation.status}
+                  invitation={invitation}
                   onAnswer={handleAnswer}
                   onCancel={handleCancel}
                 />
@@ -127,12 +119,7 @@ export default function InvitationsWindow() {
                 <InvitationRow
                   key={index}
                   type={"sent"}
-                  invitation_id={invitation.id}
-                  to_id={invitation.to_id}
-                  from_id={invitation.from_id}
-                  white_username={invitation.white_username}
-                  black_username={invitation.black_username}
-                  status={invitation.status}
+                  invitation={invitation}
                   onAnswer={handleAnswer}
                   onCancel={handleCancel}
                 />

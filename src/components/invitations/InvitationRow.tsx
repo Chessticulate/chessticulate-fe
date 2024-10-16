@@ -1,30 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { InvitationData } from "./InvitationsWindow";
 
 type InvitationProps = {
   type: string;
-  invitation_id: number;
-  to_id: number;
-  from_id: number;
-  white_username: string;
-  black_username: string;
-  status: string;
+  invitation: InvitationData;
   onAnswer: (invitationId: number) => void;
   onCancel: (invitationId: number) => void;
 };
 
 export default function InvitationRow({
   type,
-  invitation_id,
-  to_id,
-  from_id,
-  white_username,
-  black_username,
-  status,
+  invitation,
   onAnswer,
   onCancel,
 }: InvitationProps) {
+  const { id, white_username, black_username } = invitation;
+
   const answerInvite = async (answer: string) => {
     try {
       const response = await fetch(`/api/invitations/${answer}`, {
@@ -32,7 +25,7 @@ export default function InvitationRow({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ invitation_id }),
+        body: JSON.stringify({ id }),
       });
 
       if (!response.ok) {
@@ -40,7 +33,7 @@ export default function InvitationRow({
       }
 
       const result = await response.json();
-      answer === "cancel" ? onCancel(invitation_id) : onAnswer(invitation_id);
+      answer === "cancel" ? onCancel(id) : onAnswer(id);
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
     }
