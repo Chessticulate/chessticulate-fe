@@ -12,6 +12,7 @@ export type GameData = {
   black_username: string;
   whomst: number;
   winner: number;
+  fen: string;
 };
 
 export default function GamesWindow() {

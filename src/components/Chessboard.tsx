@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState, ChangeEvent, FormEvent } from "react";
 import { GameData } from "./games/GamesWindow";
 import Image from "next/image";
 import pieceMap from "../utils/piecetoPNG";
@@ -11,7 +11,50 @@ type ChessboardProps = {
 };
 
 export default function Chessboard({ game }: ChessboardProps) {
-  const chess = useMemo(() => new Chess(), []);
+  const chess = useMemo(() => new Chess(game?.fen), [game?.fen]);
+  const [move, setMove] = useState<string>("");
+
+  if (!game) {
+    return <div>No game data available</div>;
+  }
+
+  const {
+    id,
+    white,
+    black,
+    white_username,
+    black_username,
+    whomst,
+    winner,
+    fen,
+  } = game;
+
+  const currentPlayer = whomst === white ? white_username : black_username;
+
+  const handleMoveChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setMove(e.target.value);
+  };
+
+  const handleMove = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("/api/games/move", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id, move }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response is not ok");
+      }
+
+      const data = await response.json();
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   const rows = ["8", "7", "6", "5", "4", "3", "2", "1"];
   const cols = ["a", "b", "c", "d", "e", "f", "g", "h"];
@@ -52,8 +95,30 @@ export default function Chessboard({ game }: ChessboardProps) {
   );
 
   return (
-    <div className="grid grid-cols-8 grid-rows-8 w-96 h-96 mx-auto">
-      {rows.map((row) => renderRow(row))}
+    <div>
+      <div className="grid grid-cols-8 grid-rows-8 w-96 h-96 mx-auto">
+        {rows.map((row) => renderRow(row))}
+      </div>
+      <div className="">
+        {currentPlayer}
+        <form onSubmit={handleMove}>
+          <div>
+            <input
+              type="text"
+              value={move}
+              onChange={handleMoveChange}
+              placeholder="move"
+              className="text-black"
+            />
+          </div>
+          <button
+            type="submit"
+            className="pl-4 mt-4 px-4 py-2 bg-blue-600 text-white rounded-md"
+          >
+            submit move
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
