@@ -39,6 +39,7 @@ export default function Chessboard({ game }: ChessboardProps) {
     piece: string,
     square: Square,
   ) => {
+    e.dataTransfer.effectAllowed = "move";
     setDraggedPiece(piece);
     setStartSquare(square);
   };
@@ -114,7 +115,6 @@ export default function Chessboard({ game }: ChessboardProps) {
             alt="piece"
             width={56}
             height={56}
-            className="pieces"
             draggable
             onDragStart={(e) => handleDragStart(e, piece, square)}
           />
