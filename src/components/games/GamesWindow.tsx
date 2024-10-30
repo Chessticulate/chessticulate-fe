@@ -104,7 +104,7 @@ export default function GamesWindow() {
         );
       case "play":
         return (
-          <div className="">
+          <div className="flex justify-center">
             <Chessboard game={currentGame} />
           </div>
         );

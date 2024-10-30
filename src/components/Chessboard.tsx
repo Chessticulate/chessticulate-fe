@@ -104,16 +104,16 @@ export default function Chessboard({ game }: ChessboardProps) {
     return (
       <div
         key={square.notation}
-        className={`relative flex justify-center items-center ${squareColor} w-12 h-12`}
+        className={`relative flex justify-center items-center ${squareColor} w-16 h-16`}
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => handleDrop(e, square)}
       >
         {piece && (
           <Image
             src={pieceMap[piece]}
-            alt={`Chess piece ${piece}`}
-            width={48}
-            height={48}
+            alt="piece"
+            width={56}
+            height={56}
             className="pieces"
             draggable
             onDragStart={(e) => handleDragStart(e, piece, square)}
@@ -131,19 +131,13 @@ export default function Chessboard({ game }: ChessboardProps) {
 
   return (
     <div>
-      <div className="grid grid-cols-8 grid-rows-8 w-96 h-96 mx-auto">
+      <div className="grid grid-cols-8 grid-rows-8 w-128 h-128">
         {rows.map((row) => renderRow(row))}
       </div>
       <div className="mt-4">
         <p>Current Player: {currentPlayer}</p>
         <form onSubmit={(e) => e.preventDefault()}>
-          <input
-            type="text"
-            value={move}
-            readOnly
-            placeholder="Move will appear here"
-            className="text-black"
-          />
+          <input type="text" value={move} readOnly className="text-black" />
         </form>
       </div>
     </div>
