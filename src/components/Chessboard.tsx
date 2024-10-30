@@ -66,13 +66,30 @@ export default function Chessboard({ game }: ChessboardProps) {
     e.preventDefault();
     if (draggedPiece && startSquare) {
       const piece = chess.board.get(startSquare.x, startSquare.y);
-      const moveStr = chess.generateMoveStrs(
+      let moveStr = chess.generateMoveStrs(
         piece,
         targetSquare.x,
         targetSquare.y,
       )[0];
 
       console.log("move string", moveStr);
+
+      // Castling
+      if (["Kg1", "Kc1", "Kg8", "Kc8"].includes(moveStr)) {
+        // Check if legalMoves includes either castling move
+        if (legalMoves.includes("O-O") || legalMoves.includes("O-O-O")) {
+          switch (moveStr) {
+            case "Kg1":
+            case "Kg8":
+              moveStr = "O-O"; // Kingside castling
+              break;
+            case "Kc1":
+            case "Kc8":
+              moveStr = "O-O-O"; // Queenside castling
+              break;
+          }
+        }
+      }
 
       const moveResult = chess.move(moveStr);
 
