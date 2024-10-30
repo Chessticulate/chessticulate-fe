@@ -1,4 +1,11 @@
-import { useMemo, useState, ChangeEvent, FormEvent, DragEvent } from "react";
+import {
+  useMemo,
+  useState,
+  ChangeEvent,
+  FormEvent,
+  DragEvent,
+  useEffect,
+} from "react";
 import { GameData } from "./games/GamesWindow";
 import Image from "next/image";
 import pieceMap from "../utils/piecetoPNG";
@@ -21,16 +28,24 @@ export default function Chessboard({ game }: ChessboardProps) {
   const [move, setMove] = useState<string>("");
   const [draggedPiece, setDraggedPiece] = useState<string | null>(null);
   const [startSquare, setStartSquare] = useState<Square | null>(null);
+  const [legalMoves, setLegalMoves] = useState<string[]>(() =>
+    chess.legalMoves(),
+  );
+
+  useEffect(() => {
+    const moves = chess.legalMoves();
+    setLegalMoves(moves);
+    console.log("legal moves", moves);
+  }, [move, chess]);
 
   if (!game) {
-    return <div>No game data available</div>;
+    return <>no game data</>;
   }
 
   const { id, white, black, white_username, black_username, whomst, winner } =
     game;
 
   const currentPlayer = whomst === white ? white_username : black_username;
-
   const rows = ["8", "7", "6", "5", "4", "3", "2", "1"];
   const cols = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
@@ -51,14 +66,13 @@ export default function Chessboard({ game }: ChessboardProps) {
     e.preventDefault();
     if (draggedPiece && startSquare) {
       const piece = chess.board.get(startSquare.x, startSquare.y);
-
       const moveStr = chess.generateMoveStrs(
         piece,
         targetSquare.x,
         targetSquare.y,
       )[0];
 
-      console.log("move string", moveStr, typeof moveStr);
+      console.log("move string", moveStr);
 
       const moveResult = chess.move(moveStr);
 
