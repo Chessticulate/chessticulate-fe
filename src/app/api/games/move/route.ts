@@ -8,21 +8,25 @@ interface myJwt {
   user_id: number;
 }
 
-export async function PUT(request: NextRequest) {
-  const invRequest = await request.json();
-  const invitation_id = invRequest["id"];
+export async function POST(request: NextRequest) {
+  const gameRequest = await request.json();
+  const game_id = gameRequest["id"];
+  const move = gameRequest["move"];
   const token = cookies().get("token")?.value as string;
   const decodedToken = jwtDecode<myJwt>(token);
 
   try {
     const response = await fetch(
-      `${process.env.CHESSTICULATE_API_URL}/invitations/${invitation_id}/accept`,
+      `${process.env.CHESSTICULATE_API_URL}/games/${game_id}/move`,
       {
-        method: "PUT",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
+        body: JSON.stringify({
+          move: move,
+        }),
       },
     );
 
@@ -34,7 +38,7 @@ export async function PUT(request: NextRequest) {
 
     const res = new NextResponse(
       JSON.stringify({
-        message: "Successfully accepted game invitation",
+        message: "Successful move",
         data: data,
       }),
       { status: 200 },

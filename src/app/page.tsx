@@ -6,15 +6,13 @@ import InvitationsWindow from "@/components/invitations/InvitationsWindow";
 function Home() {
   return (
     <main className="flex h-full">
-      <div className="flex-grow flex-col border-r-4 border-indigo-400">
+      <div className="basis-1/6 border-r-4">
         <ProfileInfo />
       </div>
-      <div className="flex-grow flex-col border-r-4 border-indigo-400">
-        <div className="flex-grow">
-          <GamesWindow />
-        </div>
+      <div className="basis-3/6 border-r-4">
+        <GamesWindow />
       </div>
-      <div className="flex-grow flex-col">
+      <div className="basis-2/6">
         <InvitationsWindow />
       </div>
     </main>

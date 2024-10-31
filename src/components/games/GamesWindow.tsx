@@ -12,6 +12,7 @@ export type GameData = {
   black_username: string;
   whomst: number;
   winner: number;
+  fen: string;
 };
 
 export default function GamesWindow() {
@@ -103,7 +104,7 @@ export default function GamesWindow() {
         );
       case "play":
         return (
-          <div className="">
+          <div className="flex justify-center">
             <Chessboard game={currentGame} />
           </div>
         );
