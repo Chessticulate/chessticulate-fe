@@ -1,13 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-type UserData = {
-  name: string;
-  wins: number;
-  draws: number;
-  losses: number;
-};
+import { UserData } from "@/types";
 
 export default function ProfileInfo() {
   const [info, setInfo] = useState<UserData | null>(null);

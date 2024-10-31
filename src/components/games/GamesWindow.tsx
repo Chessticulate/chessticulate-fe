@@ -2,18 +2,8 @@
 
 import { useEffect, useState } from "react";
 import GameRow from "@/components/games/GameRow";
+import { GameData } from "@/types";
 import Chessboard from "@/components/Chessboard";
-
-export type GameData = {
-  id: number;
-  white: number;
-  black: number;
-  white_username: string;
-  black_username: string;
-  whomst: number;
-  winner: number;
-  fen: string;
-};
 
 export default function GamesWindow() {
   const [activeGames, setActiveGames] = useState<GameData[] | null>(null);
