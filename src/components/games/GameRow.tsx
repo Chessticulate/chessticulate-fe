@@ -1,14 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { GameData } from "./GamesWindow";
-
-type GameRowProps = {
-  game: GameData;
-  active: boolean;
-  onForfeit: (gameId: number) => void;
-  onPlay: (gameId: number) => void;
-};
+import { GameData, GameRowProps } from "@/types";
 
 export default function GameRow({
   game,

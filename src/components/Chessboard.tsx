@@ -6,22 +6,13 @@ import {
   DragEvent,
   useEffect,
 } from "react";
-import { GameData } from "./games/GamesWindow";
 import Image from "next/image";
 import pieceMap from "../utils/piecetoPNG";
+import { ChessboardProps, Square, GameData } from "@/types";
 
-// Temporary type fix for Chess object
+// Chess obj has a type of any since shallowpink does not export any types
+// long term it might be best to create a chess interface
 const Chess: any = require("shallowpink/lib/chess");
-
-type ChessboardProps = {
-  game: GameData | null;
-};
-
-type Square = {
-  notation: string;
-  x: number;
-  y: number;
-};
 
 export default function Chessboard({ game }: ChessboardProps) {
   const chess = useMemo(() => new Chess(game?.fen), [game?.fen]);

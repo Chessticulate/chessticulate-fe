@@ -1,14 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { InvitationData } from "./InvitationsWindow";
-
-type InvitationProps = {
-  type: string;
-  invitation: InvitationData;
-  onAnswer: (invitationId: number) => void;
-  onCancel: (invitationId: number) => void;
-};
+import { InvitationData, InvitationProps } from "@/types";
 
 export default function InvitationRow({
   type,

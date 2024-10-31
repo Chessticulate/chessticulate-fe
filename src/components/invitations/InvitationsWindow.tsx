@@ -2,12 +2,7 @@
 
 import { useEffect, useState } from "react";
 import InvitationRow from "@/components/invitations/InvitationRow";
-
-export type InvitationData = {
-  id: number;
-  white_username: string;
-  black_username: string;
-};
+import { InvitationData } from "@/types";
 
 export default function InvitationsWindow() {
   const [sent, setSent] = useState<InvitationData[] | null>(null);
