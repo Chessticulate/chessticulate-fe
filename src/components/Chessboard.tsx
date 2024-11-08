@@ -18,16 +18,10 @@ export default function Chessboard({ game }: ChessboardProps) {
   const chess = useMemo(() => new Chess(game?.fen), [game?.fen]);
   const [move, setMove] = useState<string>("");
   const [draggedPiece, setDraggedPiece] = useState<string | null>(null);
+  const [selectedPiece, setSelectedPiece] = useState<string | null>(null);
   const [startSquare, setStartSquare] = useState<Square | null>(null);
-  const [legalMoves, setLegalMoves] = useState<string[]>(() =>
-    chess.legalMoves(),
-  );
-
-  useEffect(() => {
-    const moves = chess.legalMoves();
-    setLegalMoves(moves);
-    console.log("legal moves", moves);
-  }, [move, chess]);
+  // list of selectedPiece's move options
+  const [moveOptions, setMoveOptions] = useState<string[] | null>(null);
 
   if (!game) {
     return <>no game data</>;
@@ -47,7 +41,17 @@ export default function Chessboard({ game }: ChessboardProps) {
   ) => {
     e.dataTransfer.effectAllowed = "move";
     setDraggedPiece(piece);
+    setSelectedPiece(piece);
     setStartSquare(square);
+
+    const chessPiece = chess.board.get(square.x, square.y);
+    const moveDest = chess.legalMoves(chessPiece).map((move: string) => {
+      return move.match(/[a-h][1-8]$/)?.[0] || move;
+    });
+    setMoveOptions(moveDest);
+
+    // destination square = the last two chars from the right of any move string
+    console.log("highlight move squares", moveDest);
   };
 
   const handleDrop = async (
@@ -57,6 +61,7 @@ export default function Chessboard({ game }: ChessboardProps) {
     e.preventDefault();
     if (draggedPiece && startSquare) {
       const piece = chess.board.get(startSquare.x, startSquare.y);
+
       let moveStr = chess.generateMoveStrs(
         piece,
         targetSquare.x,
@@ -68,7 +73,7 @@ export default function Chessboard({ game }: ChessboardProps) {
       // Castling
       if (["Kg1", "Kc1", "Kg8", "Kc8"].includes(moveStr)) {
         // Check if legalMoves includes either castling move
-        if (legalMoves.includes("O-O") || legalMoves.includes("O-O-O")) {
+        if (moveOptions?.includes("O-O") || moveOptions?.includes("O-O-O")) {
           switch (moveStr) {
             case "Kg1":
             case "Kg8":
@@ -92,6 +97,7 @@ export default function Chessboard({ game }: ChessboardProps) {
       }
     }
     setDraggedPiece(null);
+    setSelectedPiece(null);
     setStartSquare(null);
   };
 
@@ -127,7 +133,7 @@ export default function Chessboard({ game }: ChessboardProps) {
     return (
       <div
         key={square.notation}
-        className={`relative flex justify-center items-center ${squareColor} w-16 h-16`}
+        className={`relative flex justify-center items-center ${squareColor} w-16 h-16 ${moveOptions?.includes(square.notation) ? "border-4 border-green-600" : ""}`}
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => handleDrop(e, square)}
       >

@@ -14,7 +14,7 @@
     "next": "^14.2.10",
     "react": "^18",
     "react-dom": "^18",
-    "shallowpink": "github:Chessticulate/ShallowPink"
+    "shallowpink": "github:Chessticulate/ShallowPink#v1.3"
   },
   "devDependencies": {
     "@fullhuman/postcss-purgecss": "^6.0.0",
