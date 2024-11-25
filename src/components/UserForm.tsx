@@ -1,74 +1,85 @@
 "use client";
 
-import Navbar from "@/components/Navbar";
 import Link from "next/link";
+import UserFormInput from "@/components/UserFormInput";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, ChangeEvent, FormEvent } from "react";
 
-export default function UserForm({ initFormType }) {
-  const [username, setUsername] = useState("");
-  const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setUsername(e.target.value);
-  };
-
-  const [email, setEmail] = useState("");
-
-  const [password, setPassword] = useState("");
-  const [showPswdHint, setShowPswdHint] = useState(false);
-  const [pswdMissingUpper, setPswdMissingUpper] = useState(false);
-  const [pswdMissingLower, setPswdMissingLower] = useState(false);
-  const [pswdMissingNumber, setPswdMissingNumber] = useState(false);
-  const [pswdMissingSpecial, setPswdMissingSpecial] = useState(false);
-  const [pswdBadLength, setPswdBadLength] = useState(false);
-
+export default function UserForm() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (pathname == "login") {
+  const [uname, setUname] = useState("");
+  const [unameErrors, setUnameErrors] = useState([
+    { message: "Min 3 characters, 15 max", show: false },
+    { message: 'Only includes letters, numbers, "-" or "_" ', show: false },
+  ]);
+  const handleUnameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value;
+    setUname(e.target.value);
+
+    if (pathname == "/login") {
+      return;
+    }
+
+    setUnameErrors([
+      {
+        message: unameErrors[0].message,
+        show: value.length < 3 || value.length > 15,
+      },
+      { message: unameErrors[1].message, show: /[^A-Za-z0-9_-]/.test(value) },
+    ]);
+  };
+
+  const [email, setEmail] = useState("");
+  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+
+  const [pswd, setPswd] = useState("");
+  const [pswdErrors, setPswdErrors] = useState([
+    { message: "Min 8 characters, 64 max", show: false },
+    { message: "Includes an uppercase letter", show: false },
+    { message: "Includes a lowercase letter", show: false },
+    { message: "Includes a number", show: false },
+    { message: "Includes a special character", show: false },
+  ]);
+  const handlePswdChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setPswd(e.target.value);
+    if (pathname == "/login") {
       return;
     }
     let value = e.target.value;
-    let missingUpper = !/[A-Z]/.test(value);
-    let missingLower = !/[a-z]/.test(value);
-    let missingNumber = !/[0-9]/.test(value);
-    let missingSpecial = !/[^0-9a-zA-Z]/.test(value);
-    let badLength = value.length < 8 || value.length > 64;
-
-    setPswdMissingUpper(missingUpper);
-    setPswdMissingLower(missingLower);
-    setPswdMissingNumber(missingNumber);
-    setPswdMissingSpecial(missingSpecial);
-    setPswdBadLength(badLength);
-    setShowPswdHint(
-      missingSpecial ||
-        missingNumber ||
-        missingLower ||
-        missingUpper ||
-        badLength,
-    );
-    setPassword(e.target.value);
-  };
-
-  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
+    setPswdErrors([
+      {
+        message: pswdErrors[0].message,
+        show: value.length < 8 || value.length > 64,
+      },
+      { message: pswdErrors[1].message, show: !/[A-Z]/.test(value) },
+      { message: pswdErrors[2].message, show: !/[a-z]/.test(value) },
+      { message: pswdErrors[3].message, show: !/[0-9]/.test(value) },
+      { message: pswdErrors[4].message, show: !/[^A-Za-z0-9]/.test(value) },
+    ]);
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8000/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/signup`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: uname,
+            email: email,
+            password: pswd,
+          }),
         },
-        body: JSON.stringify({
-          username,
-          email,
-          password,
-        }),
-      });
+      );
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -84,106 +95,57 @@ export default function UserForm({ initFormType }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="flex flex-col text-black">
-        <div className="pb-5">
-          <input
-            type="text"
-            placeholder="username"
-            value={username}
-            onChange={handleUsernameChange}
-            className="placeholder:text-slate-600 rounded-md h-8 pl-2"
+    <div className="text-center">
+      <div className="text-2xl pb-3">
+        {pathname === "/login" ? <h1>Log In:</h1> : <h1>Sign Up:</h1>}
+      </div>
+      <form onSubmit={handleSubmit} className="space-y-1">
+        <UserFormInput
+          inputHint="username"
+          inputValue={uname}
+          handleValueChange={handleUnameChange}
+          errors={unameErrors}
+        />
+        {pathname === "/login" ? (
+          <></>
+        ) : (
+          <UserFormInput
+            inputHint="email"
+            inputValue={email}
+            handleValueChange={handleEmailChange}
+            errors={[]}
           />
-        </div>
-        <div className={`pb-5 ${pathname == "/login" ? "hidden" : "block"}`}>
-          <input
-            type="text"
-            placeholder="email"
-            value={email}
-            onChange={handleEmailChange}
-            className="placeholder:text-slate-600 rounded-md h-8 pl-2"
-          />
-        </div>
-        <div>
-          <input
-            type="password"
-            placeholder="password"
-            value={password}
-            onChange={handlePasswordChange}
-            className="placeholder:text-slate-600 rounded-md h-8 pl-2"
-          />
-          <div className={`${showPswdHint ? "block" : "hidden"}`}>
-            <ul
-              id="passwordHints"
-              className="mt-2 text-sm text-slate-400 space-y-1"
-            >
-              <li className="requirement flex items-center">
-                <span
-                  className={`mr-2 flex items-center justify-center h-5 w-5 rounded-full bg-slate-600 ${pswdBadLength ? "text-red-500" : "text-green-500"}`}
-                >
-                  {pswdBadLength ? "✗" : "✓"}
-                </span>
-                At least 8 characters
-              </li>
-              <li className="requirement flex items-center">
-                <span
-                  className={`mr-2 flex items-center justify-center h-5 w-5 rounded-full bg-slate-600 ${pswdMissingUpper ? "text-red-500" : "text-green-500"}`}
-                >
-                  {pswdMissingUpper ? "✗" : "✓"}
-                </span>
-                Includes an uppercase letter
-              </li>
-              <li className="requirement flex items-center">
-                <span
-                  className={`mr-2 flex items-center justify-center h-5 w-5 rounded-full bg-slate-600 ${pswdMissingLower ? "text-red-500" : "text-green-500"}`}
-                >
-                  {pswdMissingLower ? "✗" : "✓"}
-                </span>
-                Includes a lowercase letter
-              </li>
-              <li className="requirement flex items-center">
-                <span
-                  className={`mr-2 flex items-center justify-center h-5 w-5 rounded-full bg-slate-600 ${pswdMissingNumber ? "text-red-500" : "text-green-500"}`}
-                >
-                  {pswdMissingNumber ? "✗" : "✓"}
-                </span>
-                Includes a number
-              </li>
-              <li className="requirement flex items-center">
-                <span
-                  className={`mr-2 flex items-center justify-center h-5 w-5 rounded-full bg-slate-600 ${pswdMissingSpecial ? "text-red-500" : "text-green-500"}`}
-                >
-                  {pswdMissingSpecial ? "✗" : "✓"}
-                </span>
-                Includes a special character
-              </li>
-            </ul>
-          </div>
-        </div>
+        )}
+        <UserFormInput
+          inputHint="password"
+          inputValue={pswd}
+          handleValueChange={handlePswdChange}
+          errors={pswdErrors}
+        />
         <button
           type="submit"
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md"
+          className="w-full mt-4 px-4 py-2 bg-blue-600 text-white rounded-md"
         >
           Submit
         </button>
-        <div className="flex flex-col items-center pt-6 text-white">
+        <div className="flex flex-col items-center pt-6">
           {pathname == "/signup" ? (
             <>
-              <p>Already have an account?</p>
+              <p className="text-white">Already have an account?</p>
               <Link href="/login" passHref className="text-blue-500">
                 Log in
               </Link>
             </>
           ) : (
             <>
-              <p>Don&apos;t have an account?</p>
+              <p className="text-white">Don&apos;t have an account?</p>
               <Link href="/signup" passHref className="text-blue-500">
                 Sign up
               </Link>
             </>
           )}
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 }
