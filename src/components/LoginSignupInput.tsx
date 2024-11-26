@@ -1,6 +1,6 @@
 "use client";
 
-export default function UserFormInput({
+export default function LoginSignupInput({
   inputHint,
   inputValue,
   handleValueChange,
@@ -20,7 +20,7 @@ export default function UserFormInput({
   return (
     <div className="pb-5">
       <input
-        type="text"
+        type={inputHint === "password" ? "password" : "text"}
         placeholder={inputHint}
         value={inputValue}
         onChange={handleValueChange}

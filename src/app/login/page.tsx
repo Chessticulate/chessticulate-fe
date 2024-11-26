@@ -1,9 +1,9 @@
-import UserForm from "@/components/UserForm";
+import LoginSignup from "@/components/LoginSignup";
 
 export default function Login() {
   return (
     <main className="flex justify-center pt-28">
-      <UserForm />
+      <LoginSignup />
     </main>
   );
 }
