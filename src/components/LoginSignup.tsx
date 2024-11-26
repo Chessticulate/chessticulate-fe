@@ -7,7 +7,7 @@ import { jwtDecode } from "jwt-decode";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, ChangeEvent, FormEvent } from "react";
 
-async function checkExists(key: string, value: string): boolean {
+async function checkExists(key: string, value: string): Promise<boolean> {
   const response = await fetch(
     process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL + `/users/${key}/${value}`,
   );
@@ -15,11 +15,11 @@ async function checkExists(key: string, value: string): boolean {
   return content.exists;
 }
 
-async function usernameAlreadyExists(username: string): boolean {
+async function usernameAlreadyExists(username: string): Promise<boolean> {
   return await checkExists("name", username);
 }
 
-async function emailAlreadyExists(email: string): boolean {
+async function emailAlreadyExists(email: string): Promise<boolean> {
   return await checkExists("email", email);
 }
 
@@ -30,13 +30,13 @@ export default function LoginSignup() {
   const [showPageError, setShowPageError] = useState(false);
   const pageError = () => {
     setShowPageError(true);
-    setTimeout(() => {
+    window.setTimeout(() => {
       setShowPageError(false);
     }, 5000);
   };
 
   const [uname, setUname] = useState("");
-  const [unameTimeoutID, setUnameTimeoutID] = useState("");
+  const [unameTimeoutID, setUnameTimeoutID] = useState(0);
   const [unameErrors, setUnameErrors] = useState([
     { message: "Username not already taken", show: false },
     { message: "Min 3 characters, 15 max", show: false },
@@ -49,11 +49,11 @@ export default function LoginSignup() {
       return;
     }
 
-    if (unameTimeoutID !== "") {
+    if (unameTimeoutID !== 0) {
       clearTimeout(unameTimeoutID);
     }
 
-    const timeoutID = setTimeout(async () => {
+    const timeoutID = window.setTimeout(async () => {
       let exists = false;
       try {
         exists = await usernameAlreadyExists(value);
@@ -76,7 +76,7 @@ export default function LoginSignup() {
   };
 
   const [email, setEmail] = useState("");
-  const [emailTimeoutID, setEmailTimeoutID] = useState("");
+  const [emailTimeoutID, setEmailTimeoutID] = useState(0);
   const [emailErrors, setEmailErrors] = useState([
     { message: "Email not already taken", show: false },
   ]);
@@ -84,17 +84,17 @@ export default function LoginSignup() {
     let value = e.target.value;
     setEmail(value);
 
-    if (emailTimeoutID !== "") {
+    if (emailTimeoutID !== 0) {
       clearTimeout(emailTimeoutID);
     }
 
-    const timeoutID = setTimeout(async () => {
+    const timeoutID = window.setTimeout(async () => {
       let exists = false;
       try {
         exists = await emailAlreadyExists(value);
       } catch (error) {
         console.log(error);
-        pageError(true);
+        pageError();
         return;
       }
       setEmailErrors([{ message: emailErrors[0].message, show: exists }]);
@@ -151,7 +151,7 @@ export default function LoginSignup() {
 
       if (!signupResponse.ok) {
         console.log(await signupResponse.json());
-        pageError(true);
+        pageError();
         return;
       }
 
@@ -171,12 +171,15 @@ export default function LoginSignup() {
 
       if (!loginResponse.ok) {
         console.log(await loginResponse.json());
-        pageError(true);
+        pageError();
         return;
       }
 
       const content = await loginResponse.json();
       const jwt = jwtDecode(content.jwt);
+      if (jwt.exp === undefined) {
+        throw new Error("JWT exp field is undefined");
+      }
       const maxAge = jwt.exp - Math.floor(Date.now() / 1000);
 
       setCookie("token", content.jwt, {
@@ -188,7 +191,7 @@ export default function LoginSignup() {
       router.push("/");
     } catch (error) {
       console.log(error);
-      pageError(true);
+      pageError();
     }
   };
 

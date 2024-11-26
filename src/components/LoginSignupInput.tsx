@@ -1,10 +1,10 @@
 "use client";
 
 export default function LoginSignupInput({
-  inputHint,
-  inputValue,
-  handleValueChange,
-  errors,
+  inputHint: string,
+  inputValue: string,
+  handleValueChange: string,
+  errors: any,
 }) {
   const listItems = errors.map((err) => (
     <li className="flex items-center" key={err.message}>
