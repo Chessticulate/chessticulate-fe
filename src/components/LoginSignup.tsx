@@ -6,6 +6,7 @@ import { setCookie } from "cookies-next";
 import { jwtDecode } from "jwt-decode";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, ChangeEvent, FormEvent } from "react";
+import { LoginSignupError } from "@/types";
 
 async function checkExists(key: string, value: string): Promise<boolean> {
   const response = await fetch(
@@ -37,7 +38,7 @@ export default function LoginSignup() {
 
   const [uname, setUname] = useState("");
   const [unameTimeoutID, setUnameTimeoutID] = useState(0);
-  const [unameErrors, setUnameErrors] = useState([
+  const [unameErrors, setUnameErrors] = useState<LoginSignupError[]>([
     { message: "Username not already taken", show: false },
     { message: "Min 3 characters, 15 max", show: false },
     { message: 'Only includes letters, numbers, "-" or "_"', show: false },
@@ -51,6 +52,10 @@ export default function LoginSignup() {
 
     if (unameTimeoutID !== 0) {
       clearTimeout(unameTimeoutID);
+    }
+
+    if (value === "") {
+      return;
     }
 
     const timeoutID = window.setTimeout(async () => {
@@ -77,7 +82,7 @@ export default function LoginSignup() {
 
   const [email, setEmail] = useState("");
   const [emailTimeoutID, setEmailTimeoutID] = useState(0);
-  const [emailErrors, setEmailErrors] = useState([
+  const [emailErrors, setEmailErrors] = useState<LoginSignupError[]>([
     { message: "Email not already taken", show: false },
   ]);
   const handleEmailChange = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -86,6 +91,10 @@ export default function LoginSignup() {
 
     if (emailTimeoutID !== 0) {
       clearTimeout(emailTimeoutID);
+    }
+
+    if (value === "") {
+      return;
     }
 
     const timeoutID = window.setTimeout(async () => {
@@ -104,7 +113,7 @@ export default function LoginSignup() {
   };
 
   const [pswd, setPswd] = useState("");
-  const [pswdErrors, setPswdErrors] = useState([
+  const [pswdErrors, setPswdErrors] = useState<LoginSignupError[]>([
     { message: "Min 8 characters, 64 max", show: false },
     { message: "Includes an uppercase letter", show: false },
     { message: "Includes a lowercase letter", show: false },

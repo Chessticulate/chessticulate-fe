@@ -1,11 +1,23 @@
 "use client";
 
+import { ChangeEvent } from "react";
+import { LoginSignupError } from "@/types";
+
+type ChangeHandler = (e: ChangeEvent<HTMLInputElement>) => void;
+
+interface Props {
+  inputHint: string;
+  inputValue: string;
+  handleValueChange: ChangeHandler;
+  errors: LoginSignupError[];
+}
+
 export default function LoginSignupInput({
-  inputHint: string,
-  inputValue: string,
-  handleValueChange: string,
-  errors: any,
-}) {
+  inputHint,
+  inputValue,
+  handleValueChange,
+  errors,
+}: Props) {
   const listItems = errors.map((err) => (
     <li className="flex items-center" key={err.message}>
       <span

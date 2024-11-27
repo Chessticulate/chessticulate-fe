@@ -49,3 +49,8 @@ export type Square = {
   x: number;
   y: number;
 };
+
+export type LoginSignupError = {
+  show: boolean;
+  message: string;
+};
