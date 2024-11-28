@@ -44,7 +44,7 @@ export default function LoginSignup() {
     { message: 'Only includes letters, numbers, "-" or "_"', show: false },
   ]);
   const handleUnameChange = (e: ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value;
+    const value = e.target.value;
     setUname(value);
     if (pathname === "/login") {
       return;
@@ -86,7 +86,7 @@ export default function LoginSignup() {
     { message: "Email not already taken", show: false },
   ]);
   const handleEmailChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value;
+    const value = e.target.value;
     setEmail(value);
 
     if (emailTimeoutID !== 0) {
@@ -121,7 +121,7 @@ export default function LoginSignup() {
     { message: "Includes a special character", show: false },
   ]);
   const handlePswdChange = (e: ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value;
+    const value = e.target.value;
     setPswd(value);
     if (pathname === "/login") {
       return;
@@ -142,28 +142,47 @@ export default function LoginSignup() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    try {
-      const signupResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/signup`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: uname,
-            email: email,
-            password: pswd,
-          }),
-        },
-      );
+    if (
+      unameErrors.some((err) => err.show) ||
+      emailErrors.some((err) => err.show) ||
+      pswdErrors.some((err) => err.show)
+    ) {
+      alert("must correct input errors before submitting");
+      return;
+    }
 
-      if (!signupResponse.ok) {
-        console.log(await signupResponse.json());
-        pageError();
-        return;
+    try {
+      if (pathname === "/signup") {
+        if (uname === "" || pswd === "" || email === "") {
+          alert("you have empty inputs!");
+          return;
+        }
+        const signupResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/signup`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: uname,
+              email: email,
+              password: pswd,
+            }),
+          },
+        );
+
+        if (!signupResponse.ok) {
+          console.log(await signupResponse.json());
+          pageError();
+          return;
+        }
       }
 
+      if (uname === "" || pswd === "") {
+        alert("you have empty inputs!");
+        return;
+      }
       const loginResponse = await fetch(
         `${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/login`,
         {
@@ -223,7 +242,7 @@ export default function LoginSignup() {
             inputHint="email"
             inputValue={email}
             handleValueChange={handleEmailChange}
-            errors={[]}
+            errors={emailErrors}
           />
         )}
         <LoginSignupInput
