@@ -7,6 +7,7 @@ import { jwtDecode } from "jwt-decode";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, ChangeEvent, FormEvent } from "react";
 import { LoginSignupError } from "@/types";
+import emailRegex from "../utils/emailRegex";
 
 async function checkExists(key: string, value: string): Promise<boolean> {
   const response = await fetch(
@@ -84,6 +85,7 @@ export default function LoginSignup() {
   const [emailTimeoutID, setEmailTimeoutID] = useState(0);
   const [emailErrors, setEmailErrors] = useState<LoginSignupError[]>([
     { message: "Email not already taken", show: false },
+    { message: "Invalid email", show: false },
   ]);
   const handleEmailChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -106,7 +108,10 @@ export default function LoginSignup() {
         pageError();
         return;
       }
-      setEmailErrors([{ message: emailErrors[0].message, show: exists }]);
+      setEmailErrors([
+        { message: emailErrors[0].message, show: exists },
+        { message: emailErrors[1].message, show: !emailRegex.test(value) },
+      ]);
     }, 500);
 
     setEmailTimeoutID(timeoutID);
