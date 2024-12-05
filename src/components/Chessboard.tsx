@@ -17,7 +17,6 @@ const Chess: any = require("shallowpink/lib/chess");
 export default function Chessboard({ game }: ChessboardProps) {
   const chess = useMemo(() => new Chess(game?.fen), [game?.fen]);
   const [move, setMove] = useState<string>("");
-  const [draggedPiece, setDraggedPiece] = useState<string | null>(null);
   const [selectedPiece, setSelectedPiece] = useState<string | null>(null);
   const [startSquare, setStartSquare] = useState<Square | null>(null);
   // list of selectedPiece's move options
@@ -34,13 +33,19 @@ export default function Chessboard({ game }: ChessboardProps) {
   const rows = ["8", "7", "6", "5", "4", "3", "2", "1"];
   const cols = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
-  const handleDragStart = (
+  const handleDrag = (
     e: DragEvent<HTMLImageElement>,
     piece: string,
     square: Square,
   ) => {
     e.dataTransfer.effectAllowed = "move";
-    setDraggedPiece(piece);
+  };
+
+  const handleSelect = (
+    e: DragEvent<HTMLImageElement>,
+    piece: string,
+    square: Square,
+  ) => {
     setSelectedPiece(piece);
     setStartSquare(square);
 
@@ -59,7 +64,7 @@ export default function Chessboard({ game }: ChessboardProps) {
     targetSquare: Square,
   ) => {
     e.preventDefault();
-    if (draggedPiece && startSquare) {
+    if (selectedPiece && startSquare) {
       const piece = chess.board.get(startSquare.x, startSquare.y);
 
       let moveStr = chess.generateMoveStrs(
@@ -96,9 +101,10 @@ export default function Chessboard({ game }: ChessboardProps) {
         console.error("Invalid move");
       }
     }
-    setDraggedPiece(null);
     setSelectedPiece(null);
     setStartSquare(null);
+    setMoveOptions(null);
+    setMove("");
   };
 
   const submitMove = async (move: string) => {
@@ -144,7 +150,8 @@ export default function Chessboard({ game }: ChessboardProps) {
             width={56}
             height={56}
             draggable
-            onDragStart={(e) => handleDragStart(e, piece, square)}
+            onDragStart={(e) => handleDrag(e, piece, square)}
+            onMouseDown={(e) => handleSelect(e, piece, square)}
           />
         )}
       </div>
