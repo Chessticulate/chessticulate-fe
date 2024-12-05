@@ -18,16 +18,7 @@ export async function POST(request: NextRequest) {
       },
     );
 
-    if (response.status !== 201) {
-      return new NextResponse("Network response was not ok", { status: 500 });
-    }
-
-    const res = new NextResponse(
-      JSON.stringify({ message: "Sign up successful" }),
-      { status: 200 },
-    );
-
-    return res;
+    return response;
   } catch (error) {
     console.log(error);
     return new NextResponse("Internal Server Error", { status: 500 });
