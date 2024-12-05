@@ -4,6 +4,7 @@ import {
   ChangeEvent,
   FormEvent,
   DragEvent,
+  MouseEvent,
   useEffect,
 } from "react";
 import Image from "next/image";
@@ -42,7 +43,7 @@ export default function Chessboard({ game }: ChessboardProps) {
   };
 
   const handleSelect = (
-    e: DragEvent<HTMLImageElement>,
+    e: MouseEvent<HTMLImageElement>,
     piece: string,
     square: Square,
   ) => {
