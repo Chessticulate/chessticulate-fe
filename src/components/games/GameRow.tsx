@@ -12,7 +12,11 @@ export default function GameRow({
   const { id, white, black, white_username, black_username, whomst, winner } =
     game;
 
+  let winnerName;
   const currentPlayer = whomst === white ? white_username : black_username;
+  if (winner) {
+    winnerName = winner === white ? white_username : black_username;
+  }
 
   const forfeitGame = async () => {
     try {
@@ -57,7 +61,13 @@ export default function GameRow({
           </button>
         </>
       ) : (
-        <div className="p-1">Winner: {winner}</div>
+        <div>
+          {winnerName ? (
+            <div className="p-1"> Winner: {winnerName} </div>
+          ) : (
+            <div className="p-1"> Draw </div>
+          )}
+        </div>
       )}
     </div>
   );
