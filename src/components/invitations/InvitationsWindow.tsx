@@ -66,10 +66,8 @@ export default function InvitationsWindow() {
         <li className="me-2">
           <button
             onClick={() => setActiveTab("received")}
-            className={`inline-block p-4 ${
-              activeTab === "received"
-                ? "bg-gray-100 active dark:bg-gray-800"
-                : "hover:bg-gray-50 dark:hover:bg-gray-800"
+            className={`inline-block p-4 rounded-b-lg ${
+              activeTab === "received" ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
             }`}
           >
             Received Invitations
@@ -78,10 +76,8 @@ export default function InvitationsWindow() {
         <li className="me-2">
           <button
             onClick={() => setActiveTab("sent")}
-            className={`inline-block p-4 ${
-              activeTab === "sent"
-                ? "bg-gray-100 active dark:bg-gray-800"
-                : "hover:bg-gray-50 dark:hover:bg-gray-800"
+            className={`inline-block p-4 rounded-b-lg ${
+              activeTab === "sent" ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
             }`}
           >
             Sent Invitations
@@ -125,6 +121,7 @@ export default function InvitationsWindow() {
           </div>
         )}
       </div>
+      {/* <Footer /> */}
     </div>
   );
 }
