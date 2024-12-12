@@ -111,7 +111,7 @@ export default function GamesWindow() {
         <li className="me-2">
           <button
             onClick={() => setActiveTab("active")}
-            className={`inline-block p-4 ${
+            className={`inline-block p-4 rounded-b-lg ${
               activeTab === "active" ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
             }`}
           >
@@ -121,7 +121,7 @@ export default function GamesWindow() {
         <li className="me-2">
           <button
             onClick={() => setActiveTab("completed")}
-            className={`inline-block p-4 ${
+            className={`inline-block p-4 rounded-b-lg ${
               activeTab === "completed" ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
             }`}
           >
@@ -132,7 +132,7 @@ export default function GamesWindow() {
 
       {/* Tab Content */}
       {renderContent()}
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }
