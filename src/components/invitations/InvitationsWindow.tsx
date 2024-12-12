@@ -67,9 +67,7 @@ export default function InvitationsWindow() {
           <button
             onClick={() => setActiveTab("received")}
             className={`inline-block p-4 ${
-              activeTab === "received"
-                ? "bg-gray-100 active dark:bg-gray-800"
-                : "hover:bg-gray-50 dark:hover:bg-gray-800"
+              activeTab === "received" ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
             }`}
           >
             Received Invitations
@@ -79,9 +77,7 @@ export default function InvitationsWindow() {
           <button
             onClick={() => setActiveTab("sent")}
             className={`inline-block p-4 ${
-              activeTab === "sent"
-                ? "bg-gray-100 active dark:bg-gray-800"
-                : "hover:bg-gray-50 dark:hover:bg-gray-800"
+              activeTab === "sent" ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
             }`}
           >
             Sent Invitations

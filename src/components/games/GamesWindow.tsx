@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import GameRow from "@/components/games/GameRow";
 import { GameData } from "@/types";
 import Chessboard from "@/components/Chessboard";
+import Footer from "@/components/Footer";
 
 export default function GamesWindow() {
   const [activeGames, setActiveGames] = useState<GameData[] | null>(null);
@@ -111,9 +112,7 @@ export default function GamesWindow() {
           <button
             onClick={() => setActiveTab("active")}
             className={`inline-block p-4 ${
-              activeTab === "active"
-                ? "bg-gray-100 active dark:bg-gray-800"
-                : "hover:bg-gray-50 dark:hover:bg-gray-800"
+              activeTab === "active" ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
             }`}
           >
             Active Games
@@ -123,9 +122,7 @@ export default function GamesWindow() {
           <button
             onClick={() => setActiveTab("completed")}
             className={`inline-block p-4 ${
-              activeTab === "completed"
-                ? "bg-gray-100 active dark:bg-gray-800"
-                : "hover:bg-gray-50 dark:hover:bg-gray-800"
+              activeTab === "completed" ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
             }`}
           >
             Completed Games
@@ -135,6 +132,7 @@ export default function GamesWindow() {
 
       {/* Tab Content */}
       {renderContent()}
+      <Footer />
     </div>
   );
 }

@@ -47,7 +47,7 @@ export default function GameRow({
   };
 
   return (
-    <div className="flex pl-5 pr-5 pt-2 pb-2 border-2">
+    <div className="flex pl-5 pr-5 pt-2 pb-2 border-2 rounded-md border-[#fed6ae] m-2">
       <div className="p-1">White: {white_username}</div>
       <div className="p-1">Black: {black_username}</div>
       {active ? (
