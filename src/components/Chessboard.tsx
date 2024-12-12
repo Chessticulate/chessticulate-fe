@@ -23,14 +23,23 @@ export default function Chessboard({ game }: ChessboardProps) {
   // list of selectedPiece's move options
   const [moveOptions, setMoveOptions] = useState<string[] | null>(null);
 
-  if (!game) {
-    return <>no game data</>;
+  let id: number | null = null;
+  let white: number | null = null;
+  let black: number | null = null;
+  let white_username: string | null = null;
+  let black_username: string | null = null;
+  let whomst: number | null = null;
+  let winner: number | null = null;
+  let currentPlayer: string | null = null;
+
+  if (game) {
+    ({ id, white, black, white_username, black_username, whomst, winner } =
+      game);
+    currentPlayer = whomst === white ? white_username : black_username;
+  } else {
+    currentPlayer = "analysis mode";
   }
 
-  const { id, white, black, white_username, black_username, whomst, winner } =
-    game;
-
-  const currentPlayer = whomst === white ? white_username : black_username;
   const rows = ["8", "7", "6", "5", "4", "3", "2", "1"];
   const cols = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
@@ -95,11 +104,21 @@ export default function Chessboard({ game }: ChessboardProps) {
 
       const moveResult = chess.move(moveStr);
 
-      if (moveResult) {
+      // long term it would be ideal to have shallowpink status codes
+      // or some other way of grouping status types
+      if (
+        moveResult == "invalid move" ||
+        moveResult == "player is still in check" ||
+        moveResult == "move puts player in check"
+      ) {
+        console.error(moveResult);
+      } else {
+        console.log("moveResult", moveResult);
+      }
+
+      if (moveResult != "invalid move" && game) {
         setMove(moveStr);
         await submitMove(moveStr);
-      } else {
-        console.error("Invalid move");
       }
     }
     setSelectedPiece(null);
@@ -171,10 +190,14 @@ export default function Chessboard({ game }: ChessboardProps) {
         {rows.map((row) => renderRow(row))}
       </div>
       <div className="mt-4">
-        <p>Current Player: {currentPlayer}</p>
-        <form onSubmit={(e) => e.preventDefault()}>
-          <input type="text" value={move} readOnly className="text-black" />
-        </form>
+        {game && (
+          <div>
+            <p>Current Player: {currentPlayer}</p>
+            <form onSubmit={(e) => e.preventDefault()}>
+              <input type="text" value={move} readOnly className="text-black" />
+            </form>
+          </div>
+        )}
       </div>
     </div>
   );

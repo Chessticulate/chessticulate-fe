@@ -13,7 +13,7 @@ export default function GamesWindow() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"active" | "completed" | "play">(
-    "active",
+    "play",
   );
 
   useEffect(() => {
@@ -95,7 +95,7 @@ export default function GamesWindow() {
         );
       case "play":
         return (
-          <div className="flex justify-center">
+          <div className="flex justify-center pt-10">
             <Chessboard game={currentGame} />
           </div>
         );
@@ -108,6 +108,19 @@ export default function GamesWindow() {
     <div>
       {/* Tabs */}
       <ul className="flex flex-wrap text-sm text-center">
+        <li className="me-2">
+          <button
+            onClick={() => {
+              setActiveTab("play");
+              setCurrentGame(null);
+            }}
+            className={`inline-block p-4 rounded-b-lg ${
+              activeTab === "play" ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
+            }`}
+          >
+            Play
+          </button>
+        </li>
         <li className="me-2">
           <button
             onClick={() => setActiveTab("active")}
