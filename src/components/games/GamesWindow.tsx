@@ -95,7 +95,7 @@ export default function GamesWindow() {
         );
       case "play":
         return (
-          <div className="flex justify-center pt-10">
+          <div className="flex justify-center pt-2">
             <Chessboard game={currentGame} />
           </div>
         );
@@ -105,7 +105,7 @@ export default function GamesWindow() {
   };
 
   return (
-    <div>
+    <div className="">
       {/* Tabs */}
       <ul className="flex flex-wrap text-sm text-center">
         <li className="me-2">

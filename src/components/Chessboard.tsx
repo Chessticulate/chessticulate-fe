@@ -159,16 +159,19 @@ export default function Chessboard({ game }: ChessboardProps) {
     return (
       <div
         key={square.notation}
-        className={`relative flex justify-center items-center ${squareColor} w-16 h-16 ${moveOptions?.includes(square.notation) ? "border-4 border-green-600" : ""}`}
+        className={`relative flex justify-center items-center ${squareColor} w-18/24 h-18/24`}
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => handleDrop(e, square)}
       >
+        {moveOptions?.includes(square.notation) && (
+          <div className="absolute w-7 h-7 bg-neutral-600 opacity-25 rounded-full"></div>
+        )}
         {piece && (
           <Image
             src={pieceMap[piece]}
             alt="piece"
-            width={56}
-            height={56}
+            width={64}
+            height={64}
             draggable
             onDragStart={(e) => handleDrag(e, piece, square)}
             onMouseDown={(e) => handleSelect(e, piece, square)}
@@ -185,14 +188,12 @@ export default function Chessboard({ game }: ChessboardProps) {
   );
 
   return (
-    <div>
-      <div className="grid grid-cols-8 grid-rows-8 w-128 h-128">
+    <div className="flex justify-center items-center w-9/12 h-9/12 overflow-hidden">
+      <div className="grid grid-cols-8 grid-rows-8 aspect-square w-full max-w-screen-sm sm:max-w-screen-md">
         {rows.map((row) => renderRow(row))}
-      </div>
-      <div className="mt-4">
         {game && (
-          <div>
-            <p>Current Player: {currentPlayer}</p>
+          <div className="flex">
+            <p>CurrentPlayer: {currentPlayer}</p>
             <form onSubmit={(e) => e.preventDefault()}>
               <input type="text" value={move} readOnly className="text-black" />
             </form>
