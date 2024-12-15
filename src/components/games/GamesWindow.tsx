@@ -65,7 +65,7 @@ export default function GamesWindow() {
     switch (activeTab) {
       case "active":
         return (
-          <div className="flex flex-col overflow-hidden">
+          <>
             {activeGames &&
               activeGames.map((game, index) => (
                 <GameRow
@@ -76,7 +76,7 @@ export default function GamesWindow() {
                   onForfeit={handleForfeit}
                 />
               ))}
-          </div>
+          </>
         );
       case "completed":
         return (

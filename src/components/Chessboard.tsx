@@ -164,7 +164,7 @@ export default function Chessboard({ game }: ChessboardProps) {
         onDrop={(e) => handleDrop(e, square)}
       >
         {moveOptions?.includes(square.notation) && (
-          <div className="absolute w-7 h-7 bg-neutral-600 opacity-25 rounded-full"></div>
+          <div className="absolute w-6 h-6 bg-neutral-600 opacity-25 rounded-full"></div>
         )}
         {piece && (
           <Image
@@ -188,8 +188,8 @@ export default function Chessboard({ game }: ChessboardProps) {
   );
 
   return (
-    <div className="flex justify-center items-center w-9/12 h-9/12 overflow-hidden">
-      <div className="grid grid-cols-8 grid-rows-8 aspect-square w-full max-w-screen-sm sm:max-w-screen-md">
+    <div className="flex justify-center items-center w-11/12 h-11/12">
+      <div className="grid grid-cols-8 grid-rows-8">
         {rows.map((row) => renderRow(row))}
         {game && (
           <div className="flex">
