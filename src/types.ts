@@ -40,8 +40,15 @@ export type InvitationProps = {
 };
 
 // chessboard types
+// could probably merge these two
 export type ChessboardProps = {
   game: GameData | null;
+};
+
+export type GamesWindowProps = {
+  game: GameData | null;
+  // need to have event handler here instead of setState
+  // something like onGameSelect
 };
 
 export type Square = {

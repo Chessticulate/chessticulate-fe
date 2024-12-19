@@ -2,13 +2,15 @@
 
 import { useEffect, useState } from "react";
 import GameRow from "@/components/games/GameRow";
-import { GameData } from "@/types";
+import { GameData, GamesWindowProps } from "@/types";
 import Chessboard from "@/components/Chessboard";
 import Footer from "@/components/Footer";
 
-export default function GamesWindow() {
+export default function GamesWindow({
+  currentGame,
+  setCurrentGame,
+}: GamesWindowProps) {
   const [activeGames, setActiveGames] = useState<GameData[] | null>(null);
-  const [currentGame, setCurrentGame] = useState<GameData | null>(null);
   const [completedGames, setCompletedGames] = useState<GameData[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
