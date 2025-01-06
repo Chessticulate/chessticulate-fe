@@ -61,3 +61,7 @@ export type LoginSignupError = {
   show: boolean;
   message: string;
 };
+
+export type MoveHistoryProps = {
+  moves: string[]; 
+};

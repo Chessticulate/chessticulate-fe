@@ -1,14 +1,14 @@
 import AuthWrapper from "@/auth/AuthWrapper";
-import ProfileInfo from "@/components/ProfileInfo";
+import Sidebar from "@/components/Sidebar";
 import Dashboard from "@/components/Dashboard";
 
 function Home() {
   return (
     <main className="flex h-full">
-      <div className="basis-1/6 pl-5 pr-5">
-        <ProfileInfo />
+      <div className="basis-1/7 pr-5">
+        <Sidebar />
       </div>
-      <div className="basis-5/6 pl-5 pr-5">
+      <div className="basis-6/7 pl-5 r-5">
         <Dashboard />
       </div>
     </main>

@@ -110,7 +110,9 @@ export default function InvitationsWindow({
             )}
           </>
         ) : (
-          <div>moveHistory</div>
+          <div>
+	    <MoveHistory moves={moves}/>
+	  </div>
         )}
       </div>
       {/* <Footer /> */}
