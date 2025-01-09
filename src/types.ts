@@ -1,3 +1,8 @@
+import { Dispatch, SetStateAction } from "react";
+
+// tabs
+export type Tab = "play" | "active" | "completed";
+
 // user types
 export type UserData = {
   name: string;
@@ -39,6 +44,10 @@ export type InvitationProps = {
   onCancel: (invitationId: number) => void;
 };
 
+export type InvitationsWindowProps = {
+  currentGame: GameData | null;
+};
+
 // chessboard types
 // could probably merge these two
 export type ChessboardProps = {
@@ -46,9 +55,10 @@ export type ChessboardProps = {
 };
 
 export type GamesWindowProps = {
-  game: GameData | null;
-  // need to have event handler here instead of setState
-  // something like onGameSelect
+  activeTab: string;
+  setActiveTab: Dispatch<SetStateAction<Tab>>;
+  currentGame: GameData | null;
+  setCurrentGame: Dispatch<SetStateAction<GameData | null>>;
 };
 
 export type Square = {
@@ -57,11 +67,16 @@ export type Square = {
   y: number;
 };
 
+export type TabProps = {
+  activeTab: Tab;
+  setActiveTab: Dispatch<SetStateAction<Tab>>;
+};
+
 export type LoginSignupError = {
   show: boolean;
   message: string;
 };
 
 export type MoveHistoryProps = {
-  moves: string[]; 
+  moves: string[];
 };

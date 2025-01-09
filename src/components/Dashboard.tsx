@@ -2,15 +2,18 @@
 
 import GamesWindow from "@/components/games/GamesWindow";
 import InvitationsWindow from "@/components/invitations/InvitationsWindow";
-import { GameData } from "@/types";
+import { GameData, TabProps } from "@/types";
 import { useState } from "react";
 
-export default function Dashboard() {
+export default function Dashboard({ activeTab, setActiveTab }: TabProps) {
   const [currentGame, setCurrentGame] = useState<GameData | null>(null);
+
   return (
     <main className="flex h-full">
       <div className="basis-3/6 pl-5 pr-5">
         <GamesWindow
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
           currentGame={currentGame}
           setCurrentGame={setCurrentGame}
         />

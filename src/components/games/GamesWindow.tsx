@@ -7,6 +7,8 @@ import Chessboard from "@/components/Chessboard";
 import Footer from "@/components/Footer";
 
 export default function GamesWindow({
+  activeTab,
+  setActiveTab,
   currentGame,
   setCurrentGame,
 }: GamesWindowProps) {
@@ -14,9 +16,6 @@ export default function GamesWindow({
   const [completedGames, setCompletedGames] = useState<GameData[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"active" | "completed" | "play">(
-    "play",
-  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -108,44 +107,6 @@ export default function GamesWindow({
 
   return (
     <div>
-      {/* Tabs */}
-      <ul className="flex flex-wrap text-sm text-center">
-        <li className="me-2">
-          <button
-            onClick={() => {
-              setActiveTab("play");
-              setCurrentGame(null);
-            }}
-            className={`inline-block p-4 rounded-b-lg ${
-              activeTab === "play" ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
-            }`}
-          >
-            Play
-          </button>
-        </li>
-        <li className="me-2">
-          <button
-            onClick={() => setActiveTab("active")}
-            className={`inline-block p-4 rounded-b-lg ${
-              activeTab === "active" ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
-            }`}
-          >
-            Active Games
-          </button>
-        </li>
-        <li className="me-2">
-          <button
-            onClick={() => setActiveTab("completed")}
-            className={`inline-block p-4 rounded-b-lg ${
-              activeTab === "completed" ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
-            }`}
-          >
-            Completed Games
-          </button>
-        </li>
-      </ul>
-
-      {/* Tab Content */}
       {renderContent()}
       {/* <Footer /> */}
     </div>

@@ -33,7 +33,8 @@ export default function Chessboard({ game }: ChessboardProps) {
   let currentPlayer: string | null = null;
 
   if (game) {
-    ({ id, white, black, white_username, black_username, whomst, winner } = game);
+    ({ id, white, black, white_username, black_username, whomst, winner } =
+      game);
     currentPlayer = whomst === white ? white_username : black_username;
   } else {
     currentPlayer = "analysis mode";
@@ -152,12 +153,12 @@ export default function Chessboard({ game }: ChessboardProps) {
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => handleDrop(e, square)}
       >
-        {moveHere && (
-          moveHere.match(/x/) ?
+        {moveHere &&
+          (moveHere.match(/x/) ? (
             <div className="absolute w-6 h-6 bg-red-600 opacity-50 rounded-full"></div>
-            :
+          ) : (
             <div className="absolute w-6 h-6 bg-neutral-600 opacity-25 rounded-full"></div>
-        )}
+          ))}
 
         {piece && (
           <Image

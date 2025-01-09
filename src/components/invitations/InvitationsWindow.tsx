@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import InvitationRow from "@/components/invitations/InvitationRow";
-import { InvitationData } from "@/types";
+import MoveHistory from "@/components/MoveHistory";
+import { InvitationData, InvitationsWindowProps } from "@/types";
 
 export default function InvitationsWindow({
   currentGame,
@@ -11,6 +12,7 @@ export default function InvitationsWindow({
   const [received, setReceived] = useState<InvitationData[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [moves, setMoves] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<"history" | "invitations">(
     "invitations",
   );
@@ -111,8 +113,8 @@ export default function InvitationsWindow({
           </>
         ) : (
           <div>
-	    <MoveHistory moves={moves}/>
-	  </div>
+            <MoveHistory moves={moves} />
+          </div>
         )}
       </div>
       {/* <Footer /> */}
