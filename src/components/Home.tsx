@@ -9,13 +9,13 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>("play");
 
   return (
-    <main className="flex h-full">
-      <div className="basis-1/7 pr-5">
+    <div className="flex h-full w-screen">
+      <div className="basis-2/12">
         <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
       </div>
-      <div className="basis-6/7 pl-5 r-5">
+      <div className="basis-10/12">
         <Dashboard activeTab={activeTab} setActiveTab={setActiveTab} />
       </div>
-    </main>
+    </div>
   );
 }

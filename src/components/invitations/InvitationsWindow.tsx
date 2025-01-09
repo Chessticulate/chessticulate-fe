@@ -68,7 +68,7 @@ export default function InvitationsWindow({
   return (
     <div>
       {/* Tabs */}
-      <ul className="flex flex-wrap text-sm text-center">
+      <ul className="flex text-sm text-center">
         <li className="me-2">
           <button
             onClick={() => setActiveTab("invitations")}

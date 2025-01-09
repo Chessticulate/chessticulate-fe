@@ -3,9 +3,9 @@ import Home from "@/components/Home";
 
 function Page() {
   return (
-    <main className="flex h-full">
+    <div className="h-full w-screen">
       <Home />
-    </main>
+    </div>
   );
 }
 

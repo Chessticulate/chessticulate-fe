@@ -9,8 +9,8 @@ export default function Dashboard({ activeTab, setActiveTab }: TabProps) {
   const [currentGame, setCurrentGame] = useState<GameData | null>(null);
 
   return (
-    <main className="flex h-full">
-      <div className="basis-3/6 pl-5 pr-5">
+    <div className="flex h-full">
+      <div className="flex-grow basis-3/4 pt-5">
         <GamesWindow
           activeTab={activeTab}
           setActiveTab={setActiveTab}
@@ -18,9 +18,9 @@ export default function Dashboard({ activeTab, setActiveTab }: TabProps) {
           setCurrentGame={setCurrentGame}
         />
       </div>
-      <div className="basis-2/6 pl-5 pr-5">
+      <div className="basis-1/4 pl-5 pr-5">
         <InvitationsWindow currentGame={currentGame} />
       </div>
-    </main>
+    </div>
   );
 }
