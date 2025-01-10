@@ -18,7 +18,7 @@ export default function Dashboard({ activeTab, setActiveTab }: TabProps) {
           setCurrentGame={setCurrentGame}
         />
       </div>
-      <div className="basis-1/4 pl-5 pr-5">
+      <div className="basis-1/4 pr-5">
         <InvitationsWindow currentGame={currentGame} />
       </div>
     </div>

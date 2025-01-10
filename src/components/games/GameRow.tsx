@@ -46,7 +46,7 @@ export default function GameRow({
   };
 
   return (
-    <div className="flex flex-col pl-20 pr-20">
+    <div className="flex flex-col pl-40 pr-40">
       <button
         className="flex justify-around pl-5 pr-5 pt-2 pb-2 border-2 rounded-md border-[#fed6ae] m-2 hover:bg-[#fed6ae] hover:text-[#292929] hover:scale-105 transition"
         onClick={playGame}
