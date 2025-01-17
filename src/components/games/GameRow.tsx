@@ -17,7 +17,6 @@ export default function GameRow({
   if (winner) {
     winnerName = winner === white ? white_username : black_username;
   }
-
   const forfeitGame = async () => {
     try {
       const response = await fetch("/api/games/forfeit", {
@@ -47,28 +46,16 @@ export default function GameRow({
   };
 
   return (
-    <div className="flex pl-5 pr-5 pt-2 pb-2 border-2 rounded-md border-[#fed6ae] m-2">
-      <div className="p-1">White: {white_username}</div>
-      <div className="p-1">Black: {black_username}</div>
-      {active ? (
-        <>
-          <div className="p-1">{currentPlayer}&apos;s turn</div>
-          <button className="pl-2" onClick={forfeitGame}>
-            resign
-          </button>
-          <button className="pl-2" onClick={playGame}>
-            play
-          </button>
-        </>
-      ) : (
-        <div>
-          {winnerName ? (
-            <div className="p-1"> Winner: {winnerName} </div>
-          ) : (
-            <div className="p-1"> Draw </div>
-          )}
-        </div>
-      )}
+    <div className="flex flex-col pl-40 pr-40">
+      <button
+        className="flex justify-around pl-5 pr-5 pt-2 pb-2 border-2 rounded-md border-[#fed6ae] m-2 hover:bg-[#fed6ae] hover:text-[#292929] hover:scale-105 transition"
+        onClick={playGame}
+      >
+        <div className="p-1">{white_username}</div>
+        <p className="p-1"> VS </p>
+        <div className="p-1">{black_username}</div>
+        {winnerName && <div className="p-1"> Winner: {winnerName} </div>}
+      </button>
     </div>
   );
 }

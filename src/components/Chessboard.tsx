@@ -21,26 +21,27 @@ export default function Chessboard({ game }: ChessboardProps) {
   const [selectedPiece, setSelectedPiece] = useState<string | null>(null);
   const [startSquare, setStartSquare] = useState<Square | null>(null);
   // list of selectedPiece's move options
-  const [moveOptions, setMoveOptions] = useState<string[] | null>(null);
+  const [moveOptions, setMoveOptions] = useState<string[]>([]);
 
-  if (!game) {
-    return <>no game data</>;
+  let id: number | null = null;
+  let white: number | null = null;
+  let black: number | null = null;
+  let white_username: string | null = null;
+  let black_username: string | null = null;
+  let whomst: number | null = null;
+  let winner: number | null = null;
+  let currentPlayer: string | null = null;
+
+  if (game) {
+    ({ id, white, black, white_username, black_username, whomst, winner } =
+      game);
+    currentPlayer = whomst === white ? white_username : black_username;
+  } else {
+    currentPlayer = "analysis mode";
   }
 
-  const { id, white, black, white_username, black_username, whomst, winner } =
-    game;
-
-  const currentPlayer = whomst === white ? white_username : black_username;
   const rows = ["8", "7", "6", "5", "4", "3", "2", "1"];
   const cols = ["a", "b", "c", "d", "e", "f", "g", "h"];
-
-  const handleDrag = (
-    e: DragEvent<HTMLImageElement>,
-    piece: string,
-    square: Square,
-  ) => {
-    e.dataTransfer.effectAllowed = "move";
-  };
 
   const handleSelect = (
     e: MouseEvent<HTMLImageElement>,
@@ -51,9 +52,7 @@ export default function Chessboard({ game }: ChessboardProps) {
     setStartSquare(square);
 
     const chessPiece = chess.board.get(square.x, square.y);
-    const moveDest = chess.legalMoves(chessPiece).map((move: string) => {
-      return move.match(/[a-h][1-8]$/)?.[0] || move;
-    });
+    const moveDest = chess.legalMoves(chessPiece);
     setMoveOptions(moveDest);
 
     // destination square = the last two chars from the right of any move string
@@ -64,7 +63,6 @@ export default function Chessboard({ game }: ChessboardProps) {
     e: DragEvent<HTMLDivElement>,
     targetSquare: Square,
   ) => {
-    e.preventDefault();
     if (selectedPiece && startSquare) {
       const piece = chess.board.get(startSquare.x, startSquare.y);
 
@@ -79,7 +77,7 @@ export default function Chessboard({ game }: ChessboardProps) {
       // Castling
       if (["Kg1", "Kc1", "Kg8", "Kc8"].includes(moveStr)) {
         // Check if legalMoves includes either castling move
-        if (moveOptions?.includes("O-O") || moveOptions?.includes("O-O-O")) {
+        if (moveOptions.includes("O-O") || moveOptions.includes("O-O-O")) {
           switch (moveStr) {
             case "Kg1":
             case "Kg8":
@@ -95,16 +93,26 @@ export default function Chessboard({ game }: ChessboardProps) {
 
       const moveResult = chess.move(moveStr);
 
-      if (moveResult) {
+      // long term it would be ideal to have shallowpink status codes
+      // or some other way of grouping status types
+      if (
+        moveResult == "invalid move" ||
+        moveResult == "player is still in check" ||
+        moveResult == "move puts player in check"
+      ) {
+        console.error(moveResult);
+      } else {
+        console.log("moveResult", moveResult);
+      }
+
+      if (moveResult != "invalid move" && game) {
         setMove(moveStr);
         await submitMove(moveStr);
-      } else {
-        console.error("Invalid move");
       }
     }
     setSelectedPiece(null);
     setStartSquare(null);
-    setMoveOptions(null);
+    setMoveOptions([]);
     setMove("");
   };
 
@@ -136,22 +144,28 @@ export default function Chessboard({ game }: ChessboardProps) {
     const piece = chess.board.get(x, y)?.toFEN();
     const isEvenSquare = (x + y) % 2 === 0;
     const squareColor = isEvenSquare ? "bg-[#f0d9b5]" : "bg-[#b58863]";
+    const moveHere = moveOptions.find((move) => move.match(square.notation));
 
     return (
       <div
         key={square.notation}
-        className={`relative flex justify-center items-center ${squareColor} w-16 h-16 ${moveOptions?.includes(square.notation) ? "border-4 border-green-600" : ""}`}
+        className={`relative flex justify-center items-center ${squareColor}`}
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => handleDrop(e, square)}
       >
+        {moveHere &&
+          (moveHere.match(/x/) ? (
+            <div className="absolute w-6 h-6 bg-red-600 opacity-50 rounded-full"></div>
+          ) : (
+            <div className="absolute w-6 h-6 bg-neutral-600 opacity-25 rounded-full"></div>
+          ))}
+
         {piece && (
           <Image
             src={pieceMap[piece]}
             alt="piece"
-            width={56}
-            height={56}
-            draggable
-            onDragStart={(e) => handleDrag(e, piece, square)}
+            width={72}
+            height={72}
             onMouseDown={(e) => handleSelect(e, piece, square)}
           />
         )}
@@ -166,15 +180,9 @@ export default function Chessboard({ game }: ChessboardProps) {
   );
 
   return (
-    <div>
-      <div className="grid grid-cols-8 grid-rows-8 w-128 h-128">
+    <div className="flex justify-center">
+      <div className="grid grid-cols-8 grid-rows-8">
         {rows.map((row) => renderRow(row))}
-      </div>
-      <div className="mt-4">
-        <p>Current Player: {currentPlayer}</p>
-        <form onSubmit={(e) => e.preventDefault()}>
-          <input type="text" value={move} readOnly className="text-black" />
-        </form>
       </div>
     </div>
   );

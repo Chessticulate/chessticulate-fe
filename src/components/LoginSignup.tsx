@@ -229,62 +229,64 @@ export default function LoginSignup() {
   };
 
   return (
-    <div className="text-center">
-      <div className="text-2xl pb-3">
-        {pathname === "/login" ? <h1>Log In:</h1> : <h1>Sign Up:</h1>}
-      </div>
-      <form onSubmit={handleSubmit} className="space-y-1">
-        <LoginSignupInput
-          inputHint="username"
-          inputValue={uname}
-          handleValueChange={handleUnameChange}
-          errors={unameErrors}
-        />
-        {pathname === "/login" ? (
-          <></>
-        ) : (
+    <div className="flex justify-center w-screen">
+      <div className="text-center">
+        <div className="text-2xl pb-3">
+          {pathname === "/login" ? <h1>Log In:</h1> : <h1>Sign Up:</h1>}
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-1">
           <LoginSignupInput
-            inputHint="email"
-            inputValue={email}
-            handleValueChange={handleEmailChange}
-            errors={emailErrors}
+            inputHint="username"
+            inputValue={uname}
+            handleValueChange={handleUnameChange}
+            errors={unameErrors}
           />
-        )}
-        <LoginSignupInput
-          inputHint="password"
-          inputValue={pswd}
-          handleValueChange={handlePswdChange}
-          errors={pswdErrors}
-        />
-        <button
-          type="submit"
-          className="w-full mt-4 px-4 py-2 bg-blue-600 text-white rounded-md"
-        >
-          Submit
-        </button>
-        <div
-          className={`w-full mt-4 px-4 py-2 bg-red-600 text-white rounded-md ${showPageError ? "block" : "hidden"}`}
-        >
-          <p>Something broke... try again later</p>
-        </div>
-        <div className="flex flex-col items-center pt-6">
-          {pathname === "/signup" ? (
-            <>
-              <p className="text-white">Already have an account?</p>
-              <Link href="/login" passHref className="text-blue-500">
-                Log in
-              </Link>
-            </>
+          {pathname === "/login" ? (
+            <></>
           ) : (
-            <>
-              <p className="text-white">Don&apos;t have an account?</p>
-              <Link href="/signup" passHref className="text-blue-500">
-                Sign up
-              </Link>
-            </>
+            <LoginSignupInput
+              inputHint="email"
+              inputValue={email}
+              handleValueChange={handleEmailChange}
+              errors={emailErrors}
+            />
           )}
-        </div>
-      </form>
+          <LoginSignupInput
+            inputHint="password"
+            inputValue={pswd}
+            handleValueChange={handlePswdChange}
+            errors={pswdErrors}
+          />
+          <button
+            type="submit"
+            className="w-full mt-4 px-4 py-2 bg-blue-600 text-white rounded-md"
+          >
+            Submit
+          </button>
+          <div
+            className={`w-full mt-4 px-4 py-2 bg-red-600 text-white rounded-md ${showPageError ? "block" : "hidden"}`}
+          >
+            <p>Something broke... try again later</p>
+          </div>
+          <div className="flex flex-col items-center pt-6">
+            {pathname === "/signup" ? (
+              <>
+                <p className="text-white">Already have an account?</p>
+                <Link href="/login" passHref className="text-blue-500">
+                  Log in
+                </Link>
+              </>
+            ) : (
+              <>
+                <p className="text-white">Don&apos;t have an account?</p>
+                <Link href="/signup" passHref className="text-blue-500">
+                  Sign up
+                </Link>
+              </>
+            )}
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

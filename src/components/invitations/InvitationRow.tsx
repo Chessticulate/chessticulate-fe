@@ -33,43 +33,28 @@ export default function InvitationRow({
   };
 
   return (
-    <div className="flex pl-5 pr-5 pt-2 pb-2 border-2 rounded-md border-[#fed6ae] m-2">
-      <div className="p-1">white: {white_username}</div>
-      <div className="p-1">black: {black_username}</div>
-      {type === "received" ? (
-        <>
-          <button
-            className="pl-2"
-            onClick={() => {
-              answerInvite("accept");
-            }}
-          >
-            {" "}
-            accept{" "}
-          </button>
-          <button
-            className="pl-2"
-            onClick={() => {
-              answerInvite("decline");
-            }}
-          >
-            {" "}
-            decline{" "}
-          </button>
-        </>
-      ) : (
-        <>
-          <button
-            className="pl-2"
-            onClick={() => {
-              answerInvite("cancel");
-            }}
-          >
-            {" "}
-            cancel{" "}
-          </button>
-        </>
-      )}
+    <div className="flex justify-around pl-5 pr-5 pt-2 pb-2 border-2 rounded-md border-[#fed6ae] mt-2 mb-4 hover:bg-[#fed6ae] hover:text-[#292929] hover:scale-105 transition">
+      <div className="p-1">Challenge from opponent_username</div>
+      <>
+        <button
+          className="pl-2"
+          onClick={() => {
+            answerInvite("accept");
+          }}
+        >
+          {" "}
+          accept{" "}
+        </button>
+        <button
+          className="pl-2"
+          onClick={() => {
+            answerInvite("decline");
+          }}
+        >
+          {" "}
+          decline{" "}
+        </button>
+      </>
     </div>
   );
 }

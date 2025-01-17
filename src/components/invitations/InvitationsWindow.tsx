@@ -2,14 +2,22 @@
 
 import { useEffect, useState } from "react";
 import InvitationRow from "@/components/invitations/InvitationRow";
-import { InvitationData } from "@/types";
+import MoveHistory from "@/components/MoveHistory";
+import { InvitationData, InvitationsWindowProps } from "@/types";
 
-export default function InvitationsWindow() {
+export default function InvitationsWindow({
+  currentGame,
+}: InvitationsWindowProps) {
   const [sent, setSent] = useState<InvitationData[] | null>(null);
   const [received, setReceived] = useState<InvitationData[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"sent" | "received">("received");
+  const [moves, setMoves] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState<"history" | "invitations">(
+    "invitations",
+  );
+
+  console.log("current game", currentGame);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,8 +52,6 @@ export default function InvitationsWindow() {
 
   if (isLoading) return <>Loading...</>;
   if (error) return <>Error: {error}</>;
-  if ((!sent || sent.length === 0) && (!received || received.length === 0))
-    return <>No data</>;
 
   const handleAnswer = (invitationId: number) => {
     setReceived(
@@ -62,33 +68,35 @@ export default function InvitationsWindow() {
   return (
     <div>
       {/* Tabs */}
-      <ul className="flex flex-wrap text-sm text-center">
+      <ul className="flex text-sm text-center">
         <li className="me-2">
           <button
-            onClick={() => setActiveTab("received")}
+            onClick={() => setActiveTab("invitations")}
             className={`inline-block p-4 rounded-b-lg ${
-              activeTab === "received" ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
+              activeTab === "invitations"
+                ? "bg-[#1f1f1f]"
+                : "hover:bg-[#1f1f1f]"
             }`}
           >
-            Received Invitations
+            Invitations
           </button>
         </li>
         <li className="me-2">
           <button
-            onClick={() => setActiveTab("sent")}
+            onClick={() => setActiveTab("history")}
             className={`inline-block p-4 rounded-b-lg ${
-              activeTab === "sent" ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
+              activeTab === "history" ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
             }`}
           >
-            Sent Invitations
+            Move History
           </button>
         </li>
       </ul>
 
       {/* Tab Content */}
       <div>
-        {activeTab === "received" ? (
-          <div>
+        {activeTab === "invitations" ? (
+          <>
             {received && received.length > 0 ? (
               received?.map((invitation, index) => (
                 <InvitationRow
@@ -102,22 +110,10 @@ export default function InvitationsWindow() {
             ) : (
               <div>No received invitations</div>
             )}
-          </div>
+          </>
         ) : (
           <div>
-            {sent && sent.length > 0 ? (
-              sent?.map((invitation, index) => (
-                <InvitationRow
-                  key={index}
-                  type={"sent"}
-                  invitation={invitation}
-                  onAnswer={handleAnswer}
-                  onCancel={handleCancel}
-                />
-              ))
-            ) : (
-              <div>No sent invitations</div>
-            )}
+            <MoveHistory moves={moves} />
           </div>
         )}
       </div>
