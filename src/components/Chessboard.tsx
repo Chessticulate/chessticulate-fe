@@ -15,9 +15,12 @@ import { ChessboardProps, Square, GameData } from "@/types";
 // long term it might be best to create a chess interface
 const Chess: any = require("shallowpink/lib/chess");
 
-export default function Chessboard({ game }: ChessboardProps) {
+export default function Chessboard({
+  game,
+  moveHist,
+  setMoveHist,
+}: ChessboardProps) {
   const chess = useMemo(() => new Chess(game?.fen), [game?.fen]);
-  const [move, setMove] = useState<string>("");
   const [selectedPiece, setSelectedPiece] = useState<string | null>(null);
   const [startSquare, setStartSquare] = useState<Square | null>(null);
   // list of selectedPiece's move options
@@ -103,17 +106,18 @@ export default function Chessboard({ game }: ChessboardProps) {
         console.error(moveResult);
       } else {
         console.log("moveResult", moveResult);
+        // update move history
+        setMoveHist([...moveHist, moveStr]);
       }
 
       if (moveResult != "invalid move" && game) {
-        setMove(moveStr);
         await submitMove(moveStr);
       }
     }
+
     setSelectedPiece(null);
     setStartSquare(null);
     setMoveOptions([]);
-    setMove("");
   };
 
   const submitMove = async (move: string) => {
