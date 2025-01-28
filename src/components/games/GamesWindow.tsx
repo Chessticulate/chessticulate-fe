@@ -11,6 +11,8 @@ export default function GamesWindow({
   setActiveTab,
   currentGame,
   setCurrentGame,
+  moveHist,
+  setMoveHist,
 }: GamesWindowProps) {
   const [activeGames, setActiveGames] = useState<GameData[] | null>(null);
   const [completedGames, setCompletedGames] = useState<GameData[] | null>(null);
@@ -97,7 +99,11 @@ export default function GamesWindow({
       case "play":
         return (
           <div className="flex justify-center pt-2">
-            <Chessboard game={currentGame} />
+            <Chessboard
+              game={currentGame}
+              moveHist={moveHist}
+              setMoveHist={setMoveHist}
+            />
           </div>
         );
       default:

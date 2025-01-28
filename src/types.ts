@@ -11,6 +11,14 @@ export type UserData = {
   losses: number;
 };
 
+export type Move = {
+  id: number;
+  user_id: number;
+  game_id: number;
+  movestr: string;
+  fen: string;
+};
+
 // game types
 export type GameData = {
   id: number;
@@ -46,12 +54,15 @@ export type InvitationProps = {
 
 export type InvitationsWindowProps = {
   currentGame: GameData | null;
+  moveHist: string[];
 };
 
 // chessboard types
 // could probably merge these two
 export type ChessboardProps = {
   game: GameData | null;
+  moveHist: string[];
+  setMoveHist: Dispatch<SetStateAction<string[]>>;
 };
 
 export type GamesWindowProps = {
@@ -59,6 +70,8 @@ export type GamesWindowProps = {
   setActiveTab: Dispatch<SetStateAction<Tab>>;
   currentGame: GameData | null;
   setCurrentGame: Dispatch<SetStateAction<GameData | null>>;
+  moveHist: string[];
+  setMoveHist: Dispatch<SetStateAction<string[]>>;
 };
 
 export type Square = {

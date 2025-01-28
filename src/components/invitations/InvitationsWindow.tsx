@@ -3,24 +3,21 @@
 import { useEffect, useState } from "react";
 import InvitationRow from "@/components/invitations/InvitationRow";
 import MoveHistory from "@/components/MoveHistory";
-import { InvitationData, InvitationsWindowProps } from "@/types";
+import { InvitationData, InvitationsWindowProps, Move } from "@/types";
 
 export default function InvitationsWindow({
   currentGame,
+  moveHist,
 }: InvitationsWindowProps) {
   const [sent, setSent] = useState<InvitationData[] | null>(null);
   const [received, setReceived] = useState<InvitationData[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [moves, setMoves] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<"history" | "invitations">(
     "invitations",
   );
 
-  console.log("current game", currentGame);
-
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchInv = async () => {
       try {
         const response = await fetch("/api/invitations/", {
           method: "GET",
@@ -40,18 +37,12 @@ export default function InvitationsWindow({
         setSent(result.sent);
         setReceived(result.received);
       } catch (error) {
-        setError("Failed to fetch data");
         console.error("There was a problem with the fetch operation:", error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
-    fetchData();
+    fetchInv();
   }, []);
-
-  if (isLoading) return <>Loading...</>;
-  if (error) return <>Error: {error}</>;
 
   const handleAnswer = (invitationId: number) => {
     setReceived(
@@ -66,7 +57,7 @@ export default function InvitationsWindow({
   };
 
   return (
-    <div>
+    <div className="h-full">
       {/* Tabs */}
       <ul className="flex text-sm text-center">
         <li className="me-2">
@@ -113,7 +104,7 @@ export default function InvitationsWindow({
           </>
         ) : (
           <div>
-            <MoveHistory moves={moves} />
+            <MoveHistory moves={moveHist} />
           </div>
         )}
       </div>
