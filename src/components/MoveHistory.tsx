@@ -27,7 +27,7 @@ export default function MoveHistory({ moves }: MoveHistoryProps) {
             <th className="py-2 px-4 text-left">Black</th>
           </tr>
         </thead>
-        <tbody className="divide-y">
+        <tbody className="divide-y divide-[#fed6ae]">
           {formattedMoves.map((move, index) => (
             <tr key={index} className="bg-[#1f1f1f]">
               <td className="py-2 px-4">{move.moveNumber}</td>
