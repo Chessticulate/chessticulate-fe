@@ -62,9 +62,6 @@ export default function Dashboard({ activeTab, setActiveTab }: TabProps) {
           setMoveHist={setMoveHist}
         />
       </div>
-      <div className="basis-1/4 pr-5">
-        <InvitationsWindow currentGame={currentGame} moveHist={moveHist} />
-      </div>
     </div>
   );
 }

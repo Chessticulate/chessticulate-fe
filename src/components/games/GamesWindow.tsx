@@ -60,12 +60,22 @@ export default function GamesWindow({
   };
 
   const handlePlay = (gameId: number) => {
-    setActiveTab("play");
+    setActiveTab("playground");
     setCurrentGame(activeGames?.find((game) => game.id == gameId) || null);
   };
 
   const renderContent = () => {
     switch (activeTab) {
+      case "playground":
+        return (
+          <div className="flex justify-center pt-2">
+            <Chessboard
+              game={currentGame}
+              moveHist={moveHist}
+              setMoveHist={setMoveHist}
+            />
+          </div>
+        );
       case "active":
         return (
           <>

@@ -15,18 +15,32 @@ export default function Sidebar({ activeTab, setActiveTab }: TabProps) {
         <li className="me-2">
           <button
             onClick={() => {
-              setActiveTab("play");
+              setActiveTab("playground");
             }}
             className={`inline-block p-4 rounded-r-lg ${
-              activeTab === "play" ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
+              activeTab === "playground" ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
             }`}
           >
-            Play
+            Playground
           </button>
         </li>
         <li className="me-2">
           <button
-            onClick={() => setActiveTab("active")}
+            onClick={() => {
+              setActiveTab("arena");
+            }}
+            className={`inline-block p-4 rounded-r-lg ${
+              activeTab === "arena" ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
+            }`}
+          >
+            Arena
+          </button>
+        </li>
+        <li className="me-2">
+          <button
+            onClick={() => {
+              setActiveTab("active");
+            }}
             className={`inline-block p-4 rounded-r-lg ${
               activeTab === "active" ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
             }`}
@@ -42,6 +56,16 @@ export default function Sidebar({ activeTab, setActiveTab }: TabProps) {
             }`}
           >
             Completed Games
+          </button>
+        </li>
+        <li className="me-2">
+          <button
+            onClick={() => setActiveTab("invitations")}
+            className={`inline-block p-4 rounded-r-lg ${
+              activeTab === "invitations" ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
+            }`}
+          >
+            Invitations
           </button>
         </li>
       </ul>

@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 
 // tabs
-export type Tab = "play" | "active" | "completed";
+export type Tab = "playground" | "arena" | "active" | "invitations" | "completed";
 
 // user types
 export type UserData = {

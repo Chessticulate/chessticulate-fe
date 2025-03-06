@@ -10,6 +10,7 @@ import {
 import Image from "next/image";
 import pieceMap from "../utils/piecetoPNG";
 import { ChessboardProps, Square, GameData } from "@/types";
+import MoveHistory from "@/components/MoveHistory";
 
 // Chess obj has a type of any since shallowpink does not export any types
 // long term it might be best to create a chess interface
@@ -185,8 +186,11 @@ export default function Chessboard({
 
   return (
     <div className="flex justify-center">
-      <div className="grid grid-cols-8 grid-rows-8">
+      <div className="grid grid-cols-8 grid-rows-8 aspect-square size-[700px]">
         {rows.map((row) => renderRow(row))}
+      </div>
+      <div className="flex h-[700px] ml-4">
+        <MoveHistory moves={moveHist} />
       </div>
     </div>
   );

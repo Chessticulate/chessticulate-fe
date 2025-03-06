@@ -18,9 +18,9 @@ export default function MoveHistory({ moves }: MoveHistoryProps) {
   }, []);
 
   return (
-    <div className="border-2 border-[#fed6ae] p-4 rounded-lg max-h-80 overflow-y-auto">
+    <div className="border-2 border-[#fed6ae] bg-[#1f1f1f] p-4 rounded-lg overflow-y-auto">
       <table className="w-full table-auto">
-        <thead className="bg-[#1f1f1f]">
+        <thead className="bg-[#1f1f1f] sticky top-0">
           <tr>
             <th className="py-2 px-4 text-left">#</th>
             <th className="py-2 px-4 text-left">White</th>
@@ -29,7 +29,7 @@ export default function MoveHistory({ moves }: MoveHistoryProps) {
         </thead>
         <tbody className="divide-y divide-[#fed6ae]">
           {formattedMoves.map((move, index) => (
-            <tr key={index} className="bg-[#1f1f1f]">
+            <tr key={index}>
               <td className="py-2 px-4">{move.moveNumber}</td>
               <td className="py-2 px-4">{move.white}</td>
               <td className="py-2 px-4">{move.black || ""}</td>
