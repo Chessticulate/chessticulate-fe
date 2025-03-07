@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 
 // tabs
-export type Tab = "playground" | "arena" | "active" | "invitations" | "completed";
+export type Tab = "sandbox" | "arena" | "active" | "invitations" | "completed";
 
 // user types
 export type UserData = {
@@ -11,7 +11,7 @@ export type UserData = {
   losses: number;
 };
 
-export type Move = {
+export type MoveData = {
   id: number;
   user_id: number;
   game_id: number;
@@ -92,4 +92,10 @@ export type LoginSignupError = {
 
 export type MoveHistoryProps = {
   moves: string[];
+};
+
+export interface Jwt {
+  exp: number;
+  user_name: string;
+  user_id: number;
 };

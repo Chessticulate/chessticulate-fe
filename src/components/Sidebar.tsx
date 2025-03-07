@@ -15,13 +15,13 @@ export default function Sidebar({ activeTab, setActiveTab }: TabProps) {
         <li className="me-2">
           <button
             onClick={() => {
-              setActiveTab("playground");
+              setActiveTab("sandbox");
             }}
             className={`inline-block p-4 rounded-r-lg ${
-              activeTab === "playground" ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
+              activeTab === "sandbox" ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
             }`}
           >
-            Playground
+            Sandbox
           </button>
         </li>
         <li className="me-2">

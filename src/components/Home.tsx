@@ -14,7 +14,7 @@ export default function Home() {
         <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
       </div>
       <div className="basis-10/12">
-        <Dashboard activeTab={activeTab} setActiveTab={setActiveTab} />
+        <Dashboard activeTab={activeTab} >
       </div>
     </div>
   );
