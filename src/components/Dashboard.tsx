@@ -2,7 +2,7 @@
 
 import { jwtDecode } from "jwt-decode";
 import { GameData, Tab, MoveData, Jwt, InvitationData } from "@/types";
-import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { useState, useEffect } from "react";
 import { getCookie } from "cookies-next";
 
 import GameRow from "@/components/games/GameRow";
@@ -12,7 +12,7 @@ import Chessboard from "@/components/Chessboard";
 
 type Props = {
   activeTab: Tab;
-  setActiveTab: Dispatch<SetStateAction<Tab>>;
+  setActiveTab(t: Tab): void;
 };
 
 export default function Dashboard({ activeTab, setActiveTab }: Props) {
@@ -21,7 +21,8 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
   const [currentGame, setCurrentGame] = useState<GameData | null>(null);
   const [currentGameMoveHist, setCurrentGameMoveHist] = useState<string[]>([]);
 
-  const [sandboxGame, setSandboxGame] = useState<string>('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1')
+  const [sandboxFenString, setSandboxFenString] = useState<string>('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1')
+  const [sandboxStates, setSandboxStates] = useState<any>(null);
   const [sandboxMoveHist, setSandboxMoveHist] = useState<string[]>([])
 
   const [activeGames, setActiveGames] = useState<GameData[] | null>(null);
@@ -164,15 +165,45 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
     })();
   }, []);
 
+  const submitMove = async (move: string) => {
+    if (!currentGame) {
+      return;
+    }
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/games/${currentGame.id}/move`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ move }),
+      });
+
+      if (!response.ok) throw new Error(`failed to submit move: ${response.status} ${response.statusText}`);
+      const data = await response.json();
+      // update move history
+      setCurrentGameMoveHist([...currentGameMoveHist, move]);
+      setCurrentGame(data);
+      console.log("Move submitted:", data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const submitMoveLocal = async (move: string) => {
+    
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case "sandbox":
         return (
           <div className="flex justify-center pt-2">
             <Chessboard
-              game={currentGame}
+              fenString={sandboxFenString}
+              setFenString={setSandboxFenString}
+              states={sandboxStates}
+              setStates={setSandboxStates}
               moveHist={sandboxMoveHist}
               setMoveHist={setSandboxMoveHist}
+              submitMove={submitMoveLocal}
             />
           </div>
         );

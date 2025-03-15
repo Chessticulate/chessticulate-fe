@@ -1,16 +1,14 @@
+"use client";
+
 import {
   useMemo,
   useState,
-  ChangeEvent,
-  FormEvent,
   DragEvent,
   MouseEvent,
-  useEffect,
 } from "react";
 import Image from "next/image";
 import pieceMap from "../utils/piecetoPNG";
 import { Dispatch, SetStateAction } from "react"
-import { ChessboardProps, Square, GameData } from "@/types";
 import MoveHistory from "@/components/MoveHistory";
 
 // Chess obj has a type of any since shallowpink does not export any types
@@ -19,11 +17,12 @@ const Chess: any = require("shallowpink/lib/chess");
 
 type Props = {
   fenString: string;
-  setFenString: Dispatch<SetStateAction<string[]>>;
+  setFenString(s: string): void;
   states: any;
-  setStates: Dispatch<SetStateAction<any>>;
+  setStates(s: any): void;
   moveHist: string[];
-  setMoveHist: Dispatch<SetStateAction<string[]>>;
+  setMoveHist(h: string[]): void;
+  submitMove(move: string): Promise<void>;
 };
 
 export default function Chessboard({
@@ -33,10 +32,10 @@ export default function Chessboard({
   setStates,
   moveHist,
   setMoveHist,
+  submitMove,
 }: Props) {
-  const chess = useMemo(() => new Chess(fenString), [fenString]);
+  const chess = useMemo(() => new Chess(fenString, states), [fenString]);
   const [selectedPiece, setSelectedPiece] = useState<any | null>(null);
-  const [startSquare, setStartSquare] = useState<Square | null>(null);
   const [moveOptions, setMoveOptions] = useState<string[]>([]);
 
   const rows = ["8", "7", "6", "5", "4", "3", "2", "1"];
@@ -44,34 +43,26 @@ export default function Chessboard({
 
   const handleSelect = (
     _: MouseEvent<HTMLImageElement>,
-    piece: string,
-    square: Square,
+    piece: any,
   ) => {
     setSelectedPiece(piece);
-    setStartSquare(square);
-
-    const chessPiece = chess.board.get(square.x, square.y);
-    const moveDest = chess.legalMoves(chessPiece);
-    setMoveOptions(moveDest);
-
-    // destination square = the last two chars from the right of any move string
-    console.log("highlight move squares", moveDest);
+    const options = chess.legalMoves(piece);
+    setMoveOptions(options);
   };
 
   const handleDrop = async (
-    e: DragEvent<HTMLDivElement>,
-    targetSquare: Square,
+    _: DragEvent<HTMLDivElement>,
+    targetX: number,
+    targetY: number,
   ) => {
-    if (selectedPiece && startSquare) {
-      const piece = chess.board.get(startSquare.x, startSquare.y);
+    if (selectedPiece) {
+      const piece = chess.board.get(targetX, targetY);
 
       let moveStr = chess.generateMoveStrs(
         piece,
-        targetSquare.x,
-        targetSquare.y,
+        targetX,
+        targetY,
       )[0];
-
-      console.log("move string", moveStr);
 
       // Castling
       if (["Kg1", "Kc1", "Kg8", "Kc8"].includes(moveStr)) {
@@ -91,6 +82,7 @@ export default function Chessboard({
       }
 
       const moveResult = chess.move(moveStr);
+      console.log(moveResult);
 
       // long term it would be ideal to have shallowpink status codes
       // or some other way of grouping status types
@@ -99,59 +91,35 @@ export default function Chessboard({
         moveResult == "player is still in check" ||
         moveResult == "move puts player in check"
       ) {
-        console.error(moveResult);
-      } else {
-        console.log("moveResult", moveResult);
-        // update move history
-        setMoveHist([...moveHist, moveStr]);
+        return;
       }
 
-      if (moveResult != "invalid move" && game) {
-        await submitMove(moveStr);
-      }
+      await submitMove(moveStr);
+
+      setMoveHist([...moveHist, moveStr]);
+      setFenString(chess.fen);
+      setStates(chess.states);
     }
 
     setSelectedPiece(null);
-    setStartSquare(null);
     setMoveOptions([]);
   };
 
-  const submitMove = async (move: string) => {
-    try {
-      const response = await fetch("/api/games/move", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, move }),
-      });
-
-      if (!response.ok) throw new Error("Network response is not ok");
-      const data = await response.json();
-      console.log("Move submitted:", data);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
   const renderSquare = (row: string, col: string) => {
+    const notation = `${col}${row}`
     const x = cols.indexOf(col);
     const y = rows.indexOf(row);
-    const square = {
-      notation: `${col}${row}`,
-      x: x,
-      y: y,
-    };
-
-    const piece = chess.board.get(x, y)?.toFEN();
     const isEvenSquare = (x + y) % 2 === 0;
     const squareColor = isEvenSquare ? "bg-[#f0d9b5]" : "bg-[#b58863]";
-    const moveHere = moveOptions.find((move) => move.match(square.notation));
+    const moveHere = moveOptions.find((move) => move.match(notation));
 
+    const piece = chess.board.get(x, y);
     return (
       <div
-        key={square.notation}
+        key={notation}
         className={`relative flex justify-center items-center ${squareColor}`}
         onDragOver={(e) => e.preventDefault()}
-        onDrop={(e) => handleDrop(e, square)}
+        onDrop={(e) => handleDrop(e, x, y)}
       >
         {moveHere &&
           (moveHere.match(/x/) ? (
@@ -166,7 +134,7 @@ export default function Chessboard({
             alt="piece"
             width={72}
             height={72}
-            onMouseDown={(e) => handleSelect(e, piece, square)}
+            onMouseDown={(e) => handleSelect(e, piece)}
           />
         )}
       </div>
