@@ -2,18 +2,20 @@
 
 import { jwtDecode } from "jwt-decode";
 import { GameData, Tab, MoveData, Jwt, InvitationData } from "@/types";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { getCookie } from "cookies-next";
 
 import GameRow from "@/components/games/GameRow";
 import InvitationRow from "@/components/invitations/InvitationRow";
+
 import Chessboard from "@/components/Chessboard";
 
 type Props = {
   activeTab: Tab;
+  setActiveTab: Dispatch<SetStateAction<Tab>>;
 };
 
-export default function Dashboard({ activeTab }: Props) {
+export default function Dashboard({ activeTab, setActiveTab }: Props) {
   const token = getCookie("token") as string;
 
   const [currentGame, setCurrentGame] = useState<GameData | null>(null);
@@ -29,104 +31,158 @@ export default function Dashboard({ activeTab }: Props) {
   const [sentInvitations, setSentInvitations] = useState<InvitationData[]>([]);
 
   useEffect(() => {
-    const fetchCurrentGameMoves = async () => {
+    if (!currentGame) {
+      return;
+    }
+    (async () => {
       try {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/moves?game_id=${currentGame?.id}`,
           {
             method: "GET",
             headers: {
-              "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
           },
         );
 
         if (!response.ok) {
-          throw new Error(`failed to fetch moves for game ${currentGame?.id}: ${response.statusText}`);
+          throw new Error(`response was not ok: ${response.status} ${response.statusText}`);
         }
 
         const result: MoveData[] = await response.json();
 
         setCurrentGameMoveHist(result.map(move => move.movestr));
       } catch (error) {
-        console.error("There was a problem with the fetch operation:", error);
+        console.error(`there was a problem fetching move history for active game ${currentGame?.id}:`, error);
       }
-    }
-    if (currentGame) {
-      fetchCurrentGameMoves();
-    }
-  }, [currentGame, token]);
+    })();
+  }, [currentGame]);
 
   useEffect(() => {
-    const fetchActiveGames = async () => {
+    (async () => {
       const decodedToken = jwtDecode<Jwt>(token);
       try {
         const response = await fetch(
-        `${process.env.CHESSTICULATE_API_URL}/games?player_id=${decodedToken.user_id}&is_active=True`,
+        `${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/games?player_id=${decodedToken.user_id}&is_active=True`,
         {
           method: "GET",
           headers: {
-            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
         });
 
         if (!response.ok) {
-          throw new Error("Network response was not ok");
+          throw new Error(`response was not ok: ${response.status} ${response.statusText}`);
         }
 
         const result = await response.json();
         setActiveGames(result);
 
-        console.log("games", result);
       } catch (error) {
-        console.error("There was a problem with the fetch operation:", error);
+        console.error("there was a problem fetching active games:", error);
       }
-    };
-    fetchActiveGames();
-  }, [token]);
+    })();
+  }, []);
 
   useEffect(() => {
-    const fetchCompletedGames = async () => {
+    (async () => {
       const decodedToken = jwtDecode<Jwt>(token);
       try {
         const response = await fetch(
-        `${process.env.CHESSTICULATE_API_URL}/games?player_id=${decodedToken.user_id}&is_active=False`,
+        `${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/games?player_id=${decodedToken.user_id}&is_active=False`,
         {
           method: "GET",
           headers: {
-            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
         });
 
         if (!response.ok) {
-          throw new Error("Network response was not ok");
+          throw new Error(`response was not ok: ${response.status} ${response.statusText}`);
         }
 
         const result = await response.json();
         setCompletedGames(result);
 
-        console.log("games", result);
       } catch (error) {
-        console.error("There was a problem with the fetch operation:", error);
+        console.error("there was a problem fetching completed games:", error);
       }
-    };
-    fetchCompletedGames();
-  }, [token]);
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      const decodedToken = jwtDecode<Jwt>(token);
+      const uid = decodedToken.user_id;
+      try {
+        const response = await fetch(
+        `${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/invitations?to_id=${uid}&status=PENDING`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`response was not ok: ${response.status} ${response.statusText}`);
+        }
+
+        const result = await response.json();
+        setRecvdInvitations(result);
+
+      } catch (error) {
+        console.error("there was a problem fetching received invitation:", error);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      const decodedToken = jwtDecode<Jwt>(token);
+      const uid = decodedToken.user_id;
+      try {
+        const response = await fetch(
+        `${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/invitations?from_id=${uid}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`response was not ok: ${response.status} ${response.statusText}`);
+        }
+
+        const result = await response.json();
+        setSentInvitations(result);
+      } catch (error) {
+        console.error("there was a problem fetching sent invitations:", error);
+      }
+    })();
+  }, []);
 
   const renderContent = () => {
     switch (activeTab) {
       case "sandbox":
-        {
+        return (
           <div className="flex justify-center pt-2">
             <Chessboard
               game={currentGame}
-              moveHist={Hist}
-              setMoveHist={setMoveHist}
+              moveHist={sandboxMoveHist}
+              setMoveHist={setSandboxMoveHist}
             />
           </div>
-        };
-      case "active":
+        );
+      default:
+        return (
+          <div className="flex justify-center pt-2">
+            <h1>Not Implemented</h1>
+          </div>
+        );
+      /*case "active":
         return (
           <>
             {activeGames &&
@@ -165,9 +221,7 @@ export default function Dashboard({ activeTab }: Props) {
               setMoveHist={setMoveHist}
             />
           </div>
-        );
-      default:
-        return null;
+        );*/
     }
   };
   return (

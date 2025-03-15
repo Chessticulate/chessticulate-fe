@@ -222,6 +222,7 @@ export default function LoginSignup() {
       });
 
       router.push("/");
+      router.refresh();
     } catch (error) {
       console.log(error);
       pageError();

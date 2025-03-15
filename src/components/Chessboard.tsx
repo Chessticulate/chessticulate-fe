@@ -9,6 +9,7 @@ import {
 } from "react";
 import Image from "next/image";
 import pieceMap from "../utils/piecetoPNG";
+import { Dispatch, SetStateAction } from "react"
 import { ChessboardProps, Square, GameData } from "@/types";
 import MoveHistory from "@/components/MoveHistory";
 
@@ -16,39 +17,33 @@ import MoveHistory from "@/components/MoveHistory";
 // long term it might be best to create a chess interface
 const Chess: any = require("shallowpink/lib/chess");
 
+type Props = {
+  fenString: string;
+  setFenString: Dispatch<SetStateAction<string[]>>;
+  states: any;
+  setStates: Dispatch<SetStateAction<any>>;
+  moveHist: string[];
+  setMoveHist: Dispatch<SetStateAction<string[]>>;
+};
+
 export default function Chessboard({
-  game,
+  fenString,
+  setFenString,
+  states,
+  setStates,
   moveHist,
   setMoveHist,
-}: ChessboardProps) {
-  const chess = useMemo(() => new Chess(game?.fen), [game?.fen]);
-  const [selectedPiece, setSelectedPiece] = useState<string | null>(null);
+}: Props) {
+  const chess = useMemo(() => new Chess(fenString), [fenString]);
+  const [selectedPiece, setSelectedPiece] = useState<any | null>(null);
   const [startSquare, setStartSquare] = useState<Square | null>(null);
-  // list of selectedPiece's move options
   const [moveOptions, setMoveOptions] = useState<string[]>([]);
-
-  let id: number | null = null;
-  let white: number | null = null;
-  let black: number | null = null;
-  let white_username: string | null = null;
-  let black_username: string | null = null;
-  let whomst: number | null = null;
-  let winner: number | null = null;
-  let currentPlayer: string | null = null;
-
-  if (game) {
-    ({ id, white, black, white_username, black_username, whomst, winner } =
-      game);
-    currentPlayer = whomst === white ? white_username : black_username;
-  } else {
-    currentPlayer = "analysis mode";
-  }
 
   const rows = ["8", "7", "6", "5", "4", "3", "2", "1"];
   const cols = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
   const handleSelect = (
-    e: MouseEvent<HTMLImageElement>,
+    _: MouseEvent<HTMLImageElement>,
     piece: string,
     square: Square,
   ) => {

@@ -6,7 +6,7 @@ import Dashboard from "@/components/Dashboard";
 import { Tab } from "@/types";
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<Tab>("playground");
+  const [activeTab, setActiveTab] = useState<Tab>("sandbox");
 
   return (
     <div className="flex h-full w-screen">
@@ -14,7 +14,7 @@ export default function Home() {
         <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
       </div>
       <div className="basis-10/12">
-        <Dashboard activeTab={activeTab} >
+        <Dashboard activeTab={activeTab} setActiveTab={setActiveTab} />
       </div>
     </div>
   );

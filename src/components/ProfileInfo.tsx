@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { UserData } from "@/types";
+import { getCookie } from "cookies-next"
 
 export default function ProfileInfo() {
   const [info, setInfo] = useState<UserData | null>(null);
@@ -9,38 +10,38 @@ export default function ProfileInfo() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const token = getCookie("token") as string;
+    (async () => {
       try {
-        const response = await fetch("/api/users/self", {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/users/self`, {
           method: "GET",
           headers: {
-            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
         });
 
         if (!response.ok) {
-          throw new Error("Network response was not ok");
+          throw new Error(`response was not ok: ${response.status} ${response.statusText}`);
         }
 
         const result = await response.json();
 
         setInfo({
-          name: result.userData.name,
-          wins: result.userData.wins,
-          draws: result.userData.draws,
-          losses: result.userData.losses,
+          name: result.name,
+          wins: result.wins,
+          draws: result.draws,
+          losses: result.losses,
         });
 
         console.log("user info", result);
       } catch (error) {
         setError("Failed to fetch data");
-        console.error("There was a problem with the fetch operation:", error);
+        console.error("There was a problem fetching user data:", error);
       } finally {
         setIsLoading(false);
       }
-    };
-
-    fetchData();
+    })();
   }, []);
 
   if (isLoading) return <>Loading...</>;

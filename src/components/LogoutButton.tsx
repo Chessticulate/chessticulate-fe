@@ -1,13 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Logout } from "@/app/actions/Logout";
+import { deleteCookie } from "cookies-next";
 
 export default function LogoutButton() {
   const router = useRouter();
 
   const handleLogout = async () => {
-    await Logout();
+    deleteCookie("token")
     router.push("/");
     router.refresh();
   };
