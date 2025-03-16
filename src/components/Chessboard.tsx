@@ -7,13 +7,27 @@ import {
   MouseEvent,
 } from "react";
 import Image from "next/image";
-import pieceMap from "../utils/piecetoPNG";
-import { Dispatch, SetStateAction } from "react"
 import MoveHistory from "@/components/MoveHistory";
 
 // Chess obj has a type of any since shallowpink does not export any types
 // long term it might be best to create a chess interface
-const Chess: any = require("shallowpink/lib/chess");
+//const Chess: any = require("shallowpink/lib/chess");
+const Chess: any = require("@/../../shallowpink")
+
+const pieceMap: Record<string, string> = {
+  P: "/img/white-pawn.png",
+  N: "/img/white-knight.png",
+  B: "/img/white-bishop.png",
+  R: "/img/white-rook.png",
+  Q: "/img/white-queen.png",
+  K: "/img/white-king.png",
+  p: "/img/black-pawn.png",
+  n: "/img/black-knight.png",
+  b: "/img/black-bishop.png",
+  r: "/img/black-rook.png",
+  q: "/img/black-queen.png",
+  k: "/img/black-king.png",
+};
 
 type Props = {
   fenString: string;
@@ -47,6 +61,7 @@ export default function Chessboard({
   ) => {
     setSelectedPiece(piece);
     const options = chess.legalMoves(piece);
+    console.log(`available moves for piece at ${piece.x}${piece.y}:`, options)
     setMoveOptions(options);
   };
 
@@ -56,10 +71,15 @@ export default function Chessboard({
     targetY: number,
   ) => {
     if (selectedPiece) {
-      const piece = chess.board.get(targetX, targetY);
+      const currTurn = (chess.turn % 2 == 0 ? "black" : "white");
+      if (selectedPiece.color != currTurn) {
+        console.log("currTurn:", currTurn)
+        console.log("selectedPiece.color:", selectedPiece.color)
+        return;
+      }
 
       let moveStr = chess.generateMoveStrs(
-        piece,
+        selectedPiece,
         targetX,
         targetY,
       )[0];
@@ -97,7 +117,7 @@ export default function Chessboard({
       await submitMove(moveStr);
 
       setMoveHist([...moveHist, moveStr]);
-      setFenString(chess.fen);
+      setFenString(chess.toFEN());
       setStates(chess.states);
     }
 
@@ -130,7 +150,7 @@ export default function Chessboard({
 
         {piece && (
           <Image
-            src={pieceMap[piece]}
+            src={pieceMap[piece.toFEN()]}
             alt="piece"
             width={72}
             height={72}

@@ -20,8 +20,11 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
 
   const [currentGame, setCurrentGame] = useState<GameData | null>(null);
   const [currentGameMoveHist, setCurrentGameMoveHist] = useState<string[]>([]);
+  /*const [currentGameFenString, setCurrentGameFenString] = useState<string>("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+  const [currentGameStates, setCurrentGameStates] = useState<any>(null);
+  const [sandboxMoveHist, setSandboxMoveHist] = useState<string[]>([])*/
 
-  const [sandboxFenString, setSandboxFenString] = useState<string>('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1')
+  const [sandboxFenString, setSandboxFenString] = useState<string>("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
   const [sandboxStates, setSandboxStates] = useState<any>(null);
   const [sandboxMoveHist, setSandboxMoveHist] = useState<string[]>([])
 
@@ -179,7 +182,6 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
       if (!response.ok) throw new Error(`failed to submit move: ${response.status} ${response.statusText}`);
       const data = await response.json();
       // update move history
-      setCurrentGameMoveHist([...currentGameMoveHist, move]);
       setCurrentGame(data);
       console.log("Move submitted:", data);
     } catch (error) {
@@ -187,9 +189,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
     }
   };
 
-  const submitMoveLocal = async (move: string) => {
-    
-  };
+  const submitMoveLocal = async (_: string) => {};
 
   const renderContent = () => {
     switch (activeTab) {
