@@ -2,13 +2,18 @@
 
 import { jwtDecode } from "jwt-decode";
 import { GameData, Tab, MoveData, Jwt, InvitationData } from "@/types";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { getCookie } from "cookies-next";
 
 import GameRow from "@/components/games/GameRow";
 import InvitationRow from "@/components/invitations/InvitationRow";
 
 import Chessboard from "@/components/Chessboard";
+
+// Chess obj has a type of any since shallowpink does not export any types
+// long term it might be best to create a chess interface
+//const Chess: any = require("shallowpink/lib/chess");
+const Chess = require("shallowpink");
 
 type Props = {
   activeTab: Tab;
@@ -27,6 +32,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
   const [sandboxFenString, setSandboxFenString] = useState<string>("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
   const [sandboxStates, setSandboxStates] = useState<any>(null);
   const [sandboxMoveHist, setSandboxMoveHist] = useState<string[]>([])
+  const sandboxChessObj = useMemo(() => new Chess(sandboxFenString, sandboxStates), [sandboxFenString, sandboxStates]);
 
   const [activeGames, setActiveGames] = useState<GameData[] | null>(null);
   const [completedGames, setCompletedGames] = useState<GameData[] | null>(null);
@@ -189,7 +195,11 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
     }
   };
 
-  const submitMoveLocal = async (_: string) => {};
+  const submitMoveSandbox = async (move: string) => {
+      setSandboxMoveHist([...sandboxMoveHist, move]);
+      setSandboxFenString(sandboxChessObj.toFEN());
+      setSandboxStates(sandboxChessObj.states);
+  };
 
   const renderContent = () => {
     switch (activeTab) {
@@ -197,14 +207,13 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
         return (
           <div className="flex justify-center pt-2">
             <Chessboard
-              fenString={sandboxFenString}
-              setFenString={setSandboxFenString}
-              states={sandboxStates}
-              setStates={setSandboxStates}
               moveHist={sandboxMoveHist}
-              setMoveHist={setSandboxMoveHist}
-              submitMove={submitMoveLocal}
+              chessObj={sandboxChessObj}
+              submitMove={submitMoveSandbox}
             />
+            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              Button
+            </button>
           </div>
         );
       default:

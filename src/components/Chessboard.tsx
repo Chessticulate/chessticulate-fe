@@ -9,11 +9,6 @@ import {
 import Image from "next/image";
 import MoveHistory from "@/components/MoveHistory";
 
-// Chess obj has a type of any since shallowpink does not export any types
-// long term it might be best to create a chess interface
-//const Chess: any = require("shallowpink/lib/chess");
-const Chess: any = require("@/../../shallowpink")
-
 const pieceMap: Record<string, string> = {
   P: "/img/white-pawn.png",
   N: "/img/white-knight.png",
@@ -30,25 +25,16 @@ const pieceMap: Record<string, string> = {
 };
 
 type Props = {
-  fenString: string;
-  setFenString(s: string): void;
-  states: any;
-  setStates(s: any): void;
+  chessObj: any;
   moveHist: string[];
-  setMoveHist(h: string[]): void;
   submitMove(move: string): Promise<void>;
 };
 
 export default function Chessboard({
-  fenString,
-  setFenString,
-  states,
-  setStates,
   moveHist,
-  setMoveHist,
+  chessObj,
   submitMove,
 }: Props) {
-  const chess = useMemo(() => new Chess(fenString, states), [fenString]);
   const [selectedPiece, setSelectedPiece] = useState<any | null>(null);
   const [moveOptions, setMoveOptions] = useState<string[]>([]);
 
@@ -60,7 +46,7 @@ export default function Chessboard({
     piece: any,
   ) => {
     setSelectedPiece(piece);
-    const options = chess.legalMoves(piece);
+    const options = chessObj.legalMoves(piece);
     console.log(`available moves for piece at ${piece.x}${piece.y}:`, options)
     setMoveOptions(options);
   };
@@ -71,14 +57,12 @@ export default function Chessboard({
     targetY: number,
   ) => {
     if (selectedPiece) {
-      const currTurn = (chess.turn % 2 == 0 ? "black" : "white");
+      const currTurn = (chessObj.turn % 2 == 0 ? "black" : "white");
       if (selectedPiece.color != currTurn) {
-        console.log("currTurn:", currTurn)
-        console.log("selectedPiece.color:", selectedPiece.color)
         return;
       }
 
-      let moveStr = chess.generateMoveStrs(
+      let moveStr = chessObj.generateMoveStrs(
         selectedPiece,
         targetX,
         targetY,
@@ -101,7 +85,7 @@ export default function Chessboard({
         }
       }
 
-      const moveResult = chess.move(moveStr);
+      const moveResult = chessObj.move(moveStr);
       console.log(moveResult);
 
       // long term it would be ideal to have shallowpink status codes
@@ -115,10 +99,6 @@ export default function Chessboard({
       }
 
       await submitMove(moveStr);
-
-      setMoveHist([...moveHist, moveStr]);
-      setFenString(chess.toFEN());
-      setStates(chess.states);
     }
 
     setSelectedPiece(null);
@@ -133,7 +113,7 @@ export default function Chessboard({
     const squareColor = isEvenSquare ? "bg-[#f0d9b5]" : "bg-[#b58863]";
     const moveHere = moveOptions.find((move) => move.match(notation));
 
-    const piece = chess.board.get(x, y);
+    const piece = chessObj.board.get(x, y);
     return (
       <div
         key={notation}
