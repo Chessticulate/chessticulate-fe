@@ -6,11 +6,22 @@ import { getCookie } from "cookies-next"
 
 export default function ProfileInfo() {
   const [info, setInfo] = useState<UserData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
     const token = getCookie("token") as string;
+    if (token) {
+      setToken(token);
+      setIsLoading(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!token) {
+      return;
+    }
     (async () => {
       try {
         const response = await fetch(
@@ -42,22 +53,27 @@ export default function ProfileInfo() {
         setIsLoading(false);
       }
     })();
-  }, []);
+  }, [token]);
 
   if (isLoading) return <>Loading...</>;
   if (error) return <>Error: {error}</>;
-  if (!info) return <>No data</>;
 
-  return (
-    <main className="p-5">
-      <h1>User Info:</h1>
-      <ul>
-        <li>Username: {info.name}</li>
-        <li>Games Played: {info.wins + info.draws + info.losses}</li>
-        <li>Wins: {info.wins}</li>
-        <li>Draws: {info.draws}</li>
-        <li>Losses: {info.losses}</li>
-      </ul>
-    </main>
-  );
+  if (info) {
+    return (
+      <main className="p-5">
+        <h1>User Info:</h1>
+        <ul>
+          <li>Username: {info.name}</li>
+          <li>Games Played: {info.wins + info.draws + info.losses}</li>
+          <li>Wins: {info.wins}</li>
+          <li>Draws: {info.draws}</li>
+          <li>Losses: {info.losses}</li>
+        </ul>
+      </main>
+    );
+  } else {
+    return (
+      <h2>Login or create an account to play other users!</h2>
+    );
+  }
 }

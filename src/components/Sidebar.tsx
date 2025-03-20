@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { TabProps } from "@/types";
 import ProfileInfo from "@/components/ProfileInfo";
 

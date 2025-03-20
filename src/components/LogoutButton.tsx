@@ -9,7 +9,7 @@ export default function LogoutButton() {
   const handleLogout = async () => {
     deleteCookie("token")
     router.push("/");
-    router.refresh();
+    location.reload();
   };
 
   return <button onClick={handleLogout}>Log out</button>;

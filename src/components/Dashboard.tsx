@@ -4,9 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import { GameData, Tab, MoveData, Jwt, InvitationData } from "@/types";
 import { useState, useEffect, useMemo } from "react";
 import { getCookie } from "cookies-next";
-
-import GameRow from "@/components/games/GameRow";
-import InvitationRow from "@/components/invitations/InvitationRow";
+import { redirect } from "next/navigation";
 
 import Chessboard from "@/components/Chessboard";
 
@@ -41,7 +39,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
   const [sentInvitations, setSentInvitations] = useState<InvitationData[]>([]);
 
   useEffect(() => {
-    if (!currentGame) {
+    if (!token || !currentGame) {
       return;
     }
     (async () => {
@@ -70,6 +68,9 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
   }, [currentGame]);
 
   useEffect(() => {
+    if (!token) {
+      return;
+    }
     (async () => {
       const decodedToken = jwtDecode<Jwt>(token);
       try {
@@ -96,6 +97,9 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
   }, []);
 
   useEffect(() => {
+    if (!token) {
+      return;
+    }
     (async () => {
       const decodedToken = jwtDecode<Jwt>(token);
       try {
@@ -122,6 +126,9 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
   }, []);
 
   useEffect(() => {
+    if (!token) {
+      return;
+    }
     (async () => {
       const decodedToken = jwtDecode<Jwt>(token);
       const uid = decodedToken.user_id;
@@ -143,12 +150,15 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
         setRecvdInvitations(result);
 
       } catch (error) {
-        console.error("there was a problem fetching received invitation:", error);
+        console.error("there was a problem fetching received invitations:", error);
       }
     })();
   }, []);
 
   useEffect(() => {
+    if (!token) {
+      return;
+    }
     (async () => {
       const decodedToken = jwtDecode<Jwt>(token);
       const uid = decodedToken.user_id;
@@ -211,12 +221,12 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
               chessObj={sandboxChessObj}
               submitMove={submitMoveSandbox}
             />
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-              Button
-            </button>
           </div>
         );
       default:
+        if (!token) {
+          redirect("/signup");
+        }
         return (
           <div className="flex justify-center pt-2">
             <h1>Not Implemented</h1>
