@@ -26,6 +26,20 @@ export default function Sidebar({ activeTab, setActiveTab }: TabProps) {
         <li className="me-2">
           <button
             onClick={() => {
+              setActiveTab("shallowpink");
+            }}
+            className={`inline-block p-4 rounded-r-lg ${
+              activeTab === "shallowpink"
+                ? "bg-[#1f1f1f]"
+                : "hover:bg-[#1f1f1f]"
+            }`}
+          >
+            Shallow-Pink
+          </button>
+        </li>
+        <li className="me-2">
+          <button
+            onClick={() => {
               setActiveTab("arena");
             }}
             className={`inline-block p-4 rounded-r-lg ${
@@ -61,7 +75,9 @@ export default function Sidebar({ activeTab, setActiveTab }: TabProps) {
           <button
             onClick={() => setActiveTab("invitations")}
             className={`inline-block p-4 rounded-r-lg ${
-              activeTab === "invitations" ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
+              activeTab === "invitations"
+                ? "bg-[#1f1f1f]"
+                : "hover:bg-[#1f1f1f]"
             }`}
           >
             Invitations

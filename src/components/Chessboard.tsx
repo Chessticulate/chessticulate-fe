@@ -1,13 +1,10 @@
 "use client";
 
-import {
-  useMemo,
-  useState,
-  DragEvent,
-  MouseEvent,
-} from "react";
+import { useMemo, useState, DragEvent, MouseEvent } from "react";
 import Image from "next/image";
 import MoveHistory from "@/components/MoveHistory";
+
+const Shallowpink = require("shallowpink");
 
 const pieceMap: Record<string, string> = {
   P: "/img/white-pawn.png",
@@ -25,48 +22,58 @@ const pieceMap: Record<string, string> = {
 };
 
 type Props = {
-  chessObj: any;
+  fen: string;
+  states: Map<number, number>;
   moveHist: string[];
-  submitMove(move: string): Promise<void>;
+  submitMove(
+    fen: string,
+    states: Map<number, number>,
+    move: string,
+  ): Promise<void>;
+};
+
+type Coords = {
+  x: number;
+  y: number;
 };
 
 export default function Chessboard({
+  fen,
+  states,
   moveHist,
-  chessObj,
   submitMove,
 }: Props) {
-  const [selectedPiece, setSelectedPiece] = useState<any | null>(null);
+  const [selectedPiece, setSelectedPiece] = useState<Coords | null>(null);
   const [moveOptions, setMoveOptions] = useState<string[]>([]);
 
   const rows = ["8", "7", "6", "5", "4", "3", "2", "1"];
   const cols = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
-  const handleSelect = (
-    _: MouseEvent<HTMLImageElement>,
-    piece: any,
-  ) => {
-    setSelectedPiece(piece);
+  const handleSelect = (_: MouseEvent<HTMLImageElement>, coords: Coords) => {
+    setSelectedPiece(coords);
+    const chessObj = new Shallowpink(fen, states);
+    const piece = chessObj.board.get(coords.x, coords.y);
     const options = chessObj.legalMoves(piece);
-    console.log(`available moves for piece at ${piece.x}${piece.y}:`, options)
+    console.log(
+      `available moves for piece at (${coords.x},${coords.y}):`,
+      options,
+    );
+    console.log("FEN STRING:", fen, "STATES:", states);
     setMoveOptions(options);
   };
 
-  const handleDrop = async (
-    _: DragEvent<HTMLDivElement>,
-    targetX: number,
-    targetY: number,
-  ) => {
-    if (selectedPiece) {
-      const currTurn = (chessObj.turn % 2 == 0 ? "black" : "white");
-      if (selectedPiece.color != currTurn) {
+  const handleDrop = async (_: DragEvent<HTMLDivElement>, dest: Coords) => {
+    const chessObj = new Shallowpink(fen, states);
+    const piece = selectedPiece
+      ? chessObj.board.get(selectedPiece.x, selectedPiece.y)
+      : null;
+    if (piece) {
+      const currTurn = chessObj.turn % 2 == 0 ? "black" : "white";
+      if (piece.color != currTurn) {
         return;
       }
 
-      let moveStr = chessObj.generateMoveStrs(
-        selectedPiece,
-        targetX,
-        targetY,
-      )[0];
+      let moveStr = chessObj.generateMoveStrs(piece, dest.x, dest.y)[0];
 
       // Castling
       if (["Kg1", "Kc1", "Kg8", "Kc8"].includes(moveStr)) {
@@ -98,7 +105,7 @@ export default function Chessboard({
         return;
       }
 
-      await submitMove(moveStr);
+      await submitMove(chessObj.toFEN(), chessObj.states, moveStr);
     }
 
     setSelectedPiece(null);
@@ -106,20 +113,20 @@ export default function Chessboard({
   };
 
   const renderSquare = (row: string, col: string) => {
-    const notation = `${col}${row}`
+    const notation = `${col}${row}`;
     const x = cols.indexOf(col);
     const y = rows.indexOf(row);
     const isEvenSquare = (x + y) % 2 === 0;
     const squareColor = isEvenSquare ? "bg-[#f0d9b5]" : "bg-[#b58863]";
     const moveHere = moveOptions.find((move) => move.match(notation));
-
+    const chessObj = new Shallowpink(fen, states);
     const piece = chessObj.board.get(x, y);
     return (
       <div
         key={notation}
         className={`relative flex justify-center items-center ${squareColor}`}
         onDragOver={(e) => e.preventDefault()}
-        onDrop={(e) => handleDrop(e, x, y)}
+        onDrop={(e) => handleDrop(e, { x, y })}
       >
         {moveHere &&
           (moveHere.match(/x/) ? (
@@ -134,7 +141,7 @@ export default function Chessboard({
             alt="piece"
             width={72}
             height={72}
-            onMouseDown={(e) => handleSelect(e, piece)}
+            onMouseDown={(e) => handleSelect(e, { x, y })}
           />
         )}
       </div>

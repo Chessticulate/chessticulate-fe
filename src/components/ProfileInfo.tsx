@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { UserData } from "@/types";
-import { getCookie } from "cookies-next"
+import { getCookie } from "cookies-next";
 
 export default function ProfileInfo() {
   const [info, setInfo] = useState<UserData | null>(null);
@@ -25,15 +25,19 @@ export default function ProfileInfo() {
     (async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/users/self`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
+          `${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/users/self`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        });
+        );
 
         if (!response.ok) {
-          throw new Error(`response was not ok: ${response.status} ${response.statusText}`);
+          throw new Error(
+            `response was not ok: ${response.status} ${response.statusText}`,
+          );
         }
 
         const result = await response.json();
@@ -47,7 +51,7 @@ export default function ProfileInfo() {
 
         console.log("user info", result);
       } catch (error) {
-        setError("Failed to fetch data");
+        setError("failed to load profile information");
         console.error("There was a problem fetching user data:", error);
       } finally {
         setIsLoading(false);
@@ -55,25 +59,33 @@ export default function ProfileInfo() {
     })();
   }, [token]);
 
-  if (isLoading) return <>Loading...</>;
-  if (error) return <>Error: {error}</>;
-
-  if (info) {
+  if (error) {
     return (
-      <main className="p-5">
-        <h1>User Info:</h1>
+      <div className="p-5">
+        <em>Error: {error}</em>
+      </div>
+    );
+  } else if (isLoading) {
+    return (
+      <div className="p-5">
+        <em>Loading profile...</em>
+      </div>
+    );
+  } else if (info) {
+    return (
+      <div className="p-5">
+        <h2>{info.name}</h2>
         <ul>
-          <li>Username: {info.name}</li>
           <li>Games Played: {info.wins + info.draws + info.losses}</li>
           <li>Wins: {info.wins}</li>
           <li>Draws: {info.draws}</li>
           <li>Losses: {info.losses}</li>
         </ul>
-      </main>
+      </div>
     );
   } else {
     return (
-      <h2>Login or create an account to play other users!</h2>
+      <h2 className="p-5">Login or create an account to play other users!</h2>
     );
   }
 }

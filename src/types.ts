@@ -1,7 +1,13 @@
 import { Dispatch, SetStateAction } from "react";
 
 // tabs
-export type Tab = "sandbox" | "arena" | "active" | "invitations" | "completed";
+export type Tab =
+  | "sandbox"
+  | "shallowpink"
+  | "arena"
+  | "active"
+  | "invitations"
+  | "completed";
 
 // user types
 export type UserData = {
@@ -98,4 +104,4 @@ export interface Jwt {
   exp: number;
   user_name: string;
   user_id: number;
-};
+}

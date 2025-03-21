@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import InvitationRow from "@/components/invitations/InvitationRow";
 import MoveHistory from "@/components/MoveHistory";
-import { InvitationData, InvitationsWindowProps, Move } from "@/types";
+import { InvitationData, InvitationsWindowProps } from "@/types";
 
 export default function InvitationsWindow({
   currentGame,
