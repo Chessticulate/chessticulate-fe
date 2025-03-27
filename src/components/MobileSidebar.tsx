@@ -1,9 +1,17 @@
 "use client";
 
-import { TabProps } from "@/types";
+import { NavTab } from "@/types"
 import ProfileInfo from "@/components/ProfileInfo";
+import { useState } from "react";
 
-export default function Sidebar({ activeTab, setActiveTab }: TabProps) {
+type Props = {
+  activeTab: NavTab;
+  setActiveTab: (b: NavTab) => void;
+};
+
+export default function MobileSidebar({ activeTab, setActiveTab }: Props) {
+  const [clicked, setClicked] = useState<boolean>(false);
+
   return (
     <div>
       {/* Tabs */}

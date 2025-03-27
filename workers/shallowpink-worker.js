@@ -3,7 +3,7 @@ self.onmessage = async ({ data: { fenStr } }) => {
   try {
     const shallowpinkModule = await import("shallowpink");
     const Shallowpink = shallowpinkModule.default || shallowpinkModule;
-    self.postMessage({ move: new Shallowpink(fenStr).suggestMove(5) });
+    self.postMessage({ move: new Shallowpink(fenStr).suggestMove(3) });
   } catch (error) {
     self.postMessage({ error: error.message });
   }
