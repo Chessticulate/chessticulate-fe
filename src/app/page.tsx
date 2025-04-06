@@ -1,9 +1,13 @@
 import Home from "@/components/Home";
+import { BannerWithMenu } from "@/components/Banner";
 
 export default function Page() {
   return (
-    <div className="h-full w-screen">
-      <Home />
-    </div>
+    <>
+      <BannerWithMenu />
+      <main className="flex justify-center pt-2">
+        <Home />
+      </main>
+    </>
   );
 }

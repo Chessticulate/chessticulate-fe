@@ -22,9 +22,9 @@ export default function MoveHistory({ moves }: MoveHistoryProps) {
       <table className="w-full table-auto">
         <thead className="bg-[#1f1f1f] sticky top-0">
           <tr>
-            <th className="py-2 px-4 text-left">#</th>
-            <th className="py-2 px-4 text-left">White</th>
-            <th className="py-2 px-4 text-left">Black</th>
+            <th className="py-2 px-4 text-left hover:bg-[#fed6ae] hover:text-[#292929]">#</th>
+            <th className="py-2 px-4 text-left hover:bg-[#fed6ae] hover:text-[#292929]">White</th>
+            <th className="py-2 px-4 text-left hover:bg-[#fed6ae] hover:text-[#292929]">Black</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-[#fed6ae]">
