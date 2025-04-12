@@ -47,8 +47,8 @@ const tabs: NavItem[] = [
 export function MobileNav({ activeTab, setActiveTab }: Props) {
   const renderNavItem = ({tab, title}: NavItem) => {
     return (
-      <li>
-        <button onClick={() => setActiveTab(tab)} className={`inline-block p-4 rounded-r-lg ${activeTab === tab ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"}`}>
+      <li key={title}> 
+        <button onClick={() => setActiveTab(tab)} className={`w-full text-left inline-block p-4 hover:bg-[#fed6ae] hover:text-[#292929] ${activeTab === tab ? "bg-[#111111]" : ""}`}>
           {title}
         </button>
       </li>
@@ -66,7 +66,7 @@ export function MobileNav({ activeTab, setActiveTab }: Props) {
 export function DesktopNav({ activeTab, setActiveTab }: Props) {
   const renderNavItem = ({tab, title}: NavItem) => {
     return (
-      <li>
+      <li key={title}>
         <button onClick={() => setActiveTab(tab)} className={`w-full hover:bg-[#fed6ae] hover:text-[#292929] text-left inline-block p-6 ${activeTab === tab ? "bg-[#111111]" : ""}`}>
           {title}
         </button>

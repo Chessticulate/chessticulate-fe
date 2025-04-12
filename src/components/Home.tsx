@@ -1,13 +1,15 @@
 "use client";
 
-import { useState } from "react";
 import { DesktopNav} from "@/components/Navigation";
 import Dashboard from "@/components/Dashboard";
 import { NavTab } from "@/types";
 
-export default function Home() {
-  const [activeTab, setActiveTab] = useState<NavTab>("sandbox");
+type Props = {
+  activeTab: NavTab;
+  setActiveTab(t: NavTab): void;
+};
 
+export default function Home({ activeTab, setActiveTab }: Props) {
   return (
     <div className="flex h-full w-screen">
       <div className="basis-2/12 hidden lg:block">
