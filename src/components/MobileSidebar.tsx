@@ -1,6 +1,6 @@
 "use client";
 
-import { NavTab } from "@/types"
+import { NavTab } from "@/types";
 import ProfileInfo from "@/components/ProfileInfo";
 import { useState } from "react";
 

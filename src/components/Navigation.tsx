@@ -16,39 +16,42 @@ type NavItem = {
 const tabs: NavItem[] = [
   {
     tab: "profile",
-    title: "Profile"
+    title: "Profile",
   },
   {
     tab: "sandbox",
-    title: "Sandbox"
+    title: "Sandbox",
   },
   {
     tab: "shallowpink",
-    title: "ShallowPink"
+    title: "ShallowPink",
   },
   {
     tab: "arena",
-    title: "Arena"
+    title: "Arena",
   },
   {
     tab: "active",
-    title: "Active Games"
+    title: "Active Games",
   },
   {
     tab: "completed",
-    title: "Completed Games"
+    title: "Completed Games",
   },
   {
     tab: "invitations",
-    title: "invitations"
+    title: "invitations",
   },
 ];
 
 export function MobileNav({ activeTab, setActiveTab }: Props) {
-  const renderNavItem = ({tab, title}: NavItem) => {
+  const renderNavItem = ({ tab, title }: NavItem) => {
     return (
-      <li key={title}> 
-        <button onClick={() => setActiveTab(tab)} className={`w-full text-left inline-block p-4 hover:bg-[#fed6ae] hover:text-[#292929] ${activeTab === tab ? "bg-[#111111]" : ""}`}>
+      <li key={title}>
+        <button
+          onClick={() => setActiveTab(tab)}
+          className={`w-full text-left inline-block p-4 hover:bg-[#fed6ae] hover:text-[#292929] ${activeTab === tab ? "bg-[#111111]" : ""}`}
+        >
           {title}
         </button>
       </li>
@@ -61,13 +64,16 @@ export function MobileNav({ activeTab, setActiveTab }: Props) {
       </ul>
     </div>
   );
-};
+}
 
 export function DesktopNav({ activeTab, setActiveTab }: Props) {
-  const renderNavItem = ({tab, title}: NavItem) => {
+  const renderNavItem = ({ tab, title }: NavItem) => {
     return (
       <li key={title}>
-        <button onClick={() => setActiveTab(tab)} className={`w-full hover:bg-[#fed6ae] hover:text-[#292929] text-left inline-block p-6 ${activeTab === tab ? "bg-[#111111]" : ""}`}>
+        <button
+          onClick={() => setActiveTab(tab)}
+          className={`w-full hover:bg-[#fed6ae] hover:text-[#292929] text-left inline-block p-6 ${activeTab === tab ? "bg-[#111111]" : ""}`}
+        >
           {title}
         </button>
       </li>

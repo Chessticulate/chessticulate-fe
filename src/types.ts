@@ -1,7 +1,14 @@
 import { Dispatch, SetStateAction } from "react";
 
 // tabs
-export type NavTab = "profile" | "sandbox"| "shallowpink" | "arena" | "active" | "invitations" | "completed";
+export type NavTab =
+  | "profile"
+  | "sandbox"
+  | "shallowpink"
+  | "arena"
+  | "active"
+  | "invitations"
+  | "completed";
 
 // user types
 export type UserData = {

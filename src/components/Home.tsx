@@ -1,6 +1,6 @@
 "use client";
 
-import { DesktopNav} from "@/components/Navigation";
+import { DesktopNav } from "@/components/Navigation";
 import Dashboard from "@/components/Dashboard";
 import { NavTab } from "@/types";
 
