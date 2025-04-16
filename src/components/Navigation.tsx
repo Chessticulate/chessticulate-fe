@@ -40,7 +40,7 @@ const tabs: NavItem[] = [
   },
   {
     tab: "invitations",
-    title: "invitations",
+    title: "Invitations",
   },
 ];
 
