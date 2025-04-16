@@ -161,11 +161,11 @@ export default function Chessboard({
   );
 
   return (
-    <div className="flex justify-center">
-      <div className="grid grid-cols-8 grid-rows-8 aspect-square size-[700px]">
+    <div className="md:flex lg:flex justify-center">
+      <div className="grid grid-cols-8 grid-rows-8 aspect-square w-screen md:size-[500px] lg:size-[700px]">
         {rows.map((row) => renderRow(row))}
       </div>
-      <div className="flex h-[700px] ml-4">
+      <div className="lg:flex md:flex w-full md:h-[500px] lg:h-[700px] md:ml-4 lg:ml-4">
         <MoveHistory moves={moveHist} />
       </div>
     </div>
