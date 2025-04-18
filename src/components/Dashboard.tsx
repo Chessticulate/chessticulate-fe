@@ -1,7 +1,7 @@
 "use client";
 
 import { jwtDecode } from "jwt-decode";
-import { GameData, Tab, MoveData, Jwt, InvitationData } from "@/types";
+import { GameData, NavTab, MoveData, Jwt, InvitationData } from "@/types";
 import { useState, useEffect, useMemo } from "react";
 import { getCookie } from "cookies-next";
 import { redirect } from "next/navigation";
@@ -14,8 +14,8 @@ import Chessboard from "@/components/Chessboard";
 const Shallowpink = require("shallowpink");
 
 type Props = {
-  activeTab: Tab;
-  setActiveTab(t: Tab): void;
+  activeTab: NavTab;
+  setActiveTab(t: NavTab): void;
 };
 
 export default function Dashboard({ activeTab, setActiveTab }: Props) {

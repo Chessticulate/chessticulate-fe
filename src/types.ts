@@ -1,7 +1,8 @@
 import { Dispatch, SetStateAction } from "react";
 
 // tabs
-export type Tab =
+export type NavTab =
+  | "profile"
   | "sandbox"
   | "shallowpink"
   | "arena"
@@ -73,7 +74,7 @@ export type ChessboardProps = {
 
 export type GamesWindowProps = {
   activeTab: string;
-  setActiveTab: Dispatch<SetStateAction<Tab>>;
+  setActiveTab: Dispatch<SetStateAction<NavTab>>;
   currentGame: GameData | null;
   setCurrentGame: Dispatch<SetStateAction<GameData | null>>;
   moveHist: string[];
@@ -87,8 +88,8 @@ export type Square = {
 };
 
 export type TabProps = {
-  activeTab: Tab;
-  setActiveTab: Dispatch<SetStateAction<Tab>>;
+  activeTab: NavTab;
+  setActiveTab: Dispatch<SetStateAction<NavTab>>;
 };
 
 export type LoginSignupError = {
