@@ -7,6 +7,7 @@ import { getCookie } from "cookies-next";
 import { redirect } from "next/navigation";
 
 import Chessboard from "@/components/Chessboard";
+import ChessboardStatus from "@/components/ChessboardStatus";
 
 // Chess obj has a type of any since shallowpink does not export any types
 // long term it might be best to create a chess interface
@@ -34,6 +35,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
     new Map(),
   );
   const [sandboxMoveHist, setSandboxMoveHist] = useState<string[]>([]);
+  const [sandboxGameStatus, setSandboxGameStatus] = useState<string>("");
 
   const [shallowpinkFenString, setShallowpinkFenString] = useState<string>(
     "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
@@ -45,6 +47,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
   const [shallowpinkColor, setShallowpinkColor] = useState<string>(
     Shallowpink.Color.BLACK,
   );
+  const [shallopinkGameStatus, setShallowpinkGameStatus] = useState<string>("");
 
   const [activeGames, setActiveGames] = useState<GameData[] | null>(null);
   const [completedGames, setCompletedGames] = useState<GameData[] | null>(null);
@@ -248,20 +251,24 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
     fen: string,
     states: Map<number, number>,
     move: string,
+    gameStatus: string,
   ) => {
     setSandboxMoveHist([...sandboxMoveHist, move]);
     setSandboxFenString(fen);
     setSandboxStates(new Map(states));
+    setSandboxGameStatus(gameStatus);
   };
 
   const submitMoveShallowpink = async (
     fen: string,
     states: Map<number, number>,
     move: string,
+    gameStatus: string,
   ) => {
     setShallowpinkMoveHist([...shallowpinkMoveHist, move]);
     setShallowpinkFenString(fen);
     setShallowpinkStates(new Map(states));
+    setShallowpinkGameStatus(gameStatus);
   };
 
   useEffect(() => {
@@ -293,6 +300,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
       setShallowpinkMoveHist([...shallowpinkMoveHist, move]);
       setShallowpinkFenString(chessObj.toFEN());
       setShallowpinkStates(new Map(shallowpinkStates));
+      setShallowpinkGameStatus(result);
     };
   }, [
     shallowpinkFenString,
@@ -305,6 +313,8 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
     switch (activeTab) {
       case "sandbox":
         return (
+          <>
+          <ChessboardStatus fenStr={sandboxFenString} gameStatus={sandboxGameStatus} />
           <div className="flex justify-center pt-2">
             <Chessboard
               fen={sandboxFenString}
@@ -313,6 +323,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
               submitMove={submitMoveSandbox}
             />
           </div>
+          </>
         );
       case "shallowpink":
         return (
