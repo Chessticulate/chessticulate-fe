@@ -2,7 +2,6 @@
 
 import { useMemo, useState, DragEvent, MouseEvent } from "react";
 import Image from "next/image";
-import MoveHistory from "@/components/MoveHistory";
 
 const Shallowpink = require("shallowpink");
 
@@ -24,7 +23,6 @@ const pieceMap: Record<string, string> = {
 type Props = {
   fen: string;
   states: Map<number, number>;
-  moveHist: string[];
   submitMove(
     fen: string,
     states: Map<number, number>,
@@ -41,7 +39,6 @@ type Coords = {
 export default function Chessboard({
   fen,
   states,
-  moveHist,
   submitMove,
 }: Props) {
   const [selectedPiece, setSelectedPiece] = useState<Coords | null>(null);
@@ -183,13 +180,8 @@ export default function Chessboard({
   );
 
   return (
-    <div className="md:flex lg:flex justify-center">
       <div className="grid grid-cols-8 grid-rows-8 aspect-square w-screen md:size-[500px] lg:size-[700px]">
         {rows.map((row) => renderRow(row))}
       </div>
-      <div className="lg:flex md:flex w-full md:h-[500px] lg:h-[700px] md:ml-4 lg:ml-4">
-        <MoveHistory moves={moveHist} />
-      </div>
-    </div>
   );
 }

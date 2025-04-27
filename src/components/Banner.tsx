@@ -51,7 +51,7 @@ function CommonBanner({ title }:CommonBannerProps) {
 
 export function Banner() {
   return (
-    <nav className="flex justify-between items-center px-4 py-2 bg-[#1f1f1f]">
+    <nav className="flex justify-between items-center px-4 py-2 bg-[#151f1f]">
       <CommonBanner title="Say it witcha chess!" />
     </nav>
   );

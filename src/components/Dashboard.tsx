@@ -2,12 +2,15 @@
 
 import { jwtDecode } from "jwt-decode";
 import { GameData, NavTab, MoveData, Jwt, InvitationData } from "@/types";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { getCookie } from "cookies-next";
 import { redirect } from "next/navigation";
 
 import Chessboard from "@/components/Chessboard";
+import FenView from "@/components/FenView";
+import FenInput from "@/components/FenInput";
 import ChessboardStatus from "@/components/ChessboardStatus";
+import MoveHistory from "@/components/MoveHistory";
 
 // Chess obj has a type of any since shallowpink does not export any types
 // long term it might be best to create a chess interface
@@ -313,27 +316,35 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
     switch (activeTab) {
       case "sandbox":
         return (
-          <>
-          <ChessboardStatus fenStr={sandboxFenString} gameStatus={sandboxGameStatus} />
-          <div className="flex justify-center pt-2">
+          <div className="block md:flex lg:flex lg:justify-center w-full overflow-hidden">
             <Chessboard
               fen={sandboxFenString}
               states={sandboxStates}
-              moveHist={sandboxMoveHist}
               submitMove={submitMoveSandbox}
             />
+            <div className="block max-w-full overflow-x-auto">
+              <ChessboardStatus fenStr={sandboxFenString} gameStatus={sandboxGameStatus} />
+              <button
+                onClick={() => setSandboxFenString("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")}
+                className="hover:bg-[#fed6ae] hover:text-[#292929] flex border-2 border-[#fed6ae] bg-[#1f1f1f] p-2 mb-2 md:mt-0 lg:mt-0 md:ml-4 lg:ml-4 w-full md:w-[200px] lg:w-[300px]"
+                >
+                <p className="text-center w-full">Reset board</p>
+              </button>
+              <FenView fenstr={sandboxFenString} />
+              <FenInput setFenString={setSandboxFenString} />
+              <MoveHistory moves={sandboxMoveHist} />
+            </div>
           </div>
-          </>
         );
       case "shallowpink":
         return (
-          <div className="flex justify-center pt-2">
+          <div className="block md:flex lg:flex justify-center">
             <Chessboard
               fen={shallowpinkFenString}
               states={shallowpinkStates}
-              moveHist={shallowpinkMoveHist}
               submitMove={submitMoveShallowpink}
             />
+            <MoveHistory moves={sandboxMoveHist} />
           </div>
         );
       default:

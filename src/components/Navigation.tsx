@@ -1,7 +1,6 @@
 "use client";
 
 import { NavTab } from "@/types";
-import ProfileInfo from "@/components/ProfileInfo";
 
 type NavItem = {
   tab: NavTab;
@@ -87,7 +86,7 @@ export function DesktopNav({ activeTab, setActiveTab }: DesktopNavProps) {
       <li key={title}>
         <button
           onClick={() => setActiveTab(tab)}
-          className={`w-full hover:bg-[#fed6ae] hover:text-[#292929] text-left inline-block p-6 ${activeTab === tab ? "bg-[#111111]" : ""}`}
+          className={`w-full hover:bg-[#fed6ae] hover:text-[#292929] text-left inline-block p-6 ${activeTab === tab ? "bg-[#1f1f1f]" : ""}`}
         >
           {title}
         </button>
