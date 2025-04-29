@@ -7,6 +7,7 @@ import { getCookie } from "cookies-next";
 import { redirect } from "next/navigation";
 
 import Chessboard from "@/components/Chessboard";
+import ResetButton from "@/components/ResetButton";
 import FenView from "@/components/FenView";
 import FenInput from "@/components/FenInput";
 import ChessboardStatus from "@/components/ChessboardStatus";
@@ -322,15 +323,18 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
               states={sandboxStates}
               submitMove={submitMoveSandbox}
             />
-            <div className="block max-w-full overflow-x-auto">
-              <ChessboardStatus fenStr={sandboxFenString} gameStatus={sandboxGameStatus} />
-              <button
-                onClick={() => setSandboxFenString("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")}
-                className="hover:bg-[#fed6ae] hover:text-[#292929] flex border-2 border-[#fed6ae] bg-[#1f1f1f] p-2 mb-2 md:mt-0 lg:mt-0 md:ml-4 lg:ml-4 w-full md:w-[200px] lg:w-[300px]"
-                >
-                <p className="text-center w-full">Reset board</p>
-              </button>
-              <FenView fenstr={sandboxFenString} />
+            <div className="block max-w-full">
+              <div className="flex md:block lg:block w-full">
+                <div className="ml-2 mt-2 md:m-0 lg:m-0">
+                  <ChessboardStatus fenStr={sandboxFenString} gameStatus={sandboxGameStatus} />
+                </div>
+                <div className="ml-2 mr-2 mt-4 md:m-0 lg:m-0 lg:mb-2">
+                  <ResetButton setFenString={setSandboxFenString} setMoveHistory={setSandboxMoveHist} setStates={setSandboxStates} />
+                </div>
+                <div className="mr-2 mt-2 md:mr-0 lg:mr-0">
+                  <FenView fenstr={sandboxFenString} />
+                </div>
+              </div>
               <FenInput setFenString={setSandboxFenString} />
               <MoveHistory moves={sandboxMoveHist} />
             </div>

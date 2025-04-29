@@ -180,7 +180,7 @@ export default function Chessboard({
   );
 
   return (
-      <div className="grid grid-cols-8 grid-rows-8 aspect-square w-screen md:size-[500px] lg:size-[700px]">
+      <div className="grid grid-cols-8 grid-rows-8 aspect-square w-screen md:size-[650px] lg:size-[750px]">
         {rows.map((row) => renderRow(row))}
       </div>
   );
