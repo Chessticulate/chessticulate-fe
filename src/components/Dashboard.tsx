@@ -317,14 +317,14 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
     switch (activeTab) {
       case "sandbox":
         return (
-          <div className="block md:flex lg:flex lg:justify-center w-full overflow-hidden">
+          <div className="block md:flex lg:flex lg:justify-center w-full">
             <Chessboard
               fen={sandboxFenString}
               states={sandboxStates}
               submitMove={submitMoveSandbox}
             />
             <div className="block max-w-full">
-              <div className="flex md:block lg:block w-full">
+              <div className="flex md:block lg:block">
                 <div className="ml-2 mt-2 md:m-0 lg:m-0">
                   <ChessboardStatus fenStr={sandboxFenString} gameStatus={sandboxGameStatus} />
                 </div>
