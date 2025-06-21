@@ -59,16 +59,10 @@ export default function Chessboard({
     }
     setSelectedPiece(coords);
     const options = chessObj.legalMoves(piece);
-    console.log(
-      `available moves for piece at (${coords.x},${coords.y}):`,
-      options,
-    );
-    console.log("FEN STRING:", fen, "STATES:", states);
     setMoveOptions(options);
   };
 
   const handleSelect = (_: MouseEvent<any>, coords: Coords) => {
-    console.log("CLICKED THIS SHIT", coords);
     if (selectedPiece == null) {
       selectNewPiece(coords);
     } else {
@@ -84,6 +78,8 @@ export default function Chessboard({
     if (piece) {
       const currTurn = chessObj.turn % 2 == 0 ? "black" : "white";
       if (piece.color != currTurn) {
+        setSelectedPiece(null);
+        setMoveOptions([]);
         return;
       }
 
@@ -110,8 +106,6 @@ export default function Chessboard({
       if (moveOptions.includes(moveStr)) {
         moveResult = chessObj.move(moveStr);
       }
-
-      console.log(moveResult);
 
       // long term it would be ideal to have shallowpink status codes
       // or some other way of grouping status types

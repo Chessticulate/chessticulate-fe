@@ -51,7 +51,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
   const [shallowpinkColor, setShallowpinkColor] = useState<string>(
     Shallowpink.Color.BLACK,
   );
-  const [shallopinkGameStatus, setShallowpinkGameStatus] = useState<string>("");
+  const [shallowpinkGameStatus, setShallowpinkGameStatus] = useState<string>("");
 
   const [activeGames, setActiveGames] = useState<GameData[] | null>(null);
   const [completedGames, setCompletedGames] = useState<GameData[] | null>(null);
@@ -317,24 +317,22 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
     switch (activeTab) {
       case "sandbox":
         return (
-          <div className="block md:flex lg:flex lg:justify-center w-full">
+          <div className="block md:flex lg:flex lg:justify-center">
             <Chessboard
               fen={sandboxFenString}
               states={sandboxStates}
               submitMove={submitMoveSandbox}
             />
-            <div className="block max-w-full">
+            <div className="block">
               <div className="flex md:block lg:block">
-                <div className="ml-2 mt-2 md:m-0 lg:m-0">
+                <div className="ml-2 mt-2 md:m-0 lg:m-0 flex-1">
                   <ChessboardStatus fenStr={sandboxFenString} gameStatus={sandboxGameStatus} />
                 </div>
-                <div className="ml-2 mr-2 mt-4 md:m-0 lg:m-0 lg:mb-2">
+                <div className="ml-2 mr-2 mt-4 md:m-0 lg:m-0 lg:mb-2 flex-1">
                   <ResetButton setFenString={setSandboxFenString} setMoveHistory={setSandboxMoveHist} setStates={setSandboxStates} />
                 </div>
-                <div className="mr-2 mt-2 md:mr-0 lg:mr-0">
-                  <FenView fenstr={sandboxFenString} />
-                </div>
               </div>
+              <FenView fenstr={sandboxFenString} />
               <FenInput setFenString={setSandboxFenString} />
               <MoveHistory moves={sandboxMoveHist} />
             </div>
@@ -342,13 +340,25 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
         );
       case "shallowpink":
         return (
-          <div className="block md:flex lg:flex justify-center">
+          <div className="block md:flex lg:flex lg:justify-center">
             <Chessboard
               fen={shallowpinkFenString}
               states={shallowpinkStates}
               submitMove={submitMoveShallowpink}
             />
-            <MoveHistory moves={sandboxMoveHist} />
+            <div className="block">
+              <div className="flex md:block lg:block">
+                <div className="ml-2 mt-2 md:m-0 lg:m-0 flex-1">
+                  <ChessboardStatus fenStr={shallowpinkFenString} gameStatus={shallowpinkGameStatus} />
+                </div>
+                <div className="ml-2 mr-2 mt-4 md:m-0 lg:m-0 lg:mb-2 flex-1">
+                  <ResetButton setFenString={setShallowpinkFenString} setMoveHistory={setShallowpinkMoveHist} setStates={setShallowpinkStates} />
+                </div>
+              </div>
+              <FenView fenstr={shallowpinkFenString} />
+              <FenInput setFenString={setShallowpinkFenString} />
+              <MoveHistory moves={shallowpinkMoveHist} />
+            </div>
           </div>
         );
       default:
