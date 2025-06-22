@@ -277,6 +277,9 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
   };
 
   useEffect(() => {
+    if (shallowpinkGameStatus === "game over") {
+      return;
+    }
     const whomst =
       shallowpinkFenString.split(" ")[1] === "w"
         ? Shallowpink.Color.WHITE
@@ -312,6 +315,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
     shallowpinkMoveHist,
     shallowpinkStates,
     shallowpinkColor,
+    shallowpinkGameStatus,
   ]);
 
   const renderContent = () => {
