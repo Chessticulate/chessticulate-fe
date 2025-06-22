@@ -11,7 +11,7 @@ type CommonBannerProps = {
   title: string;
 };
 
-function CommonBanner({ title }:CommonBannerProps) {
+function CommonBanner({ title }: CommonBannerProps) {
   const token = getCookie("token");
   return (
     <>
@@ -95,10 +95,14 @@ export function BannerWithMenu({ activeTab, setActiveTab }: Props) {
         <div
           className={`${visible ? "flex" : "hidden"} bg-[#1f1f1f] absolute left-0 top-full mt-2 z-50`}
         >
-          <MobileNav activeTab={activeTab} setActiveTab={setActiveTab} setVisible={setVisible} />
+          <MobileNav
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            setVisible={setVisible}
+          />
         </div>
       </div>
-        <CommonBanner title={getNavTabTitle(activeTab)} />
+      <CommonBanner title={getNavTabTitle(activeTab)} />
     </nav>
   );
 }

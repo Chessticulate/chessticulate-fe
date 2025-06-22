@@ -39,4 +39,4 @@ export default function ChessboardStatus({ fenStr, gameStatus }: Props) {
       <p className="text-center whitespace-nowrap">{statusMsg}</p>
     </div>
   );
-};
+}

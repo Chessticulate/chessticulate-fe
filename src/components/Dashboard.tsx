@@ -51,7 +51,8 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
   const [shallowpinkColor, setShallowpinkColor] = useState<string>(
     Shallowpink.Color.BLACK,
   );
-  const [shallowpinkGameStatus, setShallowpinkGameStatus] = useState<string>("");
+  const [shallowpinkGameStatus, setShallowpinkGameStatus] =
+    useState<string>("");
 
   const [activeGames, setActiveGames] = useState<GameData[] | null>(null);
   const [completedGames, setCompletedGames] = useState<GameData[] | null>(null);
@@ -326,10 +327,17 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
             <div className="block">
               <div className="flex md:block lg:block">
                 <div className="ml-2 mt-2 md:m-0 lg:m-0 flex-1">
-                  <ChessboardStatus fenStr={sandboxFenString} gameStatus={sandboxGameStatus} />
+                  <ChessboardStatus
+                    fenStr={sandboxFenString}
+                    gameStatus={sandboxGameStatus}
+                  />
                 </div>
                 <div className="ml-2 mr-2 mt-4 md:m-0 lg:m-0 lg:mb-2 flex-1">
-                  <ResetButton setFenString={setSandboxFenString} setMoveHistory={setSandboxMoveHist} setStates={setSandboxStates} />
+                  <ResetButton
+                    setFenString={setSandboxFenString}
+                    setMoveHistory={setSandboxMoveHist}
+                    setStates={setSandboxStates}
+                  />
                 </div>
               </div>
               <FenView fenstr={sandboxFenString} />
@@ -349,10 +357,17 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
             <div className="block">
               <div className="flex md:block lg:block">
                 <div className="ml-2 mt-2 md:m-0 lg:m-0 flex-1">
-                  <ChessboardStatus fenStr={shallowpinkFenString} gameStatus={shallowpinkGameStatus} />
+                  <ChessboardStatus
+                    fenStr={shallowpinkFenString}
+                    gameStatus={shallowpinkGameStatus}
+                  />
                 </div>
                 <div className="ml-2 mr-2 mt-4 md:m-0 lg:m-0 lg:mb-2 flex-1">
-                  <ResetButton setFenString={setShallowpinkFenString} setMoveHistory={setShallowpinkMoveHist} setStates={setShallowpinkStates} />
+                  <ResetButton
+                    setFenString={setShallowpinkFenString}
+                    setMoveHistory={setShallowpinkMoveHist}
+                    setStates={setShallowpinkStates}
+                  />
                 </div>
               </div>
               <FenView fenstr={shallowpinkFenString} />

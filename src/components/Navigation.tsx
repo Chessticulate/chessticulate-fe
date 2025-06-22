@@ -53,12 +53,19 @@ type MobileNavProps = {
   setVisible: (b: boolean) => void;
 };
 
-export function MobileNav({ activeTab, setActiveTab, setVisible }: MobileNavProps) {
+export function MobileNav({
+  activeTab,
+  setActiveTab,
+  setVisible,
+}: MobileNavProps) {
   const renderNavItem = ({ tab, title }: NavItem) => {
     return (
       <li key={title}>
         <button
-          onClick={() => {setActiveTab(tab); setVisible(false);}}
+          onClick={() => {
+            setActiveTab(tab);
+            setVisible(false);
+          }}
           className={`w-full text-left inline-block p-4 hover:bg-[#fed6ae] hover:text-[#292929] ${activeTab === tab ? "bg-[#111111]" : ""}`}
         >
           {title}

@@ -36,11 +36,7 @@ type Coords = {
   y: number;
 };
 
-export default function Chessboard({
-  fen,
-  states,
-  submitMove,
-}: Props) {
+export default function Chessboard({ fen, states, submitMove }: Props) {
   const [selectedPiece, setSelectedPiece] = useState<Coords | null>(null);
   const [moveOptions, setMoveOptions] = useState<string[]>([]);
 
@@ -70,7 +66,10 @@ export default function Chessboard({
     }
   };
 
-  const handleDrop = async (_: DragEvent<HTMLDivElement> | null, dest: Coords) => {
+  const handleDrop = async (
+    _: DragEvent<HTMLDivElement> | null,
+    dest: Coords,
+  ) => {
     const chessObj = new Shallowpink(fen, states);
     const piece = selectedPiece
       ? chessObj.board.get(selectedPiece.x, selectedPiece.y)
@@ -174,8 +173,8 @@ export default function Chessboard({
   );
 
   return (
-      <div className="grid grid-cols-8 grid-rows-8 aspect-square w-screen md:size-[650px] lg:size-[750px]">
-        {rows.map((row) => renderRow(row))}
-      </div>
+    <div className="grid grid-cols-8 grid-rows-8 aspect-square w-screen md:size-[650px] lg:size-[750px]">
+      {rows.map((row) => renderRow(row))}
+    </div>
   );
 }

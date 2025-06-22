@@ -1,7 +1,7 @@
 "use client";
 
 import { MoveHistoryProps } from "@/types";
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 export default function MoveHistory({ moves }: MoveHistoryProps) {
   // Format moves into an array of objects with moveNumber, white, and black
@@ -27,10 +27,12 @@ export default function MoveHistory({ moves }: MoveHistoryProps) {
   });
 
   return (
-
     <div className="mr-2 ml-2 mt-4 md:m-0 lg:m-0">
       <div className="w-full flex h-[180px] md:h-[295px] lg:h-[540px] md:ml-4 lg:ml-4">
-        <div ref={tableScrollRef} className="border-2 border-[#fed6ae] bg-[#1f1f1f] p-4 w-full md:mt-0 lg:mt-0 overflow-y-auto md:w-[200px] lg:w-[300px]">
+        <div
+          ref={tableScrollRef}
+          className="border-2 border-[#fed6ae] bg-[#1f1f1f] p-4 w-full md:mt-0 lg:mt-0 overflow-y-auto md:w-[200px] lg:w-[300px]"
+        >
           <table className="w-full table-auto">
             <thead className="bg-[#1f1f1f] sticky top-0">
               <tr>
