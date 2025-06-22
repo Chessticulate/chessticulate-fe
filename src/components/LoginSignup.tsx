@@ -10,6 +10,7 @@ import { LoginSignupError } from "@/types";
 import emailRegex from "../utils/emailRegex";
 
 async function checkExists(key: string, value: string): Promise<boolean> {
+  console.log(process.env);
   const response = await fetch(
     process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL + `/users/${key}/${value}`,
   );
