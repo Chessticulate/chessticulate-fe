@@ -2,7 +2,6 @@
 
 import { useMemo, useState, DragEvent, MouseEvent } from "react";
 import Image from "next/image";
-import MoveHistory from "@/components/MoveHistory";
 
 const Shallowpink = require("shallowpink");
 
@@ -24,11 +23,11 @@ const pieceMap: Record<string, string> = {
 type Props = {
   fen: string;
   states: Map<number, number>;
-  moveHist: string[];
   submitMove(
     fen: string,
     states: Map<number, number>,
     move: string,
+    gameStatus: string,
   ): Promise<void>;
 };
 
@@ -37,32 +36,40 @@ type Coords = {
   y: number;
 };
 
-export default function Chessboard({
-  fen,
-  states,
-  moveHist,
-  submitMove,
-}: Props) {
+export default function Chessboard({ fen, states, submitMove }: Props) {
   const [selectedPiece, setSelectedPiece] = useState<Coords | null>(null);
   const [moveOptions, setMoveOptions] = useState<string[]>([]);
 
   const rows = ["8", "7", "6", "5", "4", "3", "2", "1"];
   const cols = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
-  const handleSelect = (_: MouseEvent<HTMLImageElement>, coords: Coords) => {
-    setSelectedPiece(coords);
+  const selectNewPiece = (coords: Coords) => {
     const chessObj = new Shallowpink(fen, states);
     const piece = chessObj.board.get(coords.x, coords.y);
+    if (piece === null) {
+      return;
+    }
+    const currTurn = chessObj.turn % 2 == 0 ? "black" : "white";
+    if (piece.color != currTurn) {
+      return;
+    }
+    setSelectedPiece(coords);
     const options = chessObj.legalMoves(piece);
-    console.log(
-      `available moves for piece at (${coords.x},${coords.y}):`,
-      options,
-    );
-    console.log("FEN STRING:", fen, "STATES:", states);
     setMoveOptions(options);
   };
 
-  const handleDrop = async (_: DragEvent<HTMLDivElement>, dest: Coords) => {
+  const handleSelect = (_: MouseEvent<any>, coords: Coords) => {
+    if (selectedPiece == null) {
+      selectNewPiece(coords);
+    } else {
+      handleDrop(null, coords);
+    }
+  };
+
+  const handleDrop = async (
+    _: DragEvent<HTMLDivElement> | null,
+    dest: Coords,
+  ) => {
     const chessObj = new Shallowpink(fen, states);
     const piece = selectedPiece
       ? chessObj.board.get(selectedPiece.x, selectedPiece.y)
@@ -70,6 +77,8 @@ export default function Chessboard({
     if (piece) {
       const currTurn = chessObj.turn % 2 == 0 ? "black" : "white";
       if (piece.color != currTurn) {
+        setSelectedPiece(null);
+        setMoveOptions([]);
         return;
       }
 
@@ -92,8 +101,10 @@ export default function Chessboard({
         }
       }
 
-      const moveResult = chessObj.move(moveStr);
-      console.log(moveResult);
+      let moveResult = "invalid move";
+      if (moveOptions.includes(moveStr)) {
+        moveResult = chessObj.move(moveStr);
+      }
 
       // long term it would be ideal to have shallowpink status codes
       // or some other way of grouping status types
@@ -102,10 +113,17 @@ export default function Chessboard({
         moveResult == "player is still in check" ||
         moveResult == "move puts player in check"
       ) {
+        const piece = chessObj.board.get(dest.x, dest.y);
+        if (piece && piece.color === currTurn) {
+          selectNewPiece(dest);
+          return;
+        }
+        setSelectedPiece(null);
+        setMoveOptions([]);
         return;
       }
 
-      await submitMove(chessObj.toFEN(), chessObj.states, moveStr);
+      await submitMove(chessObj.toFEN(), chessObj.states, moveStr, moveResult);
     }
 
     setSelectedPiece(null);
@@ -127,6 +145,7 @@ export default function Chessboard({
         className={`relative flex justify-center items-center ${squareColor}`}
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => handleDrop(e, { x, y })}
+        onMouseDown={(e) => handleSelect(e, { x, y })}
       >
         {moveHere &&
           (moveHere.match(/x/) ? (
@@ -141,7 +160,6 @@ export default function Chessboard({
             alt="piece"
             width={72}
             height={72}
-            onMouseDown={(e) => handleSelect(e, { x, y })}
           />
         )}
       </div>
@@ -155,13 +173,8 @@ export default function Chessboard({
   );
 
   return (
-    <div className="md:flex lg:flex justify-center">
-      <div className="grid grid-cols-8 grid-rows-8 aspect-square w-screen md:size-[500px] lg:size-[700px]">
-        {rows.map((row) => renderRow(row))}
-      </div>
-      <div className="lg:flex md:flex w-full md:h-[500px] lg:h-[700px] md:ml-4 lg:ml-4">
-        <MoveHistory moves={moveHist} />
-      </div>
+    <div className="grid grid-cols-8 grid-rows-8 aspect-square w-screen md:size-[650px] lg:size-[750px]">
+      {rows.map((row) => renderRow(row))}
     </div>
   );
 }

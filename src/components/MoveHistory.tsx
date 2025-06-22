@@ -1,6 +1,7 @@
 "use client";
 
 import { MoveHistoryProps } from "@/types";
+import { useEffect, useRef } from "react";
 
 export default function MoveHistory({ moves }: MoveHistoryProps) {
   // Format moves into an array of objects with moveNumber, white, and black
@@ -17,38 +18,53 @@ export default function MoveHistory({ moves }: MoveHistoryProps) {
     return row;
   }, []);
 
+  const tableScrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (tableScrollRef.current) {
+      tableScrollRef.current.scrollTop = tableScrollRef.current.scrollHeight;
+    }
+  });
+
   return (
-    <div className="border-2 border-[#fed6ae] bg-[#1f1f1f] p-4 mt-2 md:mt-0 lg:mt-0 overflow-y-auto">
-      <table className="w-full table-auto">
-        <thead className="bg-[#1f1f1f] sticky top-0">
-          <tr>
-            <th className="py-2 px-2 text-left hover:bg-[#fed6ae] hover:text-[#292929] text-sm md:text-lg lg:text-xl">
-              #
-            </th>
-            <th className="py-2 px-2 text-left hover:bg-[#fed6ae] hover:text-[#292929] text-sm md:text-lg lg:text-xl">
-              White
-            </th>
-            <th className="py-2 px-2 text-left hover:bg-[#fed6ae] hover:text-[#292929] text-sm md:text-lg lg:text-xl">
-              Black
-            </th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-[#fed6ae]">
-          {formattedMoves.map((move, index) => (
-            <tr key={index}>
-              <td className="py-2 px-4 text-sm md:text-lg lg:text-xl">
-                {move.moveNumber}
-              </td>
-              <td className="py-2 px-4 text-sm md:text-lg lg:text-xl">
-                {move.white}
-              </td>
-              <td className="py-2 px-4 text-sm md:text-lg lg:text-xl">
-                {move.black || ""}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="mr-2 ml-2 mt-4 md:m-0 lg:m-0">
+      <div className="w-full flex h-[180px] md:h-[295px] lg:h-[540px] md:ml-4 lg:ml-4">
+        <div
+          ref={tableScrollRef}
+          className="border-2 border-[#fed6ae] bg-[#1f1f1f] p-4 w-full md:mt-0 lg:mt-0 overflow-y-auto md:w-[200px] lg:w-[300px]"
+        >
+          <table className="w-full table-auto">
+            <thead className="bg-[#1f1f1f] sticky top-0">
+              <tr>
+                <th className="py-2 px-2 text-left text-sm md:text-lg lg:text-xl">
+                  #
+                </th>
+                <th className="py-2 px-2 text-left text-sm md:text-lg lg:text-xl">
+                  White
+                </th>
+                <th className="py-2 px-2 text-left text-sm md:text-lg lg:text-xl">
+                  Black
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#fed6ae]">
+              {formattedMoves.map((move, index) => (
+                <tr key={index}>
+                  <td className="py-2 px-4 text-sm md:text-lg lg:text-xl">
+                    {move.moveNumber}
+                  </td>
+                  <td className="py-2 px-4 text-sm md:text-lg lg:text-xl">
+                    {move.white}
+                  </td>
+                  <td className="py-2 px-4 text-sm md:text-lg lg:text-xl">
+                    {move.black || ""}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }

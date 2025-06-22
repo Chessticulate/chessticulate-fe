@@ -2,11 +2,16 @@
 
 import { jwtDecode } from "jwt-decode";
 import { GameData, NavTab, MoveData, Jwt, InvitationData } from "@/types";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { getCookie } from "cookies-next";
 import { redirect } from "next/navigation";
 
 import Chessboard from "@/components/Chessboard";
+import ResetButton from "@/components/ResetButton";
+import FenView from "@/components/FenView";
+import FenInput from "@/components/FenInput";
+import ChessboardStatus from "@/components/ChessboardStatus";
+import MoveHistory from "@/components/MoveHistory";
 
 // Chess obj has a type of any since shallowpink does not export any types
 // long term it might be best to create a chess interface
@@ -34,6 +39,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
     new Map(),
   );
   const [sandboxMoveHist, setSandboxMoveHist] = useState<string[]>([]);
+  const [sandboxGameStatus, setSandboxGameStatus] = useState<string>("");
 
   const [shallowpinkFenString, setShallowpinkFenString] = useState<string>(
     "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
@@ -45,6 +51,8 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
   const [shallowpinkColor, setShallowpinkColor] = useState<string>(
     Shallowpink.Color.BLACK,
   );
+  const [shallowpinkGameStatus, setShallowpinkGameStatus] =
+    useState<string>("");
 
   const [activeGames, setActiveGames] = useState<GameData[] | null>(null);
   const [completedGames, setCompletedGames] = useState<GameData[] | null>(null);
@@ -248,20 +256,24 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
     fen: string,
     states: Map<number, number>,
     move: string,
+    gameStatus: string,
   ) => {
     setSandboxMoveHist([...sandboxMoveHist, move]);
     setSandboxFenString(fen);
     setSandboxStates(new Map(states));
+    setSandboxGameStatus(gameStatus);
   };
 
   const submitMoveShallowpink = async (
     fen: string,
     states: Map<number, number>,
     move: string,
+    gameStatus: string,
   ) => {
     setShallowpinkMoveHist([...shallowpinkMoveHist, move]);
     setShallowpinkFenString(fen);
     setShallowpinkStates(new Map(states));
+    setShallowpinkGameStatus(gameStatus);
   };
 
   useEffect(() => {
@@ -293,6 +305,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
       setShallowpinkMoveHist([...shallowpinkMoveHist, move]);
       setShallowpinkFenString(chessObj.toFEN());
       setShallowpinkStates(new Map(shallowpinkStates));
+      setShallowpinkGameStatus(result);
     };
   }, [
     shallowpinkFenString,
@@ -305,24 +318,62 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
     switch (activeTab) {
       case "sandbox":
         return (
-          <div className="flex justify-center pt-2">
+          <div className="block md:flex lg:flex lg:justify-center">
             <Chessboard
               fen={sandboxFenString}
               states={sandboxStates}
-              moveHist={sandboxMoveHist}
               submitMove={submitMoveSandbox}
             />
+            <div className="block">
+              <div className="flex md:block lg:block">
+                <div className="ml-2 mt-2 md:m-0 lg:m-0 flex-1">
+                  <ChessboardStatus
+                    fenStr={sandboxFenString}
+                    gameStatus={sandboxGameStatus}
+                  />
+                </div>
+                <div className="ml-2 mr-2 mt-4 md:m-0 lg:m-0 lg:mb-2 flex-1">
+                  <ResetButton
+                    setFenString={setSandboxFenString}
+                    setMoveHistory={setSandboxMoveHist}
+                    setStates={setSandboxStates}
+                  />
+                </div>
+              </div>
+              <FenView fenstr={sandboxFenString} />
+              <FenInput setFenString={setSandboxFenString} />
+              <MoveHistory moves={sandboxMoveHist} />
+            </div>
           </div>
         );
       case "shallowpink":
         return (
-          <div className="flex justify-center pt-2">
+          <div className="block md:flex lg:flex lg:justify-center">
             <Chessboard
               fen={shallowpinkFenString}
               states={shallowpinkStates}
-              moveHist={shallowpinkMoveHist}
               submitMove={submitMoveShallowpink}
             />
+            <div className="block">
+              <div className="flex md:block lg:block">
+                <div className="ml-2 mt-2 md:m-0 lg:m-0 flex-1">
+                  <ChessboardStatus
+                    fenStr={shallowpinkFenString}
+                    gameStatus={shallowpinkGameStatus}
+                  />
+                </div>
+                <div className="ml-2 mr-2 mt-4 md:m-0 lg:m-0 lg:mb-2 flex-1">
+                  <ResetButton
+                    setFenString={setShallowpinkFenString}
+                    setMoveHistory={setShallowpinkMoveHist}
+                    setStates={setShallowpinkStates}
+                  />
+                </div>
+              </div>
+              <FenView fenstr={shallowpinkFenString} />
+              <FenInput setFenString={setShallowpinkFenString} />
+              <MoveHistory moves={shallowpinkMoveHist} />
+            </div>
           </div>
         );
       default:

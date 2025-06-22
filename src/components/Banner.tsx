@@ -3,11 +3,15 @@
 import { getCookie } from "cookies-next";
 import LogoutButton from "./LogoutButton";
 import Link from "next/link";
-import { MobileNav } from "./Navigation";
+import { MobileNav, getNavTabTitle } from "./Navigation";
 import { NavTab } from "@/types";
 import { useState } from "react";
 
-function CommonBanner() {
+type CommonBannerProps = {
+  title: string;
+};
+
+function CommonBanner({ title }: CommonBannerProps) {
   const token = getCookie("token");
   return (
     <>
@@ -16,7 +20,7 @@ function CommonBanner() {
         passHref
         className="text-xl md:text-2xl lg:text-4xl hover:bg-[#fed6ae] hover:text-[#292929]"
       >
-        Chessticulate
+        Chessticulate - {title}
       </Link>
       <div className="md:text-xl lg:text-2xl py-3 pr-10">
         {!token ? (
@@ -47,8 +51,8 @@ function CommonBanner() {
 
 export function Banner() {
   return (
-    <nav className="flex justify-between items-center px-4 py-2 bg-[#1f1f1f]">
-      {CommonBanner()}
+    <nav className="flex justify-between items-center px-4 py-2 bg-[#151f1f]">
+      <CommonBanner title="Say it witcha chess!" />
     </nav>
   );
 }
@@ -91,10 +95,14 @@ export function BannerWithMenu({ activeTab, setActiveTab }: Props) {
         <div
           className={`${visible ? "flex" : "hidden"} bg-[#1f1f1f] absolute left-0 top-full mt-2 z-50`}
         >
-          <MobileNav activeTab={activeTab} setActiveTab={setActiveTab} />
+          <MobileNav
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            setVisible={setVisible}
+          />
         </div>
       </div>
-      {CommonBanner()}
+      <CommonBanner title={getNavTabTitle(activeTab)} />
     </nav>
   );
 }
