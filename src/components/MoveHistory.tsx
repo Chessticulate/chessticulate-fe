@@ -33,7 +33,7 @@ export default function MoveHistory({ moves, isShallowpink }: Props) {
   return (
     <div className="mr-2 ml-2 mt-4 md:m-0 lg:m-0">
       <div
-        className={`w-full flex h-[180px] md:h-[390px] lg:h-[${isShallowpink ? "440" : "490"}px] md:ml-4 lg:ml-4`}
+        className={`w-full flex h-[180px] md:h-[390px] ${isShallowpink ? "lg:h-[440px]" : "lg:h-[490px]"} md:ml-4 lg:ml-4`}
       >
         <div
           ref={tableScrollRef}
