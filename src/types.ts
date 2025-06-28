@@ -9,7 +9,7 @@ export type NavTab =
   | "active"
   | "invitations"
   | "completed";
- 
+
 export type Color = "white" | "black";
 
 // user types

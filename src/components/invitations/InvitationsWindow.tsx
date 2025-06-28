@@ -104,7 +104,7 @@ export default function InvitationsWindow({
           </>
         ) : (
           <div>
-            <MoveHistory moves={moveHist} />
+            <MoveHistory moves={moveHist} isShallowpink={false} />
           </div>
         )}
       </div>

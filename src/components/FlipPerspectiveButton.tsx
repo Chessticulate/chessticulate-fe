@@ -3,7 +3,6 @@ type Props = {
 };
 
 export default function ResetButton({ flipPerspective }: Props) {
-
   return (
     <button
       onClick={flipPerspective}

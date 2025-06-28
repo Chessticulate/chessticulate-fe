@@ -1,7 +1,14 @@
 "use client";
 
 import { jwtDecode } from "jwt-decode";
-import { Color, GameData, NavTab, MoveData, Jwt, InvitationData } from "@/types";
+import {
+  Color,
+  GameData,
+  NavTab,
+  MoveData,
+  Jwt,
+  InvitationData,
+} from "@/types";
 import { useState, useEffect } from "react";
 import { getCookie } from "cookies-next";
 import { redirect } from "next/navigation";
@@ -54,8 +61,10 @@ export default function Dashboard({ activeTab }: Props) {
   );
   const [shallowpinkGameStatus, setShallowpinkGameStatus] =
     useState<string>("");
-  const [shallowpinkPerspective, setShallowpinkPerspective] = useState<Color>("white");
-  const [shallowpinkCurrentTeam, setShallowpinkCurrentTeam] = useState<Color>("white");
+  const [shallowpinkPerspective, setShallowpinkPerspective] =
+    useState<Color>("white");
+  const [shallowpinkCurrentTeam, setShallowpinkCurrentTeam] =
+    useState<Color>("white");
 
   const [activeGames, setActiveGames] = useState<GameData[] | null>(null);
   const [completedGames, setCompletedGames] = useState<GameData[] | null>(null);
@@ -359,7 +368,9 @@ export default function Dashboard({ activeTab }: Props) {
               <div className="">
                 <div className="flex mt-4 ml-2 mr-2 md:block md:m-0 md:block lg:m-0 lg:block">
                   <div className="flex-1 mr-1 md:mr-0 md:mb-2 lg:mr-0 lg:mb-2">
-                    <FlipPerspectiveButton flipPerspective={flipSandboxPerspective} />
+                    <FlipPerspectiveButton
+                      flipPerspective={flipSandboxPerspective}
+                    />
                   </div>
                   <div className="flex-1 ml-1 md:m-0 md:mb-2 lg:m-0 lg:mb-2">
                     <ResetButton
@@ -392,11 +403,16 @@ export default function Dashboard({ activeTab }: Props) {
                   gameStatus={shallowpinkGameStatus}
                 />
               </div>
-              <TeamSwitch currentTeam={shallowpinkCurrentTeam} setTeam={setShallowpinkCurrentTeam} />
+              <TeamSwitch
+                currentTeam={shallowpinkCurrentTeam}
+                setTeam={setShallowpinkCurrentTeam}
+              />
               <div className="">
                 <div className="flex mt-4 ml-2 mr-2 md:block md:m-0 md:block lg:m-0 lg:block">
                   <div className="flex-1 mr-1 md:mr-0 md:mb-2 lg:mr-0 lg:mb-2">
-                    <FlipPerspectiveButton flipPerspective={flipShallowpinkPerspective} />
+                    <FlipPerspectiveButton
+                      flipPerspective={flipShallowpinkPerspective}
+                    />
                   </div>
                   <div className="flex-1 ml-1 md:m-0 md:mb-2 lg:m-0 lg:mb-2">
                     <ResetButton
