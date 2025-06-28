@@ -18,7 +18,7 @@ const tabs: NavItem[] = [
   },
   {
     tab: "shallowpink",
-    title: "ShallowPink",
+    title: "ShallowPink AI",
   },
   {
     tab: "arena",
@@ -49,8 +49,8 @@ export function getNavTabTitle(tabname: string): string {
 
 type MobileNavProps = {
   activeTab: NavTab;
-  setActiveTab: (t: NavTab) => void;
-  setVisible: (b: boolean) => void;
+  setActiveTab(t: NavTab): void;
+  setVisible(b: boolean): void;
 };
 
 export function MobileNav({
@@ -84,7 +84,7 @@ export function MobileNav({
 
 type DesktopNavProps = {
   activeTab: NavTab;
-  setActiveTab: (t: NavTab) => void;
+  setActiveTab(t: NavTab): void;
 };
 
 export function DesktopNav({ activeTab, setActiveTab }: DesktopNavProps) {

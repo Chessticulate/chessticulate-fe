@@ -59,7 +59,7 @@ export function Banner() {
 
 type Props = {
   activeTab: NavTab;
-  setActiveTab: (t: NavTab) => void;
+  setActiveTab(t: NavTab): void;
 };
 
 export function BannerWithMenu({ activeTab, setActiveTab }: Props) {

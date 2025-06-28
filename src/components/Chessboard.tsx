@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState, DragEvent, MouseEvent } from "react";
+import { useState, DragEvent, MouseEvent } from "react";
 import Image from "next/image";
+import { Perspective } from "@/types";
 
 const Shallowpink = require("shallowpink");
 
@@ -29,6 +30,7 @@ type Props = {
     move: string,
     gameStatus: string,
   ): Promise<void>;
+  perspective: Perspective;
 };
 
 type Coords = {
@@ -36,12 +38,17 @@ type Coords = {
   y: number;
 };
 
-export default function Chessboard({ fen, states, submitMove }: Props) {
+export default function Chessboard({ fen, states, submitMove, perspective }: Props) {
   const [selectedPiece, setSelectedPiece] = useState<Coords | null>(null);
   const [moveOptions, setMoveOptions] = useState<string[]>([]);
 
-  const rows = ["8", "7", "6", "5", "4", "3", "2", "1"];
-  const cols = ["a", "b", "c", "d", "e", "f", "g", "h"];
+  let rows = ["8", "7", "6", "5", "4", "3", "2", "1"];
+  let cols = ["a", "b", "c", "d", "e", "f", "g", "h"];
+
+  if (perspective === "black") {
+    rows = rows.reverse();
+    cols = cols.reverse();
+  }
 
   const selectNewPiece = (coords: Coords) => {
     const chessObj = new Shallowpink(fen, states);
@@ -132,8 +139,8 @@ export default function Chessboard({ fen, states, submitMove }: Props) {
 
   const renderSquare = (row: string, col: string) => {
     const notation = `${col}${row}`;
-    const x = cols.indexOf(col);
-    const y = rows.indexOf(row);
+    const x = (perspective === "white" ? cols.indexOf(col) : 7 - cols.indexOf(col));
+    const y = (perspective === "white" ? rows.indexOf(row) : 7 - rows.indexOf(row));
     const isEvenSquare = (x + y) % 2 === 0;
     const squareColor = isEvenSquare ? "bg-[#f0d9b5]" : "bg-[#b58863]";
     const moveHere = moveOptions.find((move) => move.match(notation));

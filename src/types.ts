@@ -9,6 +9,8 @@ export type NavTab =
   | "active"
   | "invitations"
   | "completed";
+ 
+export type Color = "white" | "black";
 
 // user types
 export type UserData = {
@@ -64,14 +66,6 @@ export type InvitationsWindowProps = {
   moveHist: string[];
 };
 
-// chessboard types
-// could probably merge these two
-export type ChessboardProps = {
-  game: GameData | null;
-  moveHist: string[];
-  setMoveHist: Dispatch<SetStateAction<string[]>>;
-};
-
 export type GamesWindowProps = {
   activeTab: string;
   setActiveTab: Dispatch<SetStateAction<NavTab>>;
@@ -95,10 +89,6 @@ export type TabProps = {
 export type LoginSignupError = {
   show: boolean;
   message: string;
-};
-
-export type MoveHistoryProps = {
-  moves: string[];
 };
 
 export interface Jwt {

@@ -1,7 +1,7 @@
 "use client";
 
 import { jwtDecode } from "jwt-decode";
-import { GameData, NavTab, MoveData, Jwt, InvitationData } from "@/types";
+import { Color, GameData, NavTab, MoveData, Jwt, InvitationData } from "@/types";
 import { useState, useEffect } from "react";
 import { getCookie } from "cookies-next";
 import { redirect } from "next/navigation";
@@ -12,6 +12,8 @@ import FenView from "@/components/FenView";
 import FenInput from "@/components/FenInput";
 import ChessboardStatus from "@/components/ChessboardStatus";
 import MoveHistory from "@/components/MoveHistory";
+import FlipPerspectiveButton from "@/components/FlipPerspectiveButton";
+import TeamSwitch from "@/components/TeamSwitch";
 
 // Chess obj has a type of any since shallowpink does not export any types
 // long term it might be best to create a chess interface
@@ -20,17 +22,15 @@ const Shallowpink = require("shallowpink");
 
 type Props = {
   activeTab: NavTab;
-  setActiveTab(t: NavTab): void;
 };
 
-export default function Dashboard({ activeTab, setActiveTab }: Props) {
+export default function Dashboard({ activeTab }: Props) {
   const token = getCookie("token") as string;
 
   const [currentGame, setCurrentGame] = useState<GameData | null>(null);
   const [currentGameMoveHist, setCurrentGameMoveHist] = useState<string[]>([]);
   /*const [currentGameFenString, setCurrentGameFenString] = useState<string>("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-  const [currentGameStates, setCurrentGameStates] = useState<any>(null);
-  const [sandboxMoveHist, setSandboxMoveHist] = useState<string[]>([])*/
+  const [currentGameStates, setCurrentGameStates] = useState<any>(null); */
 
   const [sandboxFenString, setSandboxFenString] = useState<string>(
     "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
@@ -40,6 +40,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
   );
   const [sandboxMoveHist, setSandboxMoveHist] = useState<string[]>([]);
   const [sandboxGameStatus, setSandboxGameStatus] = useState<string>("");
+  const [sandboxPerspective, setSandboxPerspective] = useState<Color>("white");
 
   const [shallowpinkFenString, setShallowpinkFenString] = useState<string>(
     "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
@@ -53,6 +54,8 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
   );
   const [shallowpinkGameStatus, setShallowpinkGameStatus] =
     useState<string>("");
+  const [shallowpinkPerspective, setShallowpinkPerspective] = useState<Color>("white");
+  const [shallowpinkCurrentTeam, setShallowpinkCurrentTeam] = useState<Color>("white");
 
   const [activeGames, setActiveGames] = useState<GameData[] | null>(null);
   const [completedGames, setCompletedGames] = useState<GameData[] | null>(null);
@@ -284,7 +287,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
       shallowpinkFenString.split(" ")[1] === "w"
         ? Shallowpink.Color.WHITE
         : Shallowpink.Color.BLACK;
-    if (whomst !== shallowpinkColor) {
+    if (whomst === shallowpinkCurrentTeam) {
       return;
     }
 
@@ -316,67 +319,97 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
     shallowpinkStates,
     shallowpinkColor,
     shallowpinkGameStatus,
+    shallowpinkCurrentTeam,
   ]);
+
+  const flipSandboxPerspective = () => {
+    if (sandboxPerspective === "white") {
+      setSandboxPerspective("black");
+    } else {
+      setSandboxPerspective("white");
+    }
+  };
+
+  const flipShallowpinkPerspective = () => {
+    if (shallowpinkPerspective === "white") {
+      setShallowpinkPerspective("black");
+    } else {
+      setShallowpinkPerspective("white");
+    }
+  };
 
   const renderContent = () => {
     switch (activeTab) {
       case "sandbox":
         return (
-          <div className="block md:flex lg:flex lg:justify-center">
+          <div className="md:flex lg:flex lg:justify-center">
             <Chessboard
               fen={sandboxFenString}
               states={sandboxStates}
               submitMove={submitMoveSandbox}
+              perspective={sandboxPerspective}
             />
-            <div className="block">
-              <div className="flex md:block lg:block">
-                <div className="ml-2 mt-2 md:m-0 lg:m-0 flex-1">
-                  <ChessboardStatus
-                    fenStr={sandboxFenString}
-                    gameStatus={sandboxGameStatus}
-                  />
-                </div>
-                <div className="ml-2 mr-2 mt-4 md:m-0 lg:m-0 lg:mb-2 flex-1">
-                  <ResetButton
-                    setFenString={setSandboxFenString}
-                    setMoveHistory={setSandboxMoveHist}
-                    setStates={setSandboxStates}
-                  />
-                </div>
+            <div className="">
+              <div className="ml-2 mr-2 md:m-0 lg:m-0">
+                <ChessboardStatus
+                  fenStr={sandboxFenString}
+                  gameStatus={sandboxGameStatus}
+                />
               </div>
-              <FenView fenstr={sandboxFenString} />
-              <FenInput setFenString={setSandboxFenString} />
-              <MoveHistory moves={sandboxMoveHist} />
+              <div className="">
+                <div className="flex mt-4 ml-2 mr-2 md:block md:m-0 md:block lg:m-0 lg:block">
+                  <div className="flex-1 mr-1 md:mr-0 md:mb-2 lg:mr-0 lg:mb-2">
+                    <FlipPerspectiveButton flipPerspective={flipSandboxPerspective} />
+                  </div>
+                  <div className="flex-1 ml-1 md:m-0 md:mb-2 lg:m-0 lg:mb-2">
+                    <ResetButton
+                      setFenString={setSandboxFenString}
+                      setMoveHistory={setSandboxMoveHist}
+                      setStates={setSandboxStates}
+                    />
+                  </div>
+                </div>
+                <FenView fenstr={sandboxFenString} />
+                <FenInput setFenString={setSandboxFenString} />
+                <MoveHistory moves={sandboxMoveHist} isShallowpink={false} />
+              </div>
             </div>
           </div>
         );
       case "shallowpink":
         return (
-          <div className="block md:flex lg:flex lg:justify-center">
+          <div className="md:flex lg:flex lg:justify-center">
             <Chessboard
               fen={shallowpinkFenString}
               states={shallowpinkStates}
               submitMove={submitMoveShallowpink}
+              perspective={shallowpinkPerspective}
             />
-            <div className="block">
-              <div className="flex md:block lg:block">
-                <div className="ml-2 mt-2 md:m-0 lg:m-0 flex-1">
-                  <ChessboardStatus
-                    fenStr={shallowpinkFenString}
-                    gameStatus={shallowpinkGameStatus}
-                  />
-                </div>
-                <div className="ml-2 mr-2 mt-4 md:m-0 lg:m-0 lg:mb-2 flex-1">
-                  <ResetButton
-                    setFenString={setShallowpinkFenString}
-                    setMoveHistory={setShallowpinkMoveHist}
-                    setStates={setShallowpinkStates}
-                  />
-                </div>
+            <div className="">
+              <div className="ml-2 mr-2 md:m-0 lg:m-0">
+                <ChessboardStatus
+                  fenStr={shallowpinkFenString}
+                  gameStatus={shallowpinkGameStatus}
+                />
               </div>
-              <FenView fenstr={shallowpinkFenString} />
-              <FenInput setFenString={setShallowpinkFenString} />
-              <MoveHistory moves={shallowpinkMoveHist} />
+              <TeamSwitch currentTeam={shallowpinkCurrentTeam} setTeam={setShallowpinkCurrentTeam} />
+              <div className="">
+                <div className="flex mt-4 ml-2 mr-2 md:block md:m-0 md:block lg:m-0 lg:block">
+                  <div className="flex-1 mr-1 md:mr-0 md:mb-2 lg:mr-0 lg:mb-2">
+                    <FlipPerspectiveButton flipPerspective={flipShallowpinkPerspective} />
+                  </div>
+                  <div className="flex-1 ml-1 md:m-0 md:mb-2 lg:m-0 lg:mb-2">
+                    <ResetButton
+                      setFenString={setShallowpinkFenString}
+                      setMoveHistory={setShallowpinkMoveHist}
+                      setStates={setShallowpinkStates}
+                    />
+                  </div>
+                </div>
+                <FenView fenstr={shallowpinkFenString} />
+                <FenInput setFenString={setShallowpinkFenString} />
+                <MoveHistory moves={shallowpinkMoveHist} isShallowpink={true} />
+              </div>
             </div>
           </div>
         );
