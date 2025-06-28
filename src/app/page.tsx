@@ -10,7 +10,7 @@ export default function Page() {
   return (
     <>
       <BannerWithMenu activeTab={activeTab} setActiveTab={setActiveTab} />
-      <main className="flex justify-center pt-2">
+      <main className="flex justify-center md:pt-2 lg:pt-2">
         <Home activeTab={activeTab} setActiveTab={setActiveTab} />
       </main>
     </>

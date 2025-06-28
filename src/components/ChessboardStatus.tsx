@@ -8,28 +8,28 @@ export default function ChessboardStatus({ fenStr, gameStatus }: Props) {
 
   if (gameStatus === "draw") {
     statusMsg = "Draw";
-  } else if (gameStatus === "insufficient material") {
-    statusMsg = "Draw: insufficient material";
-  } else if (gameStatus === "three-fold repetition") {
-    statusMsg = "Draw: three-fold repetition";
-  } else if (gameStatus === "fifty-move rule") {
-    statusMsg = "Draw: fifty-move rule";
+  } else if (gameStatus === "Insufficient Material") {
+    statusMsg = "Draw: Insufficient Material";
+  } else if (gameStatus === "Three-Fold Repetition") {
+    statusMsg = "Draw: Three-Fold Repetition";
+  } else if (gameStatus === "Fifty-Move Rule") {
+    statusMsg = "Draw: Fifty-Move Rule";
   } else {
     if (fenStr.split(" ")[1] === "w") {
-      if (gameStatus === "game over") {
-        statusMsg = "Checkmate: black wins!";
+      if (gameStatus === "Game Over") {
+        statusMsg = "Checkmate: Black Wins!";
       } else if (gameStatus === "check") {
-        statusMsg = "White's turn: in check";
+        statusMsg = "White's Turn: In Check";
       } else {
-        statusMsg = "White's turn";
+        statusMsg = "White's Turn";
       }
     } else {
-      if (gameStatus === "game over") {
-        statusMsg = "Checkmate: white wins!";
-      } else if (gameStatus === "check") {
-        statusMsg = "Black's turn: in check";
+      if (gameStatus === "Game Over") {
+        statusMsg = "Checkmate: White Wins!";
+      } else if (gameStatus === "Check") {
+        statusMsg = "Black's Turn: in Check";
       } else {
-        statusMsg = "Black's turn";
+        statusMsg = "Black's Turn";
       }
     }
   }
