@@ -82,6 +82,9 @@ jobs:
           VERSION=$(./scripts/get_version.sh)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
+      - name: Embed production API URL during build
+        run: echo "NEXT_PUBLIC_CHESSTICULATE_API_URL=https://api.chess.brgdev.xyz"
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
