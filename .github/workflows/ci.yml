@@ -97,8 +97,6 @@ jobs:
         with:
           push: true
           platforms: linux/amd64
-          build-args: |
-            NEXT_PUBLIC_CHESSTICULATE_API_URL=https://api.chess.brgdev.xyz
           tags: |
             ghcr.io/chessticulate/chessticulate-fe-linux-amd64:v${{ env.VERSION }}
             ghcr.io/chessticulate/chessticulate-fe-linux-amd64:latest
@@ -108,8 +106,6 @@ jobs:
         with:
           push: true
           platforms: linux/arm64/v8
-          build-args: |
-            NEXT_PUBLIC_CHESSTICULATE_API_URL=https://api.chess.brgdev.xyz
           tags: |
             ghcr.io/chessticulate/chessticulate-fe-linux-arm64v8:v${{ env.VERSION }}
             ghcr.io/chessticulate/chessticulate-fe-linux-arm64v8:latest
