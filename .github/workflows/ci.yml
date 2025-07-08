@@ -82,9 +82,6 @@ jobs:
           VERSION=$(./scripts/get_version.sh)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Embed production API URL during build
-        run: echo "NEXT_PUBLIC_CHESSTICULATE_API_URL=https://api.chess.brgdev.xyz" >> $GITHUB_ENV
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -100,6 +97,8 @@ jobs:
         with:
           push: true
           platforms: linux/amd64
+          build-args: |
+            NEXT_PUBLIC_CHESSTICULATE_API_URL=https://api.chess.brgdev.xyz
           tags: |
             ghcr.io/chessticulate/chessticulate-fe-linux-amd64:v${{ env.VERSION }}
             ghcr.io/chessticulate/chessticulate-fe-linux-amd64:latest
@@ -109,6 +108,8 @@ jobs:
         with:
           push: true
           platforms: linux/arm64/v8
+          build-args: |
+            NEXT_PUBLIC_CHESSTICULATE_API_URL=https://api.chess.brgdev.xyz
           tags: |
             ghcr.io/chessticulate/chessticulate-fe-linux-arm64v8:v${{ env.VERSION }}
             ghcr.io/chessticulate/chessticulate-fe-linux-arm64v8:latest
