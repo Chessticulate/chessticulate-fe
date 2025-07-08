@@ -5,6 +5,8 @@ WORKDIR /code
 
 COPY . /code
 
+ENV NEXT_PUBLIC_CHESSTICULATE_API_URL=https://api.chess.brgdev.xyz
+
 RUN npm install
 RUN npm run build
 
