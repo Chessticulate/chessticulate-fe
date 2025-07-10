@@ -3,7 +3,7 @@ FROM node:18-alpine
 
 WORKDIR /code
 
-COPY package.json
+COPY package.json ./
 
 # remove cached github dependencies
 RUN rm -rf node_modules/ package-lock.json
