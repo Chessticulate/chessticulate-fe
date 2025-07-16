@@ -31,6 +31,8 @@ type Props = {
     gameStatus: string,
   ): Promise<void>;
   perspective: Color;
+  gameOver: boolean;
+  setGameOver: (b: boolean) => void;
 };
 
 type Coords = {
@@ -43,6 +45,8 @@ export default function Chessboard({
   states,
   submitMove,
   perspective,
+  gameOver,
+  setGameOver,
 }: Props) {
   const [selectedPiece, setSelectedPiece] = useState<Coords | null>(null);
   const [moveOptions, setMoveOptions] = useState<string[]>([]);
@@ -71,6 +75,9 @@ export default function Chessboard({
   };
 
   const handleSelect = (_: MouseEvent<any>, coords: Coords) => {
+    if (gameOver) {
+      return;
+    }
     if (selectedPiece == null) {
       selectNewPiece(coords);
     } else {
@@ -117,7 +124,6 @@ export default function Chessboard({
       if (moveOptions.includes(moveStr)) {
         moveResult = chessObj.move(moveStr);
       }
-
       // long term it would be ideal to have shallowpink status codes
       // or some other way of grouping status types
       if (
@@ -136,6 +142,10 @@ export default function Chessboard({
       }
 
       await submitMove(chessObj.toFEN(), chessObj.states, moveStr, moveResult);
+
+      if (chessObj.gameOver) {
+        setGameOver(true);
+      }
     }
 
     setSelectedPiece(null);

@@ -36,6 +36,7 @@ export default function Dashboard({ activeTab }: Props) {
 
   const [currentGame, setCurrentGame] = useState<GameData | null>(null);
   const [currentGameMoveHist, setCurrentGameMoveHist] = useState<string[]>([]);
+  const [gameOver, setGameOver] = useState<boolean>(false);
   /*const [currentGameFenString, setCurrentGameFenString] = useState<string>("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
   const [currentGameStates, setCurrentGameStates] = useState<any>(null); */
 
@@ -289,9 +290,6 @@ export default function Dashboard({ activeTab }: Props) {
   };
 
   useEffect(() => {
-    if (shallowpinkGameStatus === "game over") {
-      return;
-    }
     const whomst =
       shallowpinkFenString.split(" ")[1] === "w"
         ? Shallowpink.Color.WHITE
@@ -313,7 +311,8 @@ export default function Dashboard({ activeTab }: Props) {
       if (
         result == "invalid move" ||
         result == "player is still in check" ||
-        result == "move puts player in check"
+        result == "move puts player in check" ||
+        result == "game over"
       ) {
         throw new Error(`shallowpink gave us a bad move: ${move} -> ${result}`);
       }
@@ -321,6 +320,19 @@ export default function Dashboard({ activeTab }: Props) {
       setShallowpinkFenString(chessObj.toFEN());
       setShallowpinkStates(new Map(shallowpinkStates));
       setShallowpinkGameStatus(result);
+      if (
+        [
+          "game over",
+          "checkmate",
+          "stalemate",
+          "draw",
+          "insufficient material",
+          "three-fold repetition",
+          "fifty-move rule",
+        ].includes(result)
+      ) {
+        setGameOver(true);
+      }
     };
   }, [
     shallowpinkFenString,
@@ -357,6 +369,8 @@ export default function Dashboard({ activeTab }: Props) {
               states={sandboxStates}
               submitMove={submitMoveSandbox}
               perspective={sandboxPerspective}
+              gameOver={gameOver}
+              setGameOver={setGameOver}
             />
             <div className="">
               <div className="ml-2 mr-2 md:m-0 lg:m-0">
@@ -377,6 +391,7 @@ export default function Dashboard({ activeTab }: Props) {
                       setFenString={setSandboxFenString}
                       setMoveHistory={setSandboxMoveHist}
                       setStates={setSandboxStates}
+                      setGameOver={setGameOver}
                     />
                   </div>
                 </div>
@@ -395,6 +410,8 @@ export default function Dashboard({ activeTab }: Props) {
               states={shallowpinkStates}
               submitMove={submitMoveShallowpink}
               perspective={shallowpinkPerspective}
+              gameOver={gameOver}
+              setGameOver={setGameOver}
             />
             <div className="">
               <div className="ml-2 mr-2 md:m-0 lg:m-0">
@@ -419,6 +436,7 @@ export default function Dashboard({ activeTab }: Props) {
                       setFenString={setShallowpinkFenString}
                       setMoveHistory={setShallowpinkMoveHist}
                       setStates={setShallowpinkStates}
+                      setGameOver={setGameOver}
                     />
                   </div>
                 </div>
