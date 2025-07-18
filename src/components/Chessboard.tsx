@@ -103,10 +103,23 @@ export default function Chessboard({
 
       let moveStr = chessObj.generateMoveStrs(piece, dest.x, dest.y)[0];
 
+      // cleanedMoveOptions is necessary to match move provided by genMoveStrs with
+      // legalMoves. genMoveStrs does not contain suffix, but legalMoves does
+      // so Nxc7 won't match Nxc7+ unless we strip away + or #
+      // ultimately though we wan't to submit the move string containing + or #
+      // this way move history shows check or checkmate.
+      let cleanedMoveOptions = moveOptions.map((move) =>
+        move.replace(/[+#]/g, ""),
+      );
+      let moveIndex = cleanedMoveOptions.findIndex((move) => move === moveStr);
+
       // Castling
       if (["Kg1", "Kc1", "Kg8", "Kc8"].includes(moveStr)) {
         // Check if legalMoves includes either castling move
-        if (moveOptions.includes("O-O") || moveOptions.includes("O-O-O")) {
+        if (
+          cleanedMoveOptions.includes("O-O") ||
+          cleanedMoveOptions.includes("O-O-O")
+        ) {
           switch (moveStr) {
             case "Kg1":
             case "Kg8":
@@ -121,9 +134,10 @@ export default function Chessboard({
       }
 
       let moveResult = "invalid move";
-      if (moveOptions.includes(moveStr)) {
+      if (cleanedMoveOptions.includes(moveStr)) {
         moveResult = chessObj.move(moveStr);
       }
+
       // long term it would be ideal to have shallowpink status codes
       // or some other way of grouping status types
       if (
@@ -141,7 +155,12 @@ export default function Chessboard({
         return;
       }
 
-      await submitMove(chessObj.toFEN(), chessObj.states, moveStr, moveResult);
+      await submitMove(
+        chessObj.toFEN(),
+        chessObj.states,
+        moveOptions[moveIndex],
+        moveResult,
+      );
 
       if (chessObj.gameOver) {
         setGameOver(true);
