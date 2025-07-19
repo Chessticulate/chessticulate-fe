@@ -71,6 +71,24 @@ export default function Chessboard({
     }
     setSelectedPiece(coords);
     const options = chessObj.legalMoves(piece);
+    console.log(options);
+
+    // Castle squares are pushed on to moveOptions for move highlighting
+    if (options.includes("O-O")) {
+      if (currTurn === "white") {
+        options.push("Kg1");
+      } else {
+        options.push("Kg8");
+      }
+    }
+    if (options.includes("O-O-O")) {
+      if (currTurn === "white") {
+        options.push("Kc1");
+      } else {
+        options.push("Kc8");
+      }
+    }
+
     setMoveOptions(options);
   };
 
@@ -105,9 +123,6 @@ export default function Chessboard({
 
       // cleanedMoveOptions is necessary to match move provided by genMoveStrs with
       // legalMoves. genMoveStrs does not contain suffix, but legalMoves does
-      // so Nxc7 won't match Nxc7+ unless we strip away + or #
-      // ultimately though we wan't to submit the move string containing + or #
-      // this way move history shows check or checkmate.
       let cleanedMoveOptions = moveOptions.map((move) =>
         move.replace(/[+#]/g, ""),
       );
@@ -192,9 +207,9 @@ export default function Chessboard({
       >
         {moveHere &&
           (moveHere.match(/x/) ? (
-            <div className="absolute w-6 h-6 bg-red-600 opacity-50 rounded-full"></div>
+            <div className="absolute inset-0 border-4 md:border-8 border-neutral-600 opacity-25 rounded-full"></div>
           ) : (
-            <div className="absolute w-6 h-6 bg-neutral-600 opacity-25 rounded-full"></div>
+            <div className="absolute w-3 md:w-6 h-3 md:h-6 bg-neutral-600 opacity-25 rounded-full"></div>
           ))}
 
         {piece && (

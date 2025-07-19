@@ -3,6 +3,7 @@ type Props = {
   setMoveHistory: (h: string[]) => void;
   setStates: (s: Map<number, number>) => void;
   setGameOver: (b: boolean) => void;
+  setStatus: (s: string) => void;
 };
 
 export default function ResetButton({
@@ -10,12 +11,14 @@ export default function ResetButton({
   setMoveHistory,
   setStates,
   setGameOver,
+  setStatus,
 }: Props) {
   const reset = () => {
     setFenString("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     setMoveHistory([]);
     setStates(new Map<number, number>());
     setGameOver(false);
+    setStatus("");
   };
 
   return (
