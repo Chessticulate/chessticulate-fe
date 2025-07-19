@@ -322,7 +322,6 @@ export default function Dashboard({ activeTab }: Props) {
       setShallowpinkGameStatus(result);
       if (
         [
-          "game over",
           "checkmate",
           "stalemate",
           "draw",
@@ -392,6 +391,7 @@ export default function Dashboard({ activeTab }: Props) {
                       setMoveHistory={setSandboxMoveHist}
                       setStates={setSandboxStates}
                       setGameOver={setGameOver}
+                      setStatus={setSandboxGameStatus}
                     />
                   </div>
                 </div>
@@ -437,6 +437,7 @@ export default function Dashboard({ activeTab }: Props) {
                       setMoveHistory={setShallowpinkMoveHist}
                       setStates={setShallowpinkStates}
                       setGameOver={setGameOver}
+                      setStatus={setShallowpinkGameStatus}
                     />
                   </div>
                 </div>
