@@ -75,6 +75,12 @@ export default function Dashboard({ activeTab }: Props) {
   );
   const [sentInvitations, setSentInvitations] = useState<InvitationData[]>([]);
 
+  // highlight squares
+  const [shallowpinkLastOrig, setShallowpinkLastOrig] = useState<number[]>([]);
+  const [shallowpinkLastDest, setShallowpinkLastDest] = useState<number[]>([]);
+  const [sandboxLastOrig, setSandboxLastOrig] = useState<number[]>([]);
+  const [sandboxLastDest, setSandboxLastDest] = useState<number[]>([]);
+
   useEffect(() => {
     if (!token || !currentGame) {
       return;
@@ -320,6 +326,8 @@ export default function Dashboard({ activeTab }: Props) {
       setShallowpinkFenString(chessObj.toFEN());
       setShallowpinkStates(new Map(shallowpinkStates));
       setShallowpinkGameStatus(result);
+      setShallowpinkLastOrig(chessObj.lastOrig);
+      setShallowpinkLastDest(chessObj.lastDest);
       if (
         [
           "checkmate",
@@ -370,6 +378,10 @@ export default function Dashboard({ activeTab }: Props) {
               perspective={sandboxPerspective}
               gameOver={gameOver}
               setGameOver={setGameOver}
+              lastOrig={sandboxLastOrig}
+              lastDest={sandboxLastDest}
+              setLastOrig={setSandboxLastOrig}
+              setLastDest={setSandboxLastDest}
             />
             <div className="">
               <div className="ml-2 mr-2 md:m-0 lg:m-0">
@@ -392,6 +404,8 @@ export default function Dashboard({ activeTab }: Props) {
                       setStates={setSandboxStates}
                       setGameOver={setGameOver}
                       setStatus={setSandboxGameStatus}
+                      setLastOrig={setSandboxLastOrig}
+                      setLastDest={setSandboxLastDest}
                     />
                   </div>
                 </div>
@@ -412,6 +426,10 @@ export default function Dashboard({ activeTab }: Props) {
               perspective={shallowpinkPerspective}
               gameOver={gameOver}
               setGameOver={setGameOver}
+              lastOrig={shallowpinkLastOrig}
+              lastDest={shallowpinkLastDest}
+              setLastOrig={setShallowpinkLastOrig}
+              setLastDest={setShallowpinkLastDest}
             />
             <div className="">
               <div className="ml-2 mr-2 md:m-0 lg:m-0">
@@ -438,6 +456,8 @@ export default function Dashboard({ activeTab }: Props) {
                       setStates={setShallowpinkStates}
                       setGameOver={setGameOver}
                       setStatus={setShallowpinkGameStatus}
+                      setLastOrig={setShallowpinkLastOrig}
+                      setLastDest={setShallowpinkLastDest}
                     />
                   </div>
                 </div>

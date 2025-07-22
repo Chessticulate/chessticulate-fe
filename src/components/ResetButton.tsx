@@ -4,6 +4,8 @@ type Props = {
   setStates: (s: Map<number, number>) => void;
   setGameOver: (b: boolean) => void;
   setStatus: (s: string) => void;
+  setLastOrig: (n: number[]) => void;
+  setLastDest: (n: number[]) => void;
 };
 
 export default function ResetButton({
@@ -12,6 +14,8 @@ export default function ResetButton({
   setStates,
   setGameOver,
   setStatus,
+  setLastOrig,
+  setLastDest,
 }: Props) {
   const reset = () => {
     setFenString("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
@@ -19,6 +23,8 @@ export default function ResetButton({
     setStates(new Map<number, number>());
     setGameOver(false);
     setStatus("");
+    setLastOrig([]);
+    setLastDest([]);
   };
 
   return (
