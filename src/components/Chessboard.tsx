@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, DragEvent, MouseEvent } from "react";
+import { useState, useEffect, useRef, DragEvent, MouseEvent } from "react";
 import Image from "next/image";
 import { Color } from "@/types";
 
@@ -33,6 +33,10 @@ type Props = {
   perspective: Color;
   gameOver: boolean;
   setGameOver: (b: boolean) => void;
+  lastOrig: number[];
+  lastDest: number[];
+  setLastOrig: (n: number[]) => void;
+  setLastDest: (n: number[]) => void;
 };
 
 type Coords = {
@@ -47,9 +51,15 @@ export default function Chessboard({
   perspective,
   gameOver,
   setGameOver,
+  lastOrig,
+  lastDest,
+  setLastOrig,
+  setLastDest,
 }: Props) {
   const [selectedPiece, setSelectedPiece] = useState<Coords | null>(null);
   const [moveOptions, setMoveOptions] = useState<string[]>([]);
+
+  const boardRef = useRef<HTMLDivElement>(null);
 
   let rows = ["8", "7", "6", "5", "4", "3", "2", "1"];
   let cols = ["a", "b", "c", "d", "e", "f", "g", "h"];
@@ -71,7 +81,6 @@ export default function Chessboard({
     }
     setSelectedPiece(coords);
     const options = chessObj.legalMoves(piece);
-    console.log(options);
 
     // Castle squares are pushed on to moveOptions for move highlighting
     if (options.includes("O-O")) {
@@ -93,11 +102,13 @@ export default function Chessboard({
   };
 
   const handleSelect = (_: MouseEvent<any>, coords: Coords) => {
-    if (gameOver) {
-      return;
-    }
-    if (selectedPiece == null) {
+    if (gameOver) return;
+
+    if (!selectedPiece) {
       selectNewPiece(coords);
+    } else if (selectedPiece.x === coords.x && selectedPiece.y === coords.y) {
+      setSelectedPiece(null);
+      setMoveOptions([]);
     } else {
       handleDrop(null, coords);
     }
@@ -182,9 +193,26 @@ export default function Chessboard({
       }
     }
 
+    setLastOrig(chessObj.lastOrig);
+    setLastDest(chessObj.lastDest);
     setSelectedPiece(null);
     setMoveOptions([]);
   };
+
+  useEffect(() => {
+    // use browser DOM Mouse Event, not reacts
+    const handleClick = (e: globalThis.MouseEvent) => {
+      if (boardRef.current && !boardRef.current.contains(e.target as Node)) {
+        setSelectedPiece(null);
+        setMoveOptions([]);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClick);
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+    };
+  }, []);
 
   const renderSquare = (row: string, col: string) => {
     const notation = `${col}${row}`;
@@ -200,25 +228,47 @@ export default function Chessboard({
     return (
       <div
         key={notation}
-        className={`relative flex justify-center items-center ${squareColor}`}
+        className={`relative flex justify-center items-center ${squareColor} z-0 ${
+          moveHere ? "group" : ""
+        }`}
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => handleDrop(e, { x, y })}
         onMouseDown={(e) => handleSelect(e, { x, y })}
       >
         {moveHere &&
           (moveHere.match(/x/) ? (
-            <div className="absolute inset-0 border-4 md:border-8 border-neutral-600 opacity-25 rounded-full"></div>
+            <div className="absolute inset-0 border-4 md:border-8 border-neutral-600 opacity-25 rounded-full group-hover:rounded-none z-10"></div>
           ) : (
-            <div className="absolute w-3 md:w-6 h-3 md:h-6 bg-neutral-600 opacity-25 rounded-full"></div>
+            <div
+              className="absolute w-3 md:w-6 h-3 md:h-6 bg-neutral-600 opacity-25 rounded-full 
+              group-hover:bg-transparent group-hover:w-full group-hover:h-full group-hover:rounded-none
+               group-hover:border-4 group-hover:md:border-8 group-hover:border-neutral-600 z-10"
+            ></div>
           ))}
 
         {piece && (
           <Image
+            className="z-20"
             src={pieceMap[piece.toFEN()]}
             alt="piece"
             width={72}
             height={72}
+            onDragStart={(e) => {
+              // removes green plus sign from image being dragged
+              e.dataTransfer.dropEffect = "move";
+              e.dataTransfer.effectAllowed = "move";
+            }}
           />
+        )}
+        {/* selected piece and lastorig are often the same, but should be handled separately */}
+        {selectedPiece && selectedPiece.x === x && selectedPiece.y === y && (
+          <div className="absolute inset-0 bg-yellow-400 opacity-40 z-10"></div>
+        )}
+        {lastOrig && lastOrig[0] === x && lastOrig[1] === y && (
+          <div className="absolute inset-0 bg-yellow-400 opacity-40 z-10"></div>
+        )}
+        {lastDest && lastDest[0] === x && lastDest[1] === y && (
+          <div className="absolute inset-0 bg-yellow-400 opacity-40 z-10"></div>
         )}
       </div>
     );
@@ -231,7 +281,10 @@ export default function Chessboard({
   );
 
   return (
-    <div className="grid grid-cols-8 grid-rows-8 aspect-square w-screen md:size-[650px] lg:size-[750px]">
+    <div
+      ref={boardRef}
+      className="grid grid-cols-8 grid-rows-8 aspect-square w-screen md:size-[650px] lg:size-[750px]"
+    >
       {rows.map((row) => renderRow(row))}
     </div>
   );

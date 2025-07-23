@@ -37,18 +37,18 @@ export default function MoveHistory({ moves, isShallowpink }: Props) {
       >
         <div
           ref={tableScrollRef}
-          className="border-2 border-[#fed6ae] bg-[#1f1f1f] p-4 w-full md:mt-0 lg:mt-0 overflow-y-auto md:w-[200px] lg:w-[300px]"
+          className="border-2 border-[#fed6ae] bg-[#1f1f1f] px-4 w-full md:mt-0 lg:mt-0 overflow-y-auto md:w-[200px] lg:w-[300px]"
         >
           <table className="w-full table-auto">
             <thead className="bg-[#1f1f1f] sticky top-0">
               <tr>
-                <th className="py-2 px-2 text-left text-sm md:text-lg lg:text-xl">
+                <th className="py-4 px-2 text-left text-sm md:text-lg lg:text-xl">
                   #
                 </th>
-                <th className="py-2 px-2 text-left text-sm md:text-lg lg:text-xl">
+                <th className="py-4 px-2 text-left text-sm md:text-lg lg:text-xl">
                   White
                 </th>
-                <th className="py-2 px-2 text-left text-sm md:text-lg lg:text-xl">
+                <th className="py-4 px-2 text-left text-sm md:text-lg lg:text-xl">
                   Black
                 </th>
               </tr>
