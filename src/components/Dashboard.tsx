@@ -31,6 +31,20 @@ type Props = {
   activeTab: NavTab;
 };
 
+async function fetchBook(): Promise<Uint8Array> {
+  const res = await fetch("/books/Performance.bin");
+  return new Uint8Array(await res.arrayBuffer());
+}
+
+let book: Uint8Array | null = null;
+fetchBook()
+  .then((b) => {
+    book = b;
+  })
+  .catch((e) => {
+    console.error("Failed to load opening book:", e);
+  });
+
 export default function Dashboard({ activeTab }: Props) {
   const token = getCookie("token") as string;
 
@@ -55,6 +69,10 @@ export default function Dashboard({ activeTab }: Props) {
   );
   const [shallowpinkStates, setShallowpinkStates] = useState<
     Map<number, number>
+  >(new Map());
+  // shallowpink transposition table
+  const [shallowpinkTable, setShallowpinkTable] = useState<
+    Map<bigint, Map<string, number>>
   >(new Map());
   const [shallowpinkMoveHist, setShallowpinkMoveHist] = useState<string[]>([]);
   const [shallowpinkColor, setShallowpinkColor] = useState<string>(
@@ -307,12 +325,25 @@ export default function Dashboard({ activeTab }: Props) {
     const worker = new Worker(
       new URL("../../workers/shallowpink-worker.js", import.meta.url),
     );
-    worker.postMessage({ fenStr: shallowpinkFenString });
-    worker.onmessage = ({ data: { move, error } }) => {
+
+    worker.postMessage({
+      fenStr: shallowpinkFenString,
+      states: shallowpinkStates,
+      book: book,
+      table: shallowpinkTable,
+    });
+    worker.onmessage = ({ data: { move, error, table } }) => {
       if (error) {
         throw new Error(`An error occurred while generating AI move: ${error}`);
       }
-      const chessObj = new Shallowpink(shallowpinkFenString, shallowpinkStates);
+      console.log(table);
+
+      const chessObj = new Shallowpink(
+        shallowpinkFenString,
+        shallowpinkStates,
+        null, // only ai uses the opening book
+        table,
+      );
       const result = chessObj.move(move);
       if (
         result == "invalid move" ||
@@ -325,6 +356,7 @@ export default function Dashboard({ activeTab }: Props) {
       setShallowpinkMoveHist([...shallowpinkMoveHist, move]);
       setShallowpinkFenString(chessObj.toFEN());
       setShallowpinkStates(new Map(shallowpinkStates));
+      setShallowpinkTable(chessObj.table);
       setShallowpinkGameStatus(result);
       setShallowpinkLastOrig(chessObj.lastOrig);
       setShallowpinkLastDest(chessObj.lastDest);
@@ -345,6 +377,7 @@ export default function Dashboard({ activeTab }: Props) {
     shallowpinkFenString,
     shallowpinkMoveHist,
     shallowpinkStates,
+    shallowpinkTable,
     shallowpinkColor,
     shallowpinkGameStatus,
     shallowpinkCurrentTeam,
