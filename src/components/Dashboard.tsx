@@ -36,17 +36,9 @@ async function fetchBook(): Promise<Uint8Array> {
   return new Uint8Array(await res.arrayBuffer());
 }
 
-let book: Uint8Array | null = null;
-fetchBook()
-  .then((b) => {
-    book = b;
-  })
-  .catch((e) => {
-    console.error("Failed to load opening book:", e);
-  });
-
 export default function Dashboard({ activeTab }: Props) {
   const token = getCookie("token") as string;
+  const [book, setBook] = useState<Uint8Array | null>(null);
 
   const [currentGame, setCurrentGame] = useState<GameData | null>(null);
   const [currentGameMoveHist, setCurrentGameMoveHist] = useState<string[]>([]);
@@ -98,6 +90,22 @@ export default function Dashboard({ activeTab }: Props) {
   const [shallowpinkLastDest, setShallowpinkLastDest] = useState<number[]>([]);
   const [sandboxLastOrig, setSandboxLastOrig] = useState<number[]>([]);
   const [sandboxLastDest, setSandboxLastDest] = useState<number[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetchBook()
+      .then((b) => {
+        if (!cancelled) setBook(b);
+      })
+      .catch((e) => {
+        console.error("Failed to load opening book:", e);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (!token || !currentGame) {
@@ -314,6 +322,9 @@ export default function Dashboard({ activeTab }: Props) {
   };
 
   useEffect(() => {
+    // dont start AI until book is loaded
+    if (!book) return;
+
     const whomst =
       shallowpinkFenString.split(" ")[1] === "w"
         ? Shallowpink.Color.WHITE
@@ -329,7 +340,7 @@ export default function Dashboard({ activeTab }: Props) {
     worker.postMessage({
       fenStr: shallowpinkFenString,
       states: shallowpinkStates,
-      book: book,
+      book,
       table: shallowpinkTable,
     });
     worker.onmessage = ({ data: { move, error, table } }) => {
@@ -374,6 +385,7 @@ export default function Dashboard({ activeTab }: Props) {
       }
     };
   }, [
+    book,
     shallowpinkFenString,
     shallowpinkMoveHist,
     shallowpinkStates,
