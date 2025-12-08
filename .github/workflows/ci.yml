@@ -97,9 +97,9 @@ jobs:
 
       - name: Build and push amd64 image
         uses: docker/build-push-action@v6
-        env:
-          NEXT_PUBLIC_CHESSTICULATE_API_URL: ${{ vars.NEXT_PUBLIC_CHESSTICULATE_API_URL }}
         with:
+          build-args: |
+            NEXT_PUBLIC_CHESSTICULATE_API_URL=${{ vars.NEXT_PUBLIC_CHESSTICULATE_API_URL }}
           push: true
           platforms: linux/amd64
           tags: |
@@ -108,9 +108,9 @@ jobs:
 
       - name: Build and push arm64 image
         uses: docker/build-push-action@v6
-        env:
-          NEXT_PUBLIC_CHESSTICULATE_API_URL: ${{ vars.NEXT_PUBLIC_CHESSTICULATE_API_URL }}
         with:
+          build-args: |
+            NEXT_PUBLIC_CHESSTICULATE_API_URL=${{ vars.NEXT_PUBLIC_CHESSTICULATE_API_URL }}
           push: true
           platforms: linux/arm64/v8
           tags: |
