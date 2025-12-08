@@ -73,6 +73,7 @@ jobs:
 
   push-to-registry:
     runs-on: ubuntu-latest
+    environment: DEV
     needs: [format, lint, build, check-version]
     if: github.ref == 'refs/heads/main'
     steps:
@@ -96,6 +97,8 @@ jobs:
 
       - name: Build and push amd64 image
         uses: docker/build-push-action@v6
+        env:
+          NEXT_PUBLIC_CHESSTICULATE_API_URL: ${{ vars.NEXT_PUBLIC_CHESSTICULATE_API_URL }}
         with:
           push: true
           platforms: linux/amd64
@@ -105,6 +108,8 @@ jobs:
 
       - name: Build and push arm64 image
         uses: docker/build-push-action@v6
+        env:
+          NEXT_PUBLIC_CHESSTICULATE_API_URL: ${{ vars.NEXT_PUBLIC_CHESSTICULATE_API_URL }}
         with:
           push: true
           platforms: linux/arm64/v8
