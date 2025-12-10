@@ -21,6 +21,7 @@ import ChessboardStatus from "@/components/ChessboardStatus";
 import MoveHistory from "@/components/MoveHistory";
 import FlipPerspectiveButton from "@/components/FlipPerspectiveButton";
 import TeamSwitch from "@/components/TeamSwitch";
+import Profile from "@/components/Profile";
 
 // Chess obj has a type of any since shallowpink does not export any types
 // long term it might be best to create a chess interface
@@ -413,6 +414,10 @@ export default function Dashboard({ activeTab }: Props) {
 
   const renderContent = () => {
     switch (activeTab) {
+      case "profile":
+        return (
+          <Profile/>
+        );
       case "sandbox":
         return (
           <div className="md:flex lg:flex lg:justify-center">

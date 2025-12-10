@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { UserData } from "@/types";
 import { getCookie } from "cookies-next";
 
-export default function ProfileInfo() {
+export default function Profile() {
   const [info, setInfo] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -73,14 +73,17 @@ export default function ProfileInfo() {
     );
   } else if (info) {
     return (
-      <div className="p-5">
-        <h2>{info.name}</h2>
-        <ul>
-          <li>Games Played: {info.wins + info.draws + info.losses}</li>
-          <li>Wins: {info.wins}</li>
-          <li>Draws: {info.draws}</li>
-          <li>Losses: {info.losses}</li>
-        </ul>
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div className="grid grid-cols-1 gap-10">
+          <h1> Profile Picture Here </h1>
+          <h2 className="text-2xl font-bold">{info.name}</h2>
+          <ul className="space-y-1 text-lg">
+            <li>Games Played: {info.wins + info.draws + info.losses}</li>
+            <li>Wins: {info.wins}</li>
+            <li>Draws: {info.draws}</li>
+            <li>Losses: {info.losses}</li>
+          </ul>
+        </div>
       </div>
     );
   } else {
