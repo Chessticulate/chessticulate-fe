@@ -1,14 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { InvitationData, InvitationProps } from "@/types";
+import { InvitationData } from "@/types";
+
+type Props = {
+  type: string;
+  invitation: InvitationData;
+  onAnswerAction: (invitationId: number) => void;
+  onCancelAction: (invitationId: number) => void;
+};
 
 export default function InvitationRow({
   type,
   invitation,
-  onAnswer,
-  onCancel,
-}: InvitationProps) {
+  onAnswerAction,
+  onCancelAction,
+}: Props) {
   const { id, white_username, black_username } = invitation;
 
   const answerInvite = async (answer: string) => {
@@ -25,8 +32,7 @@ export default function InvitationRow({
         throw new Error("Network response was not ok");
       }
 
-      const result = await response.json();
-      answer === "cancel" ? onCancel(id) : onAnswer(id);
+      answer === "cancel" ? onCancelAction(id) : onAnswerAction(id);
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
     }

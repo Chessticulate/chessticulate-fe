@@ -21,8 +21,8 @@ const tabs: NavItem[] = [
     title: "ShallowPink AI",
   },
   {
-    tab: "arena",
-    title: "Arena",
+    tab: "challenges",
+    title: "Challenges",
   },
   {
     tab: "active",

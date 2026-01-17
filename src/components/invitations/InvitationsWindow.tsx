@@ -3,12 +3,17 @@
 import { useEffect, useState } from "react";
 import InvitationRow from "@/components/invitations/InvitationRow";
 import MoveHistory from "@/components/MoveHistory";
-import { InvitationData, InvitationsWindowProps } from "@/types";
+import { GameData, InvitationData } from "@/types";
+
+ type Props = {
+  currentGame: GameData | null;
+  moveHist: string[];
+};
 
 export default function InvitationsWindow({
   currentGame,
   moveHist,
-}: InvitationsWindowProps) {
+}: Props) {
   const [sent, setSent] = useState<InvitationData[] | null>(null);
   const [received, setReceived] = useState<InvitationData[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -94,8 +99,8 @@ export default function InvitationsWindow({
                   key={index}
                   type={"received"}
                   invitation={invitation}
-                  onAnswer={handleAnswer}
-                  onCancel={handleCancel}
+                  onAnswerAction={handleAnswer}
+                  onCancelAction={handleCancel}
                 />
               ))
             ) : (

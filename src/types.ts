@@ -1,18 +1,62 @@
-import { Dispatch, SetStateAction } from "react";
 
-// tabs
 export type NavTab =
   | "profile"
   | "sandbox"
   | "shallowpink"
-  | "arena"
+  | "challenges"
   | "active"
   | "invitations"
   | "completed";
 
+export type GameTab = "play" | "active games";
+
+export type Status = 
+  | "move ok"
+  | "check"
+  | "checkmate"
+  | "draw"
+  | "insufficient material"
+  | "three-fold repetition"
+  | "fifty-move rule"
+
+export type TabProps = {
+  activeTab: NavTab;
+  setActiveTab(t: NavTab): void;
+};
+
 export type Color = "white" | "black";
 
-// user types
+export type ShallowpinkData = {
+  fen: string;
+  states: Map<number, number>;
+
+  // engine / search
+  transpositionTable: Map<bigint, Map<string, number>>;
+  moveHistory: string[];
+  gameStatus: string;
+
+  // UI
+  perspective: Color;
+  currentTeam: Color;
+  lastOrig: number[];
+  lastDest: number[];
+};
+
+export const INITIAL_SHALLOWPINK_STATE: ShallowpinkData = {
+  fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+  states: new Map(),
+
+  transpositionTable: new Map(),
+  moveHistory: [],
+  gameStatus: "",
+
+  perspective: "white",
+  currentTeam: "white",
+  lastOrig: [],
+  lastDest: [],
+};
+
+
 export type UserData = {
   name: string;
   wins: number;
@@ -28,7 +72,6 @@ export type MoveData = {
   fen: string;
 };
 
-// game types
 export type GameData = {
   id: number;
   white: number;
@@ -38,52 +81,20 @@ export type GameData = {
   whomst: number;
   winner: number;
   fen: string;
+  status: string;
+  move_hist: string[];
 };
 
-export type GameRowProps = {
-  game: GameData;
-  active: boolean;
-  onForfeit: (gameId: number) => void;
-  onPlay: (gameId: number) => void;
-};
-
-// invitation types
 export type InvitationData = {
   id: number;
   white_username: string;
   black_username: string;
 };
 
-export type InvitationProps = {
-  type: string;
-  invitation: InvitationData;
-  onAnswer: (invitationId: number) => void;
-  onCancel: (invitationId: number) => void;
-};
-
-export type InvitationsWindowProps = {
-  currentGame: GameData | null;
-  moveHist: string[];
-};
-
-export type GamesWindowProps = {
-  activeTab: string;
-  setActiveTab: Dispatch<SetStateAction<NavTab>>;
-  currentGame: GameData | null;
-  setCurrentGame: Dispatch<SetStateAction<GameData | null>>;
-  moveHist: string[];
-  setMoveHist: Dispatch<SetStateAction<string[]>>;
-};
-
 export type Square = {
   notation: string;
   x: number;
   y: number;
-};
-
-export type TabProps = {
-  activeTab: NavTab;
-  setActiveTab: Dispatch<SetStateAction<NavTab>>;
 };
 
 export type LoginSignupError = {
@@ -96,3 +107,9 @@ export interface Jwt {
   user_name: string;
   user_id: number;
 }
+
+export type ChallengeData = {
+  id: number;
+  requester_username: string;
+};
+

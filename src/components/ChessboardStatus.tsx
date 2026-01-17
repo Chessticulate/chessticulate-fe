@@ -1,32 +1,33 @@
+
 type Props = {
   fenStr: string;
-  gameStatus: string;
+  status: string;
 };
 
-export default function ChessboardStatus({ fenStr, gameStatus }: Props) {
+export default function ChessboardStatus({ fenStr, status }: Props) {
   let statusMsg: string = "";
 
-  if (gameStatus === "draw") {
+  if (status === "draw") {
     statusMsg = "Draw";
-  } else if (gameStatus === "insufficient material") {
+  } else if (status === "insufficient material") {
     statusMsg = "Draw: Insufficient Material";
-  } else if (gameStatus === "three-fold repetition") {
+  } else if (status === "three-fold repetition") {
     statusMsg = "Draw: Three-Fold Repetition";
-  } else if (gameStatus === "fifty-move rule") {
+  } else if (status === "fifty-move rule") {
     statusMsg = "Draw: Fifty-Move Rule";
   } else {
     if (fenStr.split(" ")[1] === "w") {
-      if (gameStatus === "checkmate") {
+      if (status === "checkmate") {
         statusMsg = "Checkmate: Black Wins!";
-      } else if (gameStatus === "check") {
+      } else if (status === "check") {
         statusMsg = "White's Turn: In Check";
       } else {
         statusMsg = "White's Turn";
       }
     } else {
-      if (gameStatus === "checkmate") {
+      if (status === "checkmate") {
         statusMsg = "Checkmate: White Wins!";
-      } else if (gameStatus === "check") {
+      } else if (status === "check") {
         statusMsg = "Black's Turn: in Check";
       } else {
         statusMsg = "Black's Turn";

@@ -5,14 +5,22 @@ import LogoutButton from "./LogoutButton";
 import Link from "next/link";
 import { MobileNav, getNavTabTitle } from "./Navigation";
 import { NavTab } from "@/types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type CommonBannerProps = {
   title: string;
 };
 
 function CommonBanner({ title }: CommonBannerProps) {
-  const token = getCookie("token");
+  const [mounted, setMounted] = useState(false); 
+  const [token, setToken] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    setMounted(true);
+    const t = getCookie("token");
+    setToken(typeof t === "string" ? t : undefined);
+  }, []);
+
   return (
     <>
       <Link
@@ -23,7 +31,7 @@ function CommonBanner({ title }: CommonBannerProps) {
         Chessticulate - {title}
       </Link>
       <div className="md:text-xl lg:text-2xl py-3 pr-10">
-        {!token ? (
+        {!mounted ? null : !token ? (
           <>
             <Link
               href="/signup"
@@ -64,6 +72,7 @@ type Props = {
 
 export function BannerWithMenu({ activeTab, setActiveTab }: Props) {
   const [visible, setVisible] = useState<boolean>(false);
+
   return (
     <nav className="relative flex justify-between items-center px-4 py-2 bg-[#1f1f1f]">
       <div className="lg:hidden">

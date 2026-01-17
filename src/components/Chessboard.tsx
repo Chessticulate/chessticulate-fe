@@ -21,15 +21,20 @@ const pieceMap: Record<string, string> = {
   k: "/img/black-king.png",
 };
 
+type SubmitMoveFn = (
+  fen: string,
+  states: Map<number, number>,
+  move: string,
+  gameStatus: string
+) => Promise<void>;
+
+type PvpMoveFn = (move: string) => Promise<void>;
+
 type Props = {
   fen: string;
-  states: Map<number, number>;
-  submitMove(
-    fen: string,
-    states: Map<number, number>,
-    move: string,
-    gameStatus: string,
-  ): Promise<void>;
+  states: Map<number, number> | null;
+  submitMove: SubmitMoveFn | null;
+  pvpMove: PvpMoveFn | null;
   perspective: Color;
   gameOver: boolean;
   setGameOver: (b: boolean) => void;
@@ -48,6 +53,7 @@ export default function Chessboard({
   fen,
   states,
   submitMove,
+  pvpMove,
   perspective,
   gameOver,
   setGameOver,
@@ -56,6 +62,7 @@ export default function Chessboard({
   setLastOrig,
   setLastDest,
 }: Props) {
+
   const [selectedPiece, setSelectedPiece] = useState<Coords | null>(null);
   const [moveOptions, setMoveOptions] = useState<string[]>([]);
 
@@ -181,12 +188,17 @@ export default function Chessboard({
         return;
       }
 
-      await submitMove(
-        chessObj.toFEN(),
-        chessObj.states,
-        moveOptions[moveIndex],
-        moveResult,
-      );
+      if (pvpMove) {
+        await pvpMove(moveStr);
+      } 
+      else if (submitMove) {
+        await submitMove(
+          chessObj.toFEN(),
+          chessObj.states,
+          moveOptions[moveIndex],
+          moveResult,
+        );
+      }
 
       if (chessObj.gameOver) {
         setGameOver(true);
