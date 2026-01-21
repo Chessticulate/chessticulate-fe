@@ -5,7 +5,7 @@ import { getCookie } from "cookies-next";
 
 type Props = {
   challenge: ChallengeData;
-  setGame(g: GameData | null): void;
+  setGame: React.Dispatch<React.SetStateAction<GameData | null>>;
   setGameTab(t: GameTab): void;
   setActiveTab(t: NavTab): void;
 };
@@ -52,7 +52,15 @@ export default function Challenge({
       const res = await resp.json();
       const game = res[0];
 
-      setGame(game);
+      setGame(prev => {
+        const perspective = prev?.perspective ?? "white";
+        const mode = "pvp";
+        return {
+          ...game,
+          mode,
+          perspective,
+        };
+      });
       setActiveTab("active");
       setGameTab("play");
 

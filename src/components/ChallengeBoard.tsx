@@ -11,7 +11,7 @@ type Props = {
   challenges: ChallengeData[] | null;
   activeChallenge: ChallengeData | null;
   setActiveChallenge(c: ChallengeData | null): void;
-  setCurrentGame(g: GameData | null): void;
+  setCurrentGame: React.Dispatch<React.SetStateAction<GameData | null>>;
   setGameTab(t: GameTab): void;
   setActiveTab(t: NavTab): void;
 }

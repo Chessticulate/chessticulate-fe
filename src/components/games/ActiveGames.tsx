@@ -5,7 +5,7 @@ import { GameData, GameTab } from "@/types";
 
 type Props = {
   games: GameData[] | null;
-  setCurrentGame(g: GameData): void;
+  setCurrentGame: React.Dispatch<React.SetStateAction<GameData | null>>;
   setGameTab(t: GameTab): void;
 }
 
@@ -17,11 +17,9 @@ export default function ActiveGames({
 
   return (
     <div className="h-full">
-      {/* Tabs */}
       <ul className="flex text-lg text-center">
       </ul>
 
-      {/* Tab Content */}
       <div>
         {games && games.length > 0 ? (
           games?.map((game, index) => (
@@ -36,7 +34,6 @@ export default function ActiveGames({
           <div>No active games</div>
         )}
       </div>
-      {/* <Footer /> */}
     </div>
   );
 }

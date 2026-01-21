@@ -10,6 +10,8 @@ export type NavTab =
 
 export type GameTab = "play" | "active games";
 
+export type GameMode = "pvp" | "shallowpink" | "sandbox";
+
 export type Status = 
   | "move ok"
   | "check"
@@ -27,35 +29,35 @@ export type TabProps = {
 export type Color = "white" | "black";
 
 export type ShallowpinkData = {
+  mode: string;
   fen: string;
   states: Map<number, number>;
 
   // engine / search
-  transpositionTable: Map<bigint, Map<string, number>>;
-  moveHistory: string[];
-  gameStatus: string;
+  table: Map<bigint, Map<string, number>>;
+  moveHist: string[];
+  status: string;
 
   // UI
   perspective: Color;
   currentTeam: Color;
-  lastOrig: number[];
-  lastDest: number[];
+
+  // I would like to consolidate theses fields too,
+  // but neither of these are returned by the api
+  // lastOrig: number[];
+  // lastDest: number[];
 };
 
-export const INITIAL_SHALLOWPINK_STATE: ShallowpinkData = {
+export const InitShallowpinkState = (): ShallowpinkData => ({
+  mode: "shallowpink",
   fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
   states: new Map(),
-
-  transpositionTable: new Map(),
-  moveHistory: [],
-  gameStatus: "",
-
+  table: new Map(),
+  moveHist: [],
+  status: "",
   perspective: "white",
   currentTeam: "white",
-  lastOrig: [],
-  lastDest: [],
-};
-
+});
 
 export type UserData = {
   name: string;
@@ -73,14 +75,18 @@ export type MoveData = {
 };
 
 export type GameData = {
+  mode: string;
+
   id: number;
   white: number;
   black: number;
   white_username: string;
   black_username: string;
+  perspective: Color;
   whomst: number;
   winner: number;
   fen: string;
+  states: Map<number, number>;
   status: string;
   move_hist: string[];
 };

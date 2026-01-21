@@ -1,14 +1,13 @@
 "use client";
 
 import { useState, useRef } from "react";
-
-const Shallowpink = require("shallowpink");
+import { ShallowpinkData } from "@/types";
 
 type Props = {
-  setFenString(s: string): void;
+  setFen: (s: ShallowpinkData | ((prev: ShallowpinkData) => ShallowpinkData)) => void;
 };
 
-export default function FenInput({ setFenString }: Props) {
+export default function FenInput({ setFen }: Props) {
   const [showError, setShowError] = useState<boolean>(false);
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
   const userSandboxInputRef = useRef<HTMLInputElement>(null);
@@ -17,8 +16,10 @@ export default function FenInput({ setFenString }: Props) {
     try {
       const customFen = userSandboxInputRef.current!.value;
       if (customFen === "") return;
-      new Shallowpink(customFen);
-      setFenString(customFen);
+      setFen(prev => ({
+        ...prev,
+        fen: customFen,
+      }));
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 2000);
     } catch (error) {

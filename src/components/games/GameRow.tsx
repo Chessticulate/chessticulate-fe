@@ -4,7 +4,7 @@ import { GameData, GameTab } from "@/types";
 
 type Props = {
   game: GameData;
-  setGame(g: GameData): void;
+  setGame:(value: GameData | ((prev: GameData) => GameData)) => void;
   setGameTab(t: GameTab): void;
 };
 
@@ -22,7 +22,15 @@ export default function GameRow({
   }
  
   const handleSelect = () => {
-    setGame(game);
+    setGame(prev => {
+      const perspective = prev?.perspective ?? "white";
+      const mode = "pvp";
+      return {
+        ...game,
+        mode,
+        perspective,
+      };
+    });
     setGameTab("play");
   };
 
