@@ -227,7 +227,7 @@ export default function Chessboard({
     const y =
       game.perspective === "white" ? rows.indexOf(row) : 7 - rows.indexOf(row);
     const isEvenSquare = (x + y) % 2 === 0;
-    const squareColor = isEvenSquare ? "bg-[#f0d9b5]" : "bg-[#b58863]";
+    const squareColor = isEvenSquare ? "bg-light-square" : "bg-dark-square";
     const moveHere = moveOptions.find((move) => move.match(notation));
     const chessObj = new Shallowpink(game.fen, game?.states);
     const piece = chessObj.board.get(x, y);
@@ -289,7 +289,7 @@ export default function Chessboard({
   return (
     <div
       ref={boardRef}
-      className="grid grid-cols-8 grid-rows-8 aspect-square w-screen md:size-[650px] lg:size-[750px]"
+      className="grid grid-cols-8 grid-rows-8 aspect-square w-full md:size-[650px] lg:size-[750px]"
     >
       {rows.map((row) => renderRow(row))}
     </div>

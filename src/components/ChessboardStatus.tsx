@@ -36,7 +36,7 @@ export default function ChessboardStatus({ fenStr, status }: Props) {
   }
 
   return (
-    <div className="border-2 border-[#fed6ae] bg-[#1f1f1f] p-2 mt-2 md:mt-0 md:ml-4 md:mb-2 lg:mt-0 lg:ml-4 lg:mb-2 overflow-y-auto w-full md:w-[200px] lg:w-[300px]">
+    <div className="border-2 border-outline bg-foreground p-2 mt-2 md:mt-0 md:ml-4 md:mb-2 lg:mt-0 lg:ml-4 lg:mb-2 overflow-y-auto w-full md:w-[200px] lg:w-[300px]">
       <p className="text-center whitespace-nowrap">{statusMsg}</p>
     </div>
   );

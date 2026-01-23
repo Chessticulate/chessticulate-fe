@@ -70,7 +70,7 @@ export default function Challenge({
   };
 
   return (
-    <div className="flex justify-around pl-5 pr-5 pt-2 pb-2 border-2 rounded-md border-[#fed6ae] mt-2 mb-4 hover:bg-[#fed6ae] hover:text-[#292929] hover:scale-105 transition">
+    <div className="flex justify-around pl-5 pr-5 pt-2 pb-2 border-2 rounded-md border-outline mt-2 mb-4 hover:bg-outline hover:text-ink hover:scale-105 transition">
       <div className="p-1">Challenge from {username}</div>
       <>
         <button

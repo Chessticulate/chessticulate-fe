@@ -16,7 +16,7 @@ export default function TeamSwitch({ currentTeam, setShallowpink }: Props) {
           )
         }
 
-        className={`hover:bg-[#fed6ae] hover:text-[#292929] flex-1 ${currentTeam === "white" ? "border-2 border-[#fed6ae]" : ""} bg-[#1f1f1f] pt-2 pb-2 w-full lg:w-auto`}
+        className={`hover:bg-outline hover:text-background flex-1 ${currentTeam === "white" ? "border-2 border-outline" : ""} bg-foreground pt-2 pb-2 w-full lg:w-auto`}
       >
         <p className="text-center w-full whitespace-nowrap">Play as White</p>
       </button>
@@ -28,7 +28,7 @@ export default function TeamSwitch({ currentTeam, setShallowpink }: Props) {
               : prev
           )
         }
-        className={`hover:bg-[#fed6ae] hover:text-[#292929] flex-1 ${currentTeam === "black" ? "border-2 border-[#fed6ae]" : ""} bg-[#1f1f1f] pt-2 pb-2 w-full lg:w-auto`}
+        className={`hover:bg-outline hover:text-background flex-1 ${currentTeam === "black" ? "border-2 border-outline" : ""} bg-foreground pt-2 pb-2 w-full lg:w-auto`}
       >
         <p className="text-center w-full whitespace-nowrap">Play as Black</p>
       </button>

@@ -131,6 +131,9 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
   // activeChallenge is included in dependency array so challenges is refreshed
   // anytime a challenge is created or canceled
   useEffect(() => {
+    if (!token) {
+      return;
+    }
     const fetchChallenges = async () => {
       try {
         const response = await fetch(
@@ -570,7 +573,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
         );
       case "shallowpink":
         return (
-          <div className="md:flex lg:flex lg:justify-center">
+          <div className="md:flex lg:justify-center">
             <Chessboard
               game={shallowpink}
               submitMove={submitMoveShallowpink}
@@ -657,7 +660,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
             ) : !currentGame ? (
               <div className="p-4">Select a game to view it.</div>
             ) : (
-              <div className="md:flex lg:flex lg:justify-center">
+              <div className="md:flex lg:justify-center">
                 <Chessboard
                   game={currentGame}
                   submitMove={pvpMove}
@@ -698,11 +701,8 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
     }
   };
   return (
-    <div className="flex min-h-screen">
-      <div className="flex-1 pt-5">
-          {renderContent()}
-          {/* <Footer /> */}
-      </div>
+    <div className="flex-1">
+      {renderContent()}
     </div>
   );
 }
