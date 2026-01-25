@@ -3,32 +3,40 @@
 import { jwtDecode } from "jwt-decode";
 import {
   Color,
+  Status,
   GameData,
   NavTab,
-  MoveData,
+  GameTab,
   Jwt,
   InvitationData,
+  ChallengeData,
+  ShallowpinkData,
+  InitShallowpinkState,
+  SubmitMove,
 } from "@/types";
 import { useState, useEffect } from "react";
 import { getCookie } from "cookies-next";
 import { redirect } from "next/navigation";
 
 import Chessboard from "@/components/Chessboard";
+import ChallengeBoard from "@/components/ChallengeBoard";
 import ResetButton from "@/components/ResetButton";
 import FenView from "@/components/FenView";
 import FenInput from "@/components/FenInput";
 import ChessboardStatus from "@/components/ChessboardStatus";
 import MoveHistory from "@/components/MoveHistory";
 import FlipPerspectiveButton from "@/components/FlipPerspectiveButton";
+import ProfileInfo from "@/components/ProfileInfo";
 import TeamSwitch from "@/components/TeamSwitch";
+import ActiveGames from "@/components/games/ActiveGames";
+import ActiveGamesToggle from "@/components/games/ActiveGamesToggle";
 
 // Chess obj has a type of any since shallowpink does not export any types
-// long term it might be best to create a chess interface
-//const Chess: any = require("shallowpink/lib/chess");
-const Shallowpink = require("shallowpink");
+const SHALLOWPINK = require("shallowpink");
 
 type Props = {
   activeTab: NavTab;
+  setActiveTab(t: NavTab): void;
 };
 
 async function fetchBook(): Promise<Uint8Array> {
@@ -36,60 +44,42 @@ async function fetchBook(): Promise<Uint8Array> {
   return new Uint8Array(await res.arrayBuffer());
 }
 
-export default function Dashboard({ activeTab }: Props) {
+export default function Dashboard({ activeTab, setActiveTab }: Props) {
   const token = getCookie("token") as string;
   const [book, setBook] = useState<Uint8Array | null>(null);
-
-  const [currentGame, setCurrentGame] = useState<GameData | null>(null);
-  const [currentGameMoveHist, setCurrentGameMoveHist] = useState<string[]>([]);
   const [gameOver, setGameOver] = useState<boolean>(false);
-  /*const [currentGameFenString, setCurrentGameFenString] = useState<string>("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-  const [currentGameStates, setCurrentGameStates] = useState<any>(null); */
 
-  const [sandboxFenString, setSandboxFenString] = useState<string>(
-    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+  // game mode states
+  const [currentGame, setCurrentGame] = useState<GameData | null>(null);
+  const [sandbox, setSandbox] = useState<ShallowpinkData>(
+    InitShallowpinkState(),
   );
-  const [sandboxStates, setSandboxStates] = useState<Map<number, number>>(
-    new Map(),
+  const [shallowpink, setShallowpink] = useState<ShallowpinkData>(
+    InitShallowpinkState(),
   );
-  const [sandboxMoveHist, setSandboxMoveHist] = useState<string[]>([]);
-  const [sandboxGameStatus, setSandboxGameStatus] = useState<string>("");
-  const [sandboxPerspective, setSandboxPerspective] = useState<Color>("white");
 
-  const [shallowpinkFenString, setShallowpinkFenString] = useState<string>(
-    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-  );
-  const [shallowpinkStates, setShallowpinkStates] = useState<
-    Map<number, number>
-  >(new Map());
-  // shallowpink transposition table
-  const [shallowpinkTable, setShallowpinkTable] = useState<
-    Map<bigint, Map<string, number>>
-  >(new Map());
-  const [shallowpinkMoveHist, setShallowpinkMoveHist] = useState<string[]>([]);
-  const [shallowpinkColor, setShallowpinkColor] = useState<string>(
-    Shallowpink.Color.BLACK,
-  );
-  const [shallowpinkGameStatus, setShallowpinkGameStatus] =
-    useState<string>("");
-  const [shallowpinkPerspective, setShallowpinkPerspective] =
-    useState<Color>("white");
-  const [shallowpinkCurrentTeam, setShallowpinkCurrentTeam] =
-    useState<Color>("white");
+  // highlight squares
+  // h squares could not be consolidated into the game mode objects without expanding on the api
+  // they are left separate for now, but could be integrated later
+  const [shallowpinkLastOrig, setShallowpinkLastOrig] = useState<number[]>([]);
+  const [shallowpinkLastDest, setShallowpinkLastDest] = useState<number[]>([]);
+  const [currentGameLastOrig, setCurrentGameLastOrig] = useState<number[]>([]);
+  const [currentGameLastDest, setCurrentGameLastDest] = useState<number[]>([]);
+  const [sandboxLastOrig, setSandboxLastOrig] = useState<number[]>([]);
+  const [sandboxLastDest, setSandboxLastDest] = useState<number[]>([]);
 
+  // Tabs
   const [activeGames, setActiveGames] = useState<GameData[] | null>(null);
   const [completedGames, setCompletedGames] = useState<GameData[] | null>(null);
-
+  const [challenges, setChallenges] = useState<ChallengeData[]>([]);
   const [recvdInvitations, setRecvdInvitations] = useState<InvitationData[]>(
     [],
   );
   const [sentInvitations, setSentInvitations] = useState<InvitationData[]>([]);
-
-  // highlight squares
-  const [shallowpinkLastOrig, setShallowpinkLastOrig] = useState<number[]>([]);
-  const [shallowpinkLastDest, setShallowpinkLastDest] = useState<number[]>([]);
-  const [sandboxLastOrig, setSandboxLastOrig] = useState<number[]>([]);
-  const [sandboxLastDest, setSandboxLastDest] = useState<number[]>([]);
+  const [gameTab, setGameTab] = useState<GameTab>("active games");
+  const [activeChallenge, setActiveChallenge] = useState<ChallengeData | null>(
+    null,
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -107,40 +97,10 @@ export default function Dashboard({ activeTab }: Props) {
     };
   }, []);
 
-  useEffect(() => {
-    if (!token || !currentGame) {
-      return;
-    }
-    (async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/moves?game_id=${currentGame?.id}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
-
-        if (!response.ok) {
-          throw new Error(
-            `response was not ok: ${response.status} ${response.statusText}`,
-          );
-        }
-
-        const result: MoveData[] = await response.json();
-
-        setCurrentGameMoveHist(result.map((move) => move.movestr));
-      } catch (error) {
-        console.error(
-          `there was a problem fetching move history for active game ${currentGame?.id}:`,
-          error,
-        );
-      }
-    })();
-  }, [token, currentGame]);
-
+  // ACTIVE GAMES
+  // currentGame.id is added to this useEffects dependancy array to trigger a fetch after accepting a challenge
+  // otherwise the new game would not be present without a refresh.
+  // long term it would be best to have a long get on Active Games, as well as Challenges and Invitations
   useEffect(() => {
     if (!token) {
       return;
@@ -170,8 +130,130 @@ export default function Dashboard({ activeTab }: Props) {
         console.error("there was a problem fetching active games:", error);
       }
     })();
-  }, [token]);
+  }, [token, currentGame]);
 
+  // CHALLENGES
+  // activeChallenge is included in dependency array so challenges is refreshed
+  // anytime a challenge is created or canceled
+  useEffect(() => {
+    if (!token) {
+      return;
+    }
+    const fetchChallenges = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/challenges`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const result = await response.json();
+
+        setChallenges(result);
+      } catch (error) {
+        console.error("There was a problem with the fetch operation:", error);
+      }
+    };
+
+    fetchChallenges();
+  }, [token, activeChallenge]);
+
+  // LONG GET CURRENT GAME
+  // currentGame is set when game row is selected
+  // that means currentGame fen is set to whatever fen was when active games fetch occurs
+  useEffect(() => {
+    if (!token || !currentGame?.id) return;
+
+    const controller = new AbortController();
+
+    (async () => {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/games/${currentGame.id}/update`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "text/event-stream",
+          },
+          signal: controller.signal,
+        },
+      );
+
+      if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+      if (!res.body) throw new Error("No response body");
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+
+        // SSE frames end with a blank line
+        const frames = buffer.split("\n\n");
+        buffer = frames.pop() ?? "";
+
+        for (const frame of frames) {
+          // ignore comments like ": ping"
+          const dataLines = frame
+            .split("\n")
+            .filter((l) => l.startsWith("data:"))
+            .map((l) => l.slice(5).trim());
+
+          if (!dataLines.length) continue;
+
+          const dataStr = dataLines.join("\n");
+
+          const payload = (() => {
+            try {
+              return JSON.parse(dataStr);
+            } catch {
+              return dataStr;
+            }
+          })();
+
+          console.log("UPDATE RESPONSE:", payload);
+
+          let suffix = "";
+          if (payload.status === "check") {
+            suffix = "+";
+          } else if (payload.status === "checkmate") {
+            suffix = "#";
+          }
+
+          setCurrentGame((prev: GameData | null) =>
+            prev
+              ? {
+                  ...prev,
+                  fen: payload.fen,
+                  move_hist: [...prev.move_hist, `${payload.move}${suffix}`],
+                }
+              : prev,
+          );
+        }
+      }
+    })().catch((err) => {
+      if ((err as any).name !== "AbortError") {
+        console.error("stream error:", err);
+      }
+    });
+
+    return () => controller.abort();
+  }, [token, currentGame?.id]);
+
+  // COMPLETED GAMES
   useEffect(() => {
     if (!token) {
       return;
@@ -203,6 +285,7 @@ export default function Dashboard({ activeTab }: Props) {
     })();
   }, [token]);
 
+  // RECIEVED INVITATIONS
   useEffect(() => {
     if (!token) {
       return;
@@ -238,6 +321,7 @@ export default function Dashboard({ activeTab }: Props) {
     })();
   }, [token]);
 
+  // SENT INVITATIONS
   useEffect(() => {
     if (!token) {
       return;
@@ -270,16 +354,21 @@ export default function Dashboard({ activeTab }: Props) {
     })();
   }, [token]);
 
-  const submitMove = async (move: string) => {
+  const pvpMove: SubmitMove = async ({ move }) => {
     if (!currentGame) {
       return;
     }
+    // remove suffix
+    move = move.replace(/[+#]/g, "");
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/games/${currentGame.id}/move`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
           body: JSON.stringify({ move }),
         },
       );
@@ -288,37 +377,47 @@ export default function Dashboard({ activeTab }: Props) {
         throw new Error(
           `failed to submit move: ${response.status} ${response.statusText}`,
         );
-      const data = await response.json();
-      // update move history
-      setCurrentGame(data);
-      console.log("Move submitted:", data);
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
-  const submitMoveSandbox = async (
-    fen: string,
-    states: Map<number, number>,
-    move: string,
-    gameStatus: string,
-  ) => {
-    setSandboxMoveHist([...sandboxMoveHist, move]);
-    setSandboxFenString(fen);
-    setSandboxStates(new Map(states));
-    setSandboxGameStatus(gameStatus);
+  const submitMoveSandbox: SubmitMove = async ({
+    move,
+    fen,
+    states,
+    status,
+  }) => {
+    setSandbox((prev) =>
+      prev
+        ? {
+            ...prev,
+            fen: fen,
+            states: states,
+            status: status,
+            move_hist: [...prev.move_hist, move],
+          }
+        : prev,
+    );
   };
 
-  const submitMoveShallowpink = async (
-    fen: string,
-    states: Map<number, number>,
-    move: string,
-    gameStatus: string,
-  ) => {
-    setShallowpinkMoveHist([...shallowpinkMoveHist, move]);
-    setShallowpinkFenString(fen);
-    setShallowpinkStates(new Map(states));
-    setShallowpinkGameStatus(gameStatus);
+  const submitMoveShallowpink: SubmitMove = async ({
+    move,
+    fen,
+    states,
+    status,
+  }) => {
+    setShallowpink((prev) =>
+      prev
+        ? {
+            ...prev,
+            fen: fen,
+            states: states,
+            status: status,
+            move_hist: [...prev.move_hist, move],
+          }
+        : prev,
+    );
   };
 
   useEffect(() => {
@@ -326,10 +425,10 @@ export default function Dashboard({ activeTab }: Props) {
     if (!book) return;
 
     const whomst =
-      shallowpinkFenString.split(" ")[1] === "w"
-        ? Shallowpink.Color.WHITE
-        : Shallowpink.Color.BLACK;
-    if (whomst === shallowpinkCurrentTeam) {
+      shallowpink.fen.split(" ")[1] === "w"
+        ? SHALLOWPINK.Color.WHITE
+        : SHALLOWPINK.Color.BLACK;
+    if (whomst === shallowpink.currentTeam) {
       return;
     }
 
@@ -338,20 +437,19 @@ export default function Dashboard({ activeTab }: Props) {
     );
 
     worker.postMessage({
-      fenStr: shallowpinkFenString,
-      states: shallowpinkStates,
+      fenStr: shallowpink.fen,
+      states: shallowpink.states,
       book,
-      table: shallowpinkTable,
+      table: shallowpink.table,
     });
     worker.onmessage = ({ data: { move, error, table } }) => {
       if (error) {
         throw new Error(`An error occurred while generating AI move: ${error}`);
       }
-      console.log(table);
 
-      const chessObj = new Shallowpink(
-        shallowpinkFenString,
-        shallowpinkStates,
+      const chessObj = new SHALLOWPINK(
+        shallowpink.fen,
+        shallowpink.states,
         null, // only ai uses the opening book
         table,
       );
@@ -364,13 +462,21 @@ export default function Dashboard({ activeTab }: Props) {
       ) {
         throw new Error(`shallowpink gave us a bad move: ${move} -> ${result}`);
       }
-      setShallowpinkMoveHist([...shallowpinkMoveHist, move]);
-      setShallowpinkFenString(chessObj.toFEN());
-      setShallowpinkStates(new Map(shallowpinkStates));
-      setShallowpinkTable(chessObj.table);
-      setShallowpinkGameStatus(result);
-      setShallowpinkLastOrig(chessObj.lastOrig);
-      setShallowpinkLastDest(chessObj.lastDest);
+      setShallowpink((prev) =>
+        prev
+          ? {
+              ...prev,
+              fen: chessObj.toFEN(),
+              table: new Map(chessObj.table),
+              status: result,
+              states: new Map(prev.states),
+              move_hist: [...prev.move_hist, move],
+              lastOrig: chessObj.lastOrig,
+              lastDest: chessObj.lastDest,
+            }
+          : prev,
+      );
+
       if (
         [
           "checkmate",
@@ -384,43 +490,57 @@ export default function Dashboard({ activeTab }: Props) {
         setGameOver(true);
       }
     };
-  }, [
-    book,
-    shallowpinkFenString,
-    shallowpinkMoveHist,
-    shallowpinkStates,
-    shallowpinkTable,
-    shallowpinkColor,
-    shallowpinkGameStatus,
-    shallowpinkCurrentTeam,
-  ]);
+  }, [book, shallowpink]);
 
-  const flipSandboxPerspective = () => {
-    if (sandboxPerspective === "white") {
-      setSandboxPerspective("black");
-    } else {
-      setSandboxPerspective("white");
-    }
-  };
-
-  const flipShallowpinkPerspective = () => {
-    if (shallowpinkPerspective === "white") {
-      setShallowpinkPerspective("black");
-    } else {
-      setShallowpinkPerspective("white");
+  // THIS NEEDS FIXING
+  const flipPerspective = (mode: string) => {
+    if (mode === "sandbox") {
+      setSandbox((prev) =>
+        prev
+          ? {
+              ...prev,
+              perspective: prev.perspective === "white" ? "black" : "white",
+            }
+          : prev,
+      );
+    } else if (mode === "shallowpink") {
+      setShallowpink((prev) =>
+        prev
+          ? {
+              ...prev,
+              perspective: prev.perspective === "white" ? "black" : "white",
+            }
+          : prev,
+      );
+    } else if (mode === "active") {
+      setCurrentGame((prev) =>
+        prev
+          ? {
+              ...prev,
+              perspective: prev.perspective === "white" ? "black" : "white",
+            }
+          : prev,
+      );
     }
   };
 
   const renderContent = () => {
     switch (activeTab) {
+      case "profile":
+        if (!token) {
+          redirect("/signup");
+        }
+        return (
+          <div className="flex justify-center pt-2">
+            <ProfileInfo />
+          </div>
+        );
       case "sandbox":
         return (
           <div className="md:flex lg:flex lg:justify-center">
             <Chessboard
-              fen={sandboxFenString}
-              states={sandboxStates}
+              game={sandbox}
               submitMove={submitMoveSandbox}
-              perspective={sandboxPerspective}
               gameOver={gameOver}
               setGameOver={setGameOver}
               lastOrig={sandboxLastOrig}
@@ -431,44 +551,40 @@ export default function Dashboard({ activeTab }: Props) {
             <div className="">
               <div className="ml-2 mr-2 md:m-0 lg:m-0">
                 <ChessboardStatus
-                  fenStr={sandboxFenString}
-                  gameStatus={sandboxGameStatus}
+                  fenStr={sandbox.fen}
+                  status={sandbox.status}
                 />
               </div>
               <div className="">
                 <div className="flex mt-4 ml-2 mr-2 md:block md:m-0 md:block lg:m-0 lg:block">
                   <div className="flex-1 mr-1 md:mr-0 md:mb-2 lg:mr-0 lg:mb-2">
                     <FlipPerspectiveButton
-                      flipPerspective={flipSandboxPerspective}
+                      flipPerspective={flipPerspective}
+                      mode={activeTab}
                     />
                   </div>
                   <div className="flex-1 ml-1 md:m-0 md:mb-2 lg:m-0 lg:mb-2">
                     <ResetButton
-                      setFenString={setSandboxFenString}
-                      setMoveHistory={setSandboxMoveHist}
-                      setStates={setSandboxStates}
+                      setGame={setSandbox}
                       setGameOver={setGameOver}
-                      setStatus={setSandboxGameStatus}
                       setLastOrig={setSandboxLastOrig}
                       setLastDest={setSandboxLastDest}
                     />
                   </div>
                 </div>
-                <FenView fenstr={sandboxFenString} />
-                <FenInput setFenString={setSandboxFenString} />
-                <MoveHistory moves={sandboxMoveHist} isShallowpink={false} />
+                <FenView fenstr={sandbox.fen} />
+                <FenInput setFen={setSandbox} />
+                <MoveHistory moves={sandbox.move_hist} isShallowpink={false} />
               </div>
             </div>
           </div>
         );
       case "shallowpink":
         return (
-          <div className="md:flex lg:flex lg:justify-center">
+          <div className="md:flex lg:justify-center">
             <Chessboard
-              fen={shallowpinkFenString}
-              states={shallowpinkStates}
+              game={shallowpink}
               submitMove={submitMoveShallowpink}
-              perspective={shallowpinkPerspective}
               gameOver={gameOver}
               setGameOver={setGameOver}
               lastOrig={shallowpinkLastOrig}
@@ -479,38 +595,55 @@ export default function Dashboard({ activeTab }: Props) {
             <div className="">
               <div className="ml-2 mr-2 md:m-0 lg:m-0">
                 <ChessboardStatus
-                  fenStr={shallowpinkFenString}
-                  gameStatus={shallowpinkGameStatus}
+                  fenStr={shallowpink.fen}
+                  status={shallowpink.status}
                 />
               </div>
               <TeamSwitch
-                currentTeam={shallowpinkCurrentTeam}
-                setTeam={setShallowpinkCurrentTeam}
+                currentTeam={shallowpink.currentTeam}
+                setShallowpink={setShallowpink}
               />
               <div className="">
                 <div className="flex mt-4 ml-2 mr-2 md:block md:m-0 md:block lg:m-0 lg:block">
                   <div className="flex-1 mr-1 md:mr-0 md:mb-2 lg:mr-0 lg:mb-2">
                     <FlipPerspectiveButton
-                      flipPerspective={flipShallowpinkPerspective}
+                      flipPerspective={flipPerspective}
+                      mode={activeTab}
                     />
                   </div>
                   <div className="flex-1 ml-1 md:m-0 md:mb-2 lg:m-0 lg:mb-2">
                     <ResetButton
-                      setFenString={setShallowpinkFenString}
-                      setMoveHistory={setShallowpinkMoveHist}
-                      setStates={setShallowpinkStates}
+                      setGame={setShallowpink}
                       setGameOver={setGameOver}
-                      setStatus={setShallowpinkGameStatus}
                       setLastOrig={setShallowpinkLastOrig}
                       setLastDest={setShallowpinkLastDest}
                     />
                   </div>
                 </div>
-                <FenView fenstr={shallowpinkFenString} />
-                <FenInput setFenString={setShallowpinkFenString} />
-                <MoveHistory moves={shallowpinkMoveHist} isShallowpink={true} />
+                <FenView fenstr={shallowpink.fen} />
+                <FenInput setFen={setShallowpink} />
+                <MoveHistory
+                  moves={shallowpink.move_hist}
+                  isShallowpink={true}
+                />
               </div>
             </div>
+          </div>
+        );
+      case "challenges":
+        if (!token) {
+          redirect("/signup");
+        }
+        return (
+          <div className="flex-1 items-center justify-center">
+            <ChallengeBoard
+              challenges={challenges}
+              activeChallenge={activeChallenge}
+              setActiveChallenge={setActiveChallenge}
+              setCurrentGame={setCurrentGame}
+              setActiveTab={setActiveTab}
+              setGameTab={setGameTab}
+            />
           </div>
         );
       default:
@@ -522,56 +655,59 @@ export default function Dashboard({ activeTab }: Props) {
             <h1>Not Implemented</h1>
           </div>
         );
-      /*case "active":
+
+      case "active":
         return (
-          <>
-            {activeGames &&
-              activeGames.map((game, index) => (
-                <GameRow
-                  key={index}
-                  game={game}
-                  active={true}
-                  onPlay={handlePlay}
-                  onForfeit={handleForfeit}
+          <div className="flex-1 items-center justify-center">
+            {gameTab === "active games" ? (
+              <ActiveGames
+                games={activeGames}
+                setCurrentGame={setCurrentGame}
+                setGameTab={setGameTab}
+              />
+            ) : !currentGame ? (
+              <div className="p-4">Select a game to view it.</div>
+            ) : (
+              <div className="md:flex lg:justify-center">
+                <Chessboard
+                  game={currentGame}
+                  submitMove={pvpMove}
+                  gameOver={gameOver}
+                  setGameOver={setGameOver}
+                  lastOrig={currentGameLastOrig}
+                  lastDest={currentGameLastDest}
+                  setLastOrig={setCurrentGameLastOrig}
+                  setLastDest={setCurrentGameLastDest}
                 />
-              ))}
-          </>
-        );
-      case "completed":
-        return (
-          <>
-            {completedGames &&
-              completedGames.map((game, index) => (
-                <GameRow
-                  key={index}
-                  game={game}
-                  active={false}
-                  onPlay={handlePlay}
-                  onForfeit={handleForfeit}
-                />
-              ))}
-          </>
-        );
-      case "":
-        return (
-          <div className="flex justify-center pt-2">
-            <Chessboard
-              game={currentGame}
-              moveHist={moveHist}
-              setMoveHist={setMoveHist}
-            />
+                <div className="">
+                  <div className="ml-2 mr-2 md:m-0 lg:m-0">
+                    <ChessboardStatus
+                      fenStr={currentGame.fen}
+                      status={currentGame.status}
+                    />
+                  </div>
+                  <div className="">
+                    <div className="flex mt-4 ml-2 mr-2 md:block md:m-0 md:block lg:m-0 lg:block">
+                      <div className="flex-1 mr-1 md:mr-0 md:mb-2 lg:mr-0 lg:mb-2">
+                        <FlipPerspectiveButton
+                          flipPerspective={flipPerspective}
+                          mode={activeTab}
+                        />
+                      </div>
+                    </div>
+                    <FenView fenstr={currentGame.fen} />
+                    <MoveHistory
+                      moves={currentGame.move_hist}
+                      isShallowpink={false}
+                    />
+                    <ActiveGamesToggle setGameTabAction={setGameTab} />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-        );*/
+        );
     }
   };
-  return (
-    <div className="flex h-full">
-      <div className="flex-grow basis-3/4 pt-5">
-        <div>
-          {renderContent()}
-          {/* <Footer /> */}
-        </div>
-      </div>
-    </div>
-  );
+  return <div className="flex-1">{renderContent()}</div>;
 }

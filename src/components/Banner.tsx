@@ -5,20 +5,24 @@ import LogoutButton from "./LogoutButton";
 import Link from "next/link";
 import { MobileNav, getNavTabTitle } from "./Navigation";
 import { NavTab } from "@/types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type CommonBannerProps = {
   title: string;
 };
 
 function CommonBanner({ title }: CommonBannerProps) {
-  const token = getCookie("token");
+  const [token] = useState<string | undefined>(() => {
+    const t = getCookie("token");
+    return typeof t === "string" ? t : undefined;
+  });
+
   return (
     <>
       <Link
         href="/"
         passHref
-        className="text-xl md:text-2xl lg:text-4xl hover:bg-[#fed6ae] hover:text-[#292929]"
+        className="text-xl md:text-2xl lg:text-4xl hover:bg-outline hover:text-background"
       >
         Chessticulate - {title}
       </Link>
@@ -27,7 +31,7 @@ function CommonBanner({ title }: CommonBannerProps) {
           <>
             <Link
               href="/signup"
-              className="hover:bg-[#fed6ae] hover:text-[#292929]"
+              className="hover:bg-outline hover:text-background"
               passHref
             >
               Sign up
@@ -35,7 +39,7 @@ function CommonBanner({ title }: CommonBannerProps) {
             <> | </>
             <Link
               href="/login"
-              className="hover:bg-[#fed6ae] hover:text-[#292929]"
+              className="hover:bg-outline hover:text-background"
               passHref
             >
               Log in
@@ -51,7 +55,7 @@ function CommonBanner({ title }: CommonBannerProps) {
 
 export function Banner() {
   return (
-    <nav className="flex justify-between items-center px-4 py-2 bg-[#151f1f]">
+    <nav className="flex justify-between items-center px-4 py-2 bg-foreground">
       <CommonBanner title="Say it witcha chess!" />
     </nav>
   );
@@ -64,14 +68,15 @@ type Props = {
 
 export function BannerWithMenu({ activeTab, setActiveTab }: Props) {
   const [visible, setVisible] = useState<boolean>(false);
+
   return (
-    <nav className="relative flex justify-between items-center px-4 py-2 bg-[#1f1f1f]">
+    <nav className="relative flex justify-between items-center px-4 py-2 bg-foreground">
       <div className="lg:hidden">
         <button
           onClick={() => (visible ? setVisible(false) : setVisible(true))}
           data-collapse-toggle="navbar-hamburger"
           type="button"
-          className="inline-flex items-center justify-center p-2 w-10 h-10 hover:bg-[#fed6ae] hover:text-[#292929] focus:outline-none"
+          className="inline-flex items-center justify-center p-2 w-10 h-10 hover:bg-outline hover:text-background focus:outline-none"
           aria-controls="navbar-hamburger"
           aria-expanded="false"
         >
@@ -93,7 +98,7 @@ export function BannerWithMenu({ activeTab, setActiveTab }: Props) {
           </svg>
         </button>
         <div
-          className={`${visible ? "flex" : "hidden"} bg-[#1f1f1f] absolute left-0 top-full mt-2 z-50`}
+          className={`${visible ? "flex" : "hidden"} bg-foreground absolute left-0 top-full mt-2 z-50`}
         >
           <MobileNav
             activeTab={activeTab}

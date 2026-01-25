@@ -1,14 +1,15 @@
 "use client";
 
 import { useState, useRef } from "react";
-
-const Shallowpink = require("shallowpink");
+import { ShallowpinkData } from "@/types";
 
 type Props = {
-  setFenString(s: string): void;
+  setFen: (
+    s: ShallowpinkData | ((prev: ShallowpinkData) => ShallowpinkData),
+  ) => void;
 };
 
-export default function FenInput({ setFenString }: Props) {
+export default function FenInput({ setFen }: Props) {
   const [showError, setShowError] = useState<boolean>(false);
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
   const userSandboxInputRef = useRef<HTMLInputElement>(null);
@@ -17,8 +18,10 @@ export default function FenInput({ setFenString }: Props) {
     try {
       const customFen = userSandboxInputRef.current!.value;
       if (customFen === "") return;
-      new Shallowpink(customFen);
-      setFenString(customFen);
+      setFen((prev) => ({
+        ...prev,
+        fen: customFen,
+      }));
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 2000);
     } catch (error) {
@@ -30,11 +33,11 @@ export default function FenInput({ setFenString }: Props) {
   return (
     <div className="block mt-4 ml-2 mr-2 md:mt-0 lg:mt-0 md:ml-4 lg:ml-4 md:mb-2 lg:mb-2">
       <div className="flex">
-        <div className="overflow-x-auto flex border-2 border-[#fed6ae] bg-[#1f1f1f] p-2 w-full md:w-[200px] lg:w-[300px]">
+        <div className="overflow-x-auto flex border-2 border-outline bg-foreground p-2 w-full md:w-[200px] lg:w-[300px]">
           <div className="whitespace-nowrap mr-2">
             <button
               onClick={() => userSetSandboxFen()}
-              className="hover:bg-[#fed6ae] hover:text-[#292929]"
+              className="hover:bg-outline hover:text-background"
             >
               Set FEN:
             </button>
@@ -43,7 +46,7 @@ export default function FenInput({ setFenString }: Props) {
             ref={userSandboxInputRef}
             type="text"
             placeholder="custom FEN string..."
-            className="overflow-x-auto whitespace-nowrap bg-[#1f1f1f] md:w-[100px] lg:w-[180px]"
+            className="overflow-x-auto whitespace-nowrap bg-foreground md:w-[100px] lg:w-[180px]"
           />
         </div>
       </div>

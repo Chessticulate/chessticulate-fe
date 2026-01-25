@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react";
 import InvitationRow from "@/components/invitations/InvitationRow";
 import MoveHistory from "@/components/MoveHistory";
-import { InvitationData, InvitationsWindowProps } from "@/types";
+import { GameData, InvitationData } from "@/types";
 
-export default function InvitationsWindow({
-  currentGame,
-  moveHist,
-}: InvitationsWindowProps) {
+type Props = {
+  currentGame: GameData | null;
+  moveHist: string[];
+};
+
+export default function InvitationsWindow({ currentGame, moveHist }: Props) {
   const [sent, setSent] = useState<InvitationData[] | null>(null);
   const [received, setReceived] = useState<InvitationData[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -65,8 +67,8 @@ export default function InvitationsWindow({
             onClick={() => setActiveTab("invitations")}
             className={`inline-block p-4 rounded-b-lg ${
               activeTab === "invitations"
-                ? "bg-[#1f1f1f]"
-                : "hover:bg-[#1f1f1f]"
+                ? "bg-foreground"
+                : "hover:bg-foreground"
             }`}
           >
             Invitations
@@ -76,7 +78,7 @@ export default function InvitationsWindow({
           <button
             onClick={() => setActiveTab("history")}
             className={`inline-block p-4 rounded-b-lg ${
-              activeTab === "history" ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
+              activeTab === "history" ? "bg-foreground" : "hover:bg-foreground"
             }`}
           >
             Move History
@@ -94,8 +96,8 @@ export default function InvitationsWindow({
                   key={index}
                   type={"received"}
                   invitation={invitation}
-                  onAnswer={handleAnswer}
-                  onCancel={handleCancel}
+                  onAnswerAction={handleAnswer}
+                  onCancelAction={handleCancel}
                 />
               ))
             ) : (

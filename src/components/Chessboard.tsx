@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, DragEvent, MouseEvent } from "react";
 import Image from "next/image";
-import { Color } from "@/types";
+import { ShallowpinkData, GameData, SubmitMove } from "@/types";
 
 const Shallowpink = require("shallowpink");
 
@@ -22,15 +22,8 @@ const pieceMap: Record<string, string> = {
 };
 
 type Props = {
-  fen: string;
-  states: Map<number, number>;
-  submitMove(
-    fen: string,
-    states: Map<number, number>,
-    move: string,
-    gameStatus: string,
-  ): Promise<void>;
-  perspective: Color;
+  game: ShallowpinkData | GameData;
+  submitMove: SubmitMove;
   gameOver: boolean;
   setGameOver: (b: boolean) => void;
   lastOrig: number[];
@@ -45,10 +38,8 @@ type Coords = {
 };
 
 export default function Chessboard({
-  fen,
-  states,
+  game,
   submitMove,
-  perspective,
   gameOver,
   setGameOver,
   lastOrig,
@@ -64,13 +55,15 @@ export default function Chessboard({
   let rows = ["8", "7", "6", "5", "4", "3", "2", "1"];
   let cols = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
-  if (perspective === "black") {
+  if (game.perspective === "black") {
     rows = rows.reverse();
     cols = cols.reverse();
   }
 
   const selectNewPiece = (coords: Coords) => {
-    const chessObj = new Shallowpink(fen, states);
+    // currently, the currentGame gameMode (pvp) does not have a states field
+    // the api needs to be updated to include states in getGames and update responses
+    const chessObj = new Shallowpink(game.fen, game?.states);
     const piece = chessObj.board.get(coords.x, coords.y);
     if (piece === null) {
       return;
@@ -118,7 +111,7 @@ export default function Chessboard({
     _: DragEvent<HTMLDivElement> | null,
     dest: Coords,
   ) => {
-    const chessObj = new Shallowpink(fen, states);
+    const chessObj = new Shallowpink(game.fen, game?.states);
     const piece = selectedPiece
       ? chessObj.board.get(selectedPiece.x, selectedPiece.y)
       : null;
@@ -181,12 +174,15 @@ export default function Chessboard({
         return;
       }
 
-      await submitMove(
-        chessObj.toFEN(),
-        chessObj.states,
-        moveOptions[moveIndex],
-        moveResult,
-      );
+      console.log("move str", moveStr);
+      console.log("move index", moveOptions[moveIndex]);
+
+      await submitMove({
+        move: moveOptions[moveIndex],
+        fen: chessObj.toFEN(),
+        states: chessObj.states,
+        status: moveResult,
+      });
 
       if (chessObj.gameOver) {
         setGameOver(true);
@@ -217,13 +213,13 @@ export default function Chessboard({
   const renderSquare = (row: string, col: string) => {
     const notation = `${col}${row}`;
     const x =
-      perspective === "white" ? cols.indexOf(col) : 7 - cols.indexOf(col);
+      game.perspective === "white" ? cols.indexOf(col) : 7 - cols.indexOf(col);
     const y =
-      perspective === "white" ? rows.indexOf(row) : 7 - rows.indexOf(row);
+      game.perspective === "white" ? rows.indexOf(row) : 7 - rows.indexOf(row);
     const isEvenSquare = (x + y) % 2 === 0;
-    const squareColor = isEvenSquare ? "bg-[#f0d9b5]" : "bg-[#b58863]";
+    const squareColor = isEvenSquare ? "bg-light-square" : "bg-dark-square";
     const moveHere = moveOptions.find((move) => move.match(notation));
-    const chessObj = new Shallowpink(fen, states);
+    const chessObj = new Shallowpink(game.fen, game?.states);
     const piece = chessObj.board.get(x, y);
     return (
       <div
@@ -283,7 +279,7 @@ export default function Chessboard({
   return (
     <div
       ref={boardRef}
-      className="grid grid-cols-8 grid-rows-8 aspect-square w-screen md:size-[650px] lg:size-[750px]"
+      className="grid grid-cols-8 grid-rows-8 aspect-square w-full md:size-[650px] lg:size-[750px]"
     >
       {rows.map((row) => renderRow(row))}
     </div>

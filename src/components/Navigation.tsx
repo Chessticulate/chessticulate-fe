@@ -21,8 +21,8 @@ const tabs: NavItem[] = [
     title: "ShallowPink AI",
   },
   {
-    tab: "arena",
-    title: "Arena",
+    tab: "challenges",
+    title: "Challenges",
   },
   {
     tab: "active",
@@ -66,7 +66,7 @@ export function MobileNav({
             setActiveTab(tab);
             setVisible(false);
           }}
-          className={`w-full text-left inline-block p-4 hover:bg-[#fed6ae] hover:text-[#292929] ${activeTab === tab ? "bg-[#111111]" : ""}`}
+          className={`w-full text-left inline-block p-4 hover:bg-outline hover:text-background ${activeTab === tab ? "bg-foreground" : ""}`}
         >
           {title}
         </button>
@@ -93,7 +93,7 @@ export function DesktopNav({ activeTab, setActiveTab }: DesktopNavProps) {
       <li key={title}>
         <button
           onClick={() => setActiveTab(tab)}
-          className={`w-full hover:bg-[#fed6ae] hover:text-[#292929] text-left inline-block p-6 ${activeTab === tab ? "bg-[#1f1f1f]" : ""}`}
+          className={`w-full hover:bg-outline hover:text-background text-left inline-block p-6 ${activeTab === tab ? "bg-foreground" : ""}`}
         >
           {title}
         </button>

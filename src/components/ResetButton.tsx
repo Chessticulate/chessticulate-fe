@@ -1,28 +1,26 @@
+import { ShallowpinkData, InitShallowpinkState } from "@/types";
+
 type Props = {
-  setFenString: (s: string) => void;
-  setMoveHistory: (h: string[]) => void;
-  setStates: (s: Map<number, number>) => void;
+  setGame: (
+    s: ShallowpinkData | ((prev: ShallowpinkData) => ShallowpinkData),
+  ) => void;
   setGameOver: (b: boolean) => void;
-  setStatus: (s: string) => void;
   setLastOrig: (n: number[]) => void;
   setLastDest: (n: number[]) => void;
 };
 
 export default function ResetButton({
-  setFenString,
-  setMoveHistory,
-  setStates,
+  setGame,
   setGameOver,
-  setStatus,
   setLastOrig,
   setLastDest,
 }: Props) {
   const reset = () => {
-    setFenString("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-    setMoveHistory([]);
-    setStates(new Map<number, number>());
+    setGame((prev) => ({
+      ...InitShallowpinkState(),
+      perspective: prev.perspective,
+    }));
     setGameOver(false);
-    setStatus("");
     setLastOrig([]);
     setLastDest([]);
   };
@@ -30,7 +28,7 @@ export default function ResetButton({
   return (
     <button
       onClick={reset}
-      className="hover:bg-[#fed6ae] hover:text-[#292929] flex border-2 border-[#fed6ae] bg-[#1f1f1f] p-2 md:mt-0 lg:mt-0 md:ml-4 lg:ml-4 w-full md:w-[200px] lg:w-[300px]"
+      className="hover:bg-background hover:text-background flex border-2 border-outline bg-foreground p-2 md:mt-0 lg:mt-0 md:ml-4 lg:ml-4 w-full md:w-[200px] lg:w-[300px]"
     >
       <p className="text-center w-full whitespace-nowrap">Reset Board</p>
     </button>

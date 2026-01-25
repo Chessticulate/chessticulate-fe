@@ -33,14 +33,14 @@ export default function MoveHistory({ moves, isShallowpink }: Props) {
   return (
     <div className="mr-2 ml-2 mt-4 md:m-0 lg:m-0">
       <div
-        className={`w-full flex h-[180px] md:h-[390px] ${isShallowpink ? "lg:h-[440px]" : "lg:h-[490px]"} md:ml-4 lg:ml-4`}
+        className={`w-full flex h-[180px] pb-3 md:h-[390px] ${isShallowpink ? "lg:h-[440px]" : "lg:h-[490px]"} md:ml-4 lg:ml-4`}
       >
         <div
           ref={tableScrollRef}
-          className="border-2 border-[#fed6ae] bg-[#1f1f1f] px-4 w-full md:mt-0 lg:mt-0 overflow-y-auto md:w-[200px] lg:w-[300px]"
+          className="border-2 border-outline bg-foreground px-4 w-full md:mt-0 lg:mt-0 overflow-y-auto md:w-[200px] lg:w-[300px]"
         >
           <table className="w-full table-auto">
-            <thead className="bg-[#1f1f1f] sticky top-0">
+            <thead className="bg-foreground sticky top-0">
               <tr>
                 <th className="py-4 px-2 text-left text-sm md:text-lg lg:text-xl">
                   #
@@ -53,7 +53,7 @@ export default function MoveHistory({ moves, isShallowpink }: Props) {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#fed6ae]">
+            <tbody className="divide-y divide-outline">
               {formattedMoves.map((move, index) => (
                 <tr key={index}>
                   <td className="py-2 px-4 text-sm md:text-lg lg:text-xl">
