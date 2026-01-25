@@ -14,10 +14,10 @@ const config: Config = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       colors: {
-        "background": "#292929",
-        "foreground": "#1f1f1f",
-        "outline": "#fed6ae",
-        "ink": "#fed6ae",
+        background: "#292929",
+        foreground: "#1f1f1f",
+        outline: "#fed6ae",
+        ink: "#fed6ae",
 
         // square colors
         "light-square": "#f0d9b5",

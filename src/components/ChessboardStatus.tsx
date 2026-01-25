@@ -1,4 +1,3 @@
-
 type Props = {
   fenStr: string;
   status: string;

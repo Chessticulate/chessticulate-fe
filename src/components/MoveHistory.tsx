@@ -8,7 +8,6 @@ export type Props = {
 };
 
 export default function MoveHistory({ moves, isShallowpink }: Props) {
-
   // Format moves into an array of objects with moveNumber, white, and black
   const formattedMoves = moves.reduce<
     { moveNumber: number; white: string; black?: string }[]

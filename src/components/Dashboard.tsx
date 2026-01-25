@@ -12,6 +12,7 @@ import {
   ChallengeData,
   ShallowpinkData,
   InitShallowpinkState,
+  SubmitMove,
 } from "@/types";
 import { useState, useEffect } from "react";
 import { getCookie } from "cookies-next";
@@ -50,10 +51,13 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
 
   // game mode states
   const [currentGame, setCurrentGame] = useState<GameData | null>(null);
-  const [sandbox, setSandbox] = useState<ShallowpinkData>(InitShallowpinkState());
-  const [shallowpink, setShallowpink] =
-  useState<ShallowpinkData>(InitShallowpinkState());
-  
+  const [sandbox, setSandbox] = useState<ShallowpinkData>(
+    InitShallowpinkState(),
+  );
+  const [shallowpink, setShallowpink] = useState<ShallowpinkData>(
+    InitShallowpinkState(),
+  );
+
   // highlight squares
   // h squares could not be consolidated into the game mode objects without expanding on the api
   // they are left separate for now, but could be integrated later
@@ -73,7 +77,9 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
   );
   const [sentInvitations, setSentInvitations] = useState<InvitationData[]>([]);
   const [gameTab, setGameTab] = useState<GameTab>("active games");
-  const [activeChallenge, setActiveChallenge] = useState<ChallengeData | null>(null);
+  const [activeChallenge, setActiveChallenge] = useState<ChallengeData | null>(
+    null,
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -91,8 +97,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
     };
   }, []);
 
-
-  // ACTIVE GAMES 
+  // ACTIVE GAMES
   // currentGame.id is added to this useEffects dependancy array to trigger a fetch after accepting a challenge
   // otherwise the new game would not be present without a refresh.
   // long term it would be best to have a long get on Active Games, as well as Challenges and Invitations
@@ -137,14 +142,15 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
     const fetchChallenges = async () => {
       try {
         const response = await fetch(
-        `${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/challenges`, 
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-             Authorization: `Bearer ${token}`,
+          `${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/challenges`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
           },
-        });
+        );
 
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -160,7 +166,6 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
 
     fetchChallenges();
   }, [token, activeChallenge]);
-
 
   // LONG GET CURRENT GAME
   // currentGame is set when game row is selected
@@ -180,7 +185,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
             Accept: "text/event-stream",
           },
           signal: controller.signal,
-        }
+        },
       );
 
       if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
@@ -219,27 +224,34 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
             }
           })();
 
-          console.log("UPDATE RESPONSE:", payload)
+          console.log("UPDATE RESPONSE:", payload);
+
+          let suffix = "";
+          if (payload.status === "check") {
+            suffix = "+";
+          } else if (payload.status === "checkmate") {
+            suffix = "#";
+          }
+
           setCurrentGame((prev: GameData | null) =>
             prev
               ? {
                   ...prev,
                   fen: payload.fen,
-                  move_hist: [...prev.move_hist, payload.move],
+                  move_hist: [...prev.move_hist, `${payload.move}${suffix}`],
                 }
-              : prev
+              : prev,
           );
         }
       }
     })().catch((err) => {
       if ((err as any).name !== "AbortError") {
-      console.error("stream error:", err);
-    }
-  });
+        console.error("stream error:", err);
+      }
+    });
 
     return () => controller.abort();
   }, [token, currentGame?.id]);
-  
 
   // COMPLETED GAMES
   useEffect(() => {
@@ -342,16 +354,18 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
     })();
   }, [token]);
 
-  const pvpMove = async (move: string) => {
+  const pvpMove: SubmitMove = async ({ move }) => {
     if (!currentGame) {
       return;
     }
+    // remove suffix
+    move = move.replace(/[+#]/g, "");
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/games/${currentGame.id}/move`,
         {
           method: "POST",
-          headers: { 
+          headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
@@ -363,19 +377,18 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
         throw new Error(
           `failed to submit move: ${response.status} ${response.statusText}`,
         );
-
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
-  const submitMoveSandbox = async (
-    fen: string,
-    states: Map<number, number>,
-    move: string,
-    status: string,
-  ) => {
-    setSandbox(prev =>
+  const submitMoveSandbox: SubmitMove = async ({
+    move,
+    fen,
+    states,
+    status,
+  }) => {
+    setSandbox((prev) =>
       prev
         ? {
             ...prev,
@@ -384,17 +397,17 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
             status: status,
             move_hist: [...prev.move_hist, move],
           }
-        : prev
+        : prev,
     );
   };
 
-  const submitMoveShallowpink = async (
-    fen: string,
-    states: Map<number, number>,
-    move: string,
-    status: string,
-  ) => {
-    setShallowpink(prev =>
+  const submitMoveShallowpink: SubmitMove = async ({
+    move,
+    fen,
+    states,
+    status,
+  }) => {
+    setShallowpink((prev) =>
       prev
         ? {
             ...prev,
@@ -403,7 +416,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
             status: status,
             move_hist: [...prev.move_hist, move],
           }
-        : prev
+        : prev,
     );
   };
 
@@ -449,7 +462,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
       ) {
         throw new Error(`shallowpink gave us a bad move: ${move} -> ${result}`);
       }
-      setShallowpink(prev =>
+      setShallowpink((prev) =>
         prev
           ? {
               ...prev,
@@ -461,7 +474,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
               lastOrig: chessObj.lastOrig,
               lastDest: chessObj.lastDest,
             }
-          : prev
+          : prev,
       );
 
       if (
@@ -477,41 +490,36 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
         setGameOver(true);
       }
     };
-  }, [
-    book,
-    shallowpink,
-  ]);
+  }, [book, shallowpink]);
 
   // THIS NEEDS FIXING
-  const flipPerspective = (
-    mode: string,
-    ) => {
+  const flipPerspective = (mode: string) => {
     if (mode === "sandbox") {
-      setSandbox(prev =>
+      setSandbox((prev) =>
         prev
           ? {
               ...prev,
               perspective: prev.perspective === "white" ? "black" : "white",
             }
-          : prev
+          : prev,
       );
     } else if (mode === "shallowpink") {
-      setShallowpink(prev =>
+      setShallowpink((prev) =>
         prev
           ? {
               ...prev,
               perspective: prev.perspective === "white" ? "black" : "white",
             }
-          : prev
+          : prev,
       );
     } else if (mode === "active") {
-      setCurrentGame(prev =>
+      setCurrentGame((prev) =>
         prev
           ? {
               ...prev,
               perspective: prev.perspective === "white" ? "black" : "white",
             }
-          : prev
+          : prev,
       );
     }
   };
@@ -614,7 +622,10 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
                 </div>
                 <FenView fenstr={shallowpink.fen} />
                 <FenInput setFen={setShallowpink} />
-                <MoveHistory moves={shallowpink.move_hist} isShallowpink={true} />
+                <MoveHistory
+                  moves={shallowpink.move_hist}
+                  isShallowpink={true}
+                />
               </div>
             </div>
           </div>
@@ -625,7 +636,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
         }
         return (
           <div className="flex-1 items-center justify-center">
-            <ChallengeBoard 
+            <ChallengeBoard
               challenges={challenges}
               activeChallenge={activeChallenge}
               setActiveChallenge={setActiveChallenge}
@@ -646,7 +657,6 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
         );
 
       case "active":
-
         return (
           <div className="flex-1 items-center justify-center">
             {gameTab === "active games" ? (
@@ -686,10 +696,11 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
                       </div>
                     </div>
                     <FenView fenstr={currentGame.fen} />
-                    <MoveHistory moves={currentGame.move_hist} isShallowpink={false} />
-                    <ActiveGamesToggle 
-                      setGameTabAction={setGameTab}
+                    <MoveHistory
+                      moves={currentGame.move_hist}
+                      isShallowpink={false}
                     />
+                    <ActiveGamesToggle setGameTabAction={setGameTab} />
                   </div>
                 </div>
               </div>
@@ -698,9 +709,5 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
         );
     }
   };
-  return (
-    <div className="flex-1">
-      {renderContent()}
-    </div>
-  );
+  return <div className="flex-1">{renderContent()}</div>;
 }

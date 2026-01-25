@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, DragEvent, MouseEvent } from "react";
 import Image from "next/image";
-import { ShallowpinkData, GameData } from "@/types";
+import { ShallowpinkData, GameData, SubmitMove } from "@/types";
 
 const Shallowpink = require("shallowpink");
 
@@ -21,16 +21,9 @@ const pieceMap: Record<string, string> = {
   k: "/img/black-king.png",
 };
 
-type SubmitMoveFn = (
-  fen: string,
-  states: Map<number, number>,
-  move: string,
-  gameStatus: string
-) => Promise<void>;
-
 type Props = {
   game: ShallowpinkData | GameData;
-  submitMove: SubmitMoveFn;
+  submitMove: SubmitMove;
   gameOver: boolean;
   setGameOver: (b: boolean) => void;
   lastOrig: number[];
@@ -54,7 +47,6 @@ export default function Chessboard({
   setLastOrig,
   setLastDest,
 }: Props) {
-
   const [selectedPiece, setSelectedPiece] = useState<Coords | null>(null);
   const [moveOptions, setMoveOptions] = useState<string[]>([]);
 
@@ -182,17 +174,15 @@ export default function Chessboard({
         return;
       }
 
-      if (game.mode == "pvp") {
-        await submitMove(moveStr);
-      } 
-      else {
-        await submitMove(
-          chessObj.toFEN(),
-          chessObj.states,
-          moveOptions[moveIndex],
-          moveResult,
-        );
-      }
+      console.log("move str", moveStr);
+      console.log("move index", moveOptions[moveIndex]);
+
+      await submitMove({
+        move: moveOptions[moveIndex],
+        fen: chessObj.toFEN(),
+        states: chessObj.states,
+        status: moveResult,
+      });
 
       if (chessObj.gameOver) {
         setGameOver(true);

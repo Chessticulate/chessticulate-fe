@@ -14,7 +14,7 @@ export default function Challenge({
   challenge,
   setGame,
   setActiveTab,
-  setGameTab 
+  setGameTab,
 }: Props) {
   const token = getCookie("token") as string;
 
@@ -27,12 +27,13 @@ export default function Challenge({
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/challenges/${challenge.id}/accept`,
         {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        }, 
-      });
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -53,7 +54,8 @@ export default function Challenge({
       const game = res[0];
 
       setGame(() => {
-        const perspective = username === game.white_username ? "white" : "black"; 
+        const perspective =
+          username === game.white_username ? "white" : "black";
         const mode = "pvp";
         return {
           ...game,
@@ -63,7 +65,6 @@ export default function Challenge({
       });
       setActiveTab("active");
       setGameTab("play");
-
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
     }

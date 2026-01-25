@@ -12,14 +12,10 @@ type CommonBannerProps = {
 };
 
 function CommonBanner({ title }: CommonBannerProps) {
-  const [mounted, setMounted] = useState(false); 
-  const [token, setToken] = useState<string | undefined>(undefined);
-
-  useEffect(() => {
-    setMounted(true);
+  const [token] = useState<string | undefined>(() => {
     const t = getCookie("token");
-    setToken(typeof t === "string" ? t : undefined);
-  }, []);
+    return typeof t === "string" ? t : undefined;
+  });
 
   return (
     <>
@@ -31,7 +27,7 @@ function CommonBanner({ title }: CommonBannerProps) {
         Chessticulate - {title}
       </Link>
       <div className="md:text-xl lg:text-2xl py-3 pr-10">
-        {!mounted ? null : !token ? (
+        {!token ? (
           <>
             <Link
               href="/signup"

@@ -5,15 +5,12 @@ import InvitationRow from "@/components/invitations/InvitationRow";
 import MoveHistory from "@/components/MoveHistory";
 import { GameData, InvitationData } from "@/types";
 
- type Props = {
+type Props = {
   currentGame: GameData | null;
   moveHist: string[];
 };
 
-export default function InvitationsWindow({
-  currentGame,
-  moveHist,
-}: Props) {
+export default function InvitationsWindow({ currentGame, moveHist }: Props) {
   const [sent, setSent] = useState<InvitationData[] | null>(null);
   const [received, setReceived] = useState<InvitationData[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);

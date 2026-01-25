@@ -14,15 +14,15 @@ type Props = {
   setCurrentGame: React.Dispatch<React.SetStateAction<GameData | null>>;
   setGameTab(t: GameTab): void;
   setActiveTab(t: NavTab): void;
-}
+};
 
-export default function ChallengeBoard({ 
+export default function ChallengeBoard({
   challenges,
   activeChallenge,
   setActiveChallenge,
   setCurrentGame,
   setGameTab,
-  setActiveTab
+  setActiveTab,
 }: Props) {
   const token = getCookie("token") as string;
 
@@ -53,15 +53,14 @@ export default function ChallengeBoard({
 
         const challenge = result[0] ?? null;
         setActiveChallenge(challenge);
-        
       } catch (error) {
         console.error("there was a problem fetching active games:", error);
       }
     })();
-  }, [token]);
+  }, [token, setActiveChallenge]);
 
   // modify challenges to include MY challenge if it exists
-  // this is to ensure that MY challenge is always visible 
+  // this is to ensure that MY challenge is always visible
   // NOTE: this could also be accomplished in the api, subject to change in the future
   const challengeList: ChallengeData[] = (() => {
     const base = challenges ?? [];
@@ -76,12 +75,14 @@ export default function ChallengeBoard({
   const renderContent = () => {
     return (
       <>
-        <div className="
+        <div
+          className="
           fixed
           left-1/2 top-[20%]
           -translate-x-1/2
           flex flex-col items-center gap-3
-        ">
+        "
+        >
           {challengeList?.map((challenge, index) => (
             <Challenge
               key={index}
@@ -92,12 +93,14 @@ export default function ChallengeBoard({
             />
           ))}
         </div>
-        <div className="
+        <div
+          className="
           fixed
           left-1/2
           top-[70%]
           -translate-x-1/2
-        ">
+        "
+        >
           <ChallengeButton
             activeChallenge={activeChallenge}
             setActiveChallenge={setActiveChallenge}
@@ -107,9 +110,5 @@ export default function ChallengeBoard({
     );
   };
 
-  return (
-    <div>
-      {renderContent()}
-    </div>
-  );
+  return <div>{renderContent()}</div>;
 }

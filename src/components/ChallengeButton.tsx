@@ -6,21 +6,26 @@ import { ChallengeData } from "@/types";
 type Props = {
   activeChallenge: ChallengeData | null;
   setActiveChallenge(c: ChallengeData | null): void;
-}
+};
 
-export default function ChallengeButton({ activeChallenge, setActiveChallenge  }: Props) {
+export default function ChallengeButton({
+  activeChallenge,
+  setActiveChallenge,
+}: Props) {
   const token = getCookie("token") as string;
 
   const createChallenge = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/challenges`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-           Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/challenges`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -30,7 +35,6 @@ export default function ChallengeButton({ activeChallenge, setActiveChallenge  }
       console.log("Create challenge response", res);
 
       setActiveChallenge(res);
-
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
     }
@@ -67,9 +71,9 @@ export default function ChallengeButton({ activeChallenge, setActiveChallenge  }
       onClick={activeChallenge ? cancelChallenge : createChallenge}
       className="hover:bg-outline hover:text-background flex border-2 border-outline bg-foreground p-2 md:mt-0 lg:mt-0 md:ml-4 lg:ml-4 w-full md:w-[200px] lg:w-[300px]"
     >
-    <p className="text-center w-full whitespace-nowrap">
-      {activeChallenge ? "Cancel Challenge" : "Create Challenge"}
-    </p>
-  </button>
+      <p className="text-center w-full whitespace-nowrap">
+        {activeChallenge ? "Cancel Challenge" : "Create Challenge"}
+      </p>
+    </button>
   );
 }

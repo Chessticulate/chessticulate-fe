@@ -4,7 +4,9 @@ import { useState, useRef } from "react";
 import { ShallowpinkData } from "@/types";
 
 type Props = {
-  setFen: (s: ShallowpinkData | ((prev: ShallowpinkData) => ShallowpinkData)) => void;
+  setFen: (
+    s: ShallowpinkData | ((prev: ShallowpinkData) => ShallowpinkData),
+  ) => void;
 };
 
 export default function FenInput({ setFen }: Props) {
@@ -16,7 +18,7 @@ export default function FenInput({ setFen }: Props) {
     try {
       const customFen = userSandboxInputRef.current!.value;
       if (customFen === "") return;
-      setFen(prev => ({
+      setFen((prev) => ({
         ...prev,
         fen: customFen,
       }));

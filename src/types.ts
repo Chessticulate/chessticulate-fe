@@ -1,4 +1,3 @@
-
 export type NavTab =
   | "profile"
   | "sandbox"
@@ -12,14 +11,14 @@ export type GameTab = "play" | "active games";
 
 export type GameMode = "pvp" | "shallowpink" | "sandbox";
 
-export type Status = 
+export type Status =
   | "move ok"
   | "check"
   | "checkmate"
   | "draw"
   | "insufficient material"
   | "three-fold repetition"
-  | "fifty-move rule"
+  | "fifty-move rule";
 
 export type TabProps = {
   activeTab: NavTab;
@@ -28,8 +27,16 @@ export type TabProps = {
 
 export type Color = "white" | "black";
 
+type SubmitMoveArgs = {
+  move: string;
+  fen: string;
+  states: Map<number, number>;
+  status: string;
+};
+
+export type SubmitMove = (args: SubmitMoveArgs) => Promise<void>;
+
 export type ShallowpinkData = {
-  mode: string;
   fen: string;
   states: Map<number, number>;
 
@@ -50,7 +57,6 @@ export type ShallowpinkData = {
 };
 
 export const InitShallowpinkState = (): ShallowpinkData => ({
-  mode: "shallowpink",
   fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
   states: new Map(),
   table: new Map(),
@@ -76,8 +82,6 @@ export type MoveData = {
 };
 
 export type GameData = {
-  mode: string;
-
   id: number;
   white: number;
   black: number;
@@ -119,4 +123,3 @@ export type ChallengeData = {
   id: number;
   requester_username: string;
 };
-

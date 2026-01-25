@@ -2,7 +2,7 @@ import { ShallowpinkData, InitShallowpinkState } from "@/types";
 
 type Props = {
   setGame: (
-    s: ShallowpinkData | ((prev: ShallowpinkData) => ShallowpinkData)
+    s: ShallowpinkData | ((prev: ShallowpinkData) => ShallowpinkData),
   ) => void;
   setGameOver: (b: boolean) => void;
   setLastOrig: (n: number[]) => void;
@@ -16,7 +16,7 @@ export default function ResetButton({
   setLastDest,
 }: Props) {
   const reset = () => {
-    setGame(prev => ({
+    setGame((prev) => ({
       ...InitShallowpinkState(),
       perspective: prev.perspective,
     }));

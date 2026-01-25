@@ -3,7 +3,10 @@ type Props = {
   mode: string;
 };
 
-export default function FlipPerspectiveButton({ flipPerspective, mode }: Props) {
+export default function FlipPerspectiveButton({
+  flipPerspective,
+  mode,
+}: Props) {
   return (
     <button
       onClick={() => flipPerspective(mode)}
