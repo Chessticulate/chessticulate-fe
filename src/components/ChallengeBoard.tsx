@@ -75,25 +75,37 @@ export default function ChallengeBoard({
 
   const renderContent = () => {
     return (
-      <div className="flex flex-col h-full items-center">
-        {challengeList?.map((challenge, index) => (
-          <Challenge 
-            key={index} 
-            challenge={challenge}
-            setGame={setCurrentGame}
-            setActiveTab={setActiveTab}
-            setGameTab={setGameTab}
-          />
-        ))}
-        <div>
-          <ChallengeButton 
+      <>
+        <div className="
+          fixed
+          left-1/2 top-[20%]
+          -translate-x-1/2
+          flex flex-col items-center gap-3
+        ">
+          {challengeList?.map((challenge, index) => (
+            <Challenge
+              key={index}
+              challenge={challenge}
+              setGame={setCurrentGame}
+              setActiveTab={setActiveTab}
+              setGameTab={setGameTab}
+            />
+          ))}
+        </div>
+        <div className="
+          fixed
+          left-1/2
+          top-[70%]
+          -translate-x-1/2
+        ">
+          <ChallengeButton
             activeChallenge={activeChallenge}
             setActiveChallenge={setActiveChallenge}
           />
         </div>
-      </div>
+      </>
     );
-  }
+  };
 
   return (
     <div>

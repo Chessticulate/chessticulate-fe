@@ -16,11 +16,7 @@ export default function ActiveGames({
   }: Props ) {
 
   return (
-    <div className="h-full">
-      <ul className="flex text-lg text-center">
-      </ul>
-
-      <div>
+    <div className="fixed left-1/2 top-1/4 -translate-x-1/2 flex flex-col items-center gap-4">
         {games && games.length > 0 ? (
           games?.map((game, index) => (
             <GameRow
@@ -33,7 +29,6 @@ export default function ActiveGames({
         ) : (
           <div>No active games</div>
         )}
-      </div>
     </div>
   );
 }

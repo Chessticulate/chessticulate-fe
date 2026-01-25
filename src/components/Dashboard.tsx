@@ -382,7 +382,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
             fen: fen,
             states: states,
             status: status,
-            move_hist: [...prev.moveHist, move],
+            move_hist: [...prev.move_hist, move],
           }
         : prev
     );
@@ -401,7 +401,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
             fen: fen,
             states: states,
             status: status,
-            move_hist: [...prev.moveHist, move],
+            move_hist: [...prev.move_hist, move],
           }
         : prev
     );
@@ -457,7 +457,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
               table: new Map(chessObj.table),
               status: result,
               states: new Map(prev.states),
-              moveHist: [...prev.moveHist, move],
+              move_hist: [...prev.move_hist, move],
               lastOrig: chessObj.lastOrig,
               lastDest: chessObj.lastDest,
             }
@@ -566,7 +566,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
                 </div>
                 <FenView fenstr={sandbox.fen} />
                 <FenInput setFen={setSandbox} />
-                <MoveHistory moves={sandbox.moveHist} isShallowpink={false} />
+                <MoveHistory moves={sandbox.move_hist} isShallowpink={false} />
               </div>
             </div>
           </div>
@@ -614,7 +614,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
                 </div>
                 <FenView fenstr={shallowpink.fen} />
                 <FenInput setFen={setShallowpink} />
-                <MoveHistory moves={shallowpink.moveHist} isShallowpink={true} />
+                <MoveHistory moves={shallowpink.move_hist} isShallowpink={true} />
               </div>
             </div>
           </div>
@@ -624,7 +624,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
           redirect("/signup");
         }
         return (
-          <div className="w-full max-w-6xl mx-auto px-4">
+          <div className="flex-1 items-center justify-center">
             <ChallengeBoard 
               challenges={challenges}
               activeChallenge={activeChallenge}
@@ -648,15 +648,13 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
       case "active":
 
         return (
-          <div className="flex w-full max-w-6xl mx-auto px-4">
+          <div className="flex-1 items-center justify-center">
             {gameTab === "active games" ? (
-              <div className="border-solid">
-                <ActiveGames
-                  games={activeGames}
-                  setCurrentGame={setCurrentGame}
-                  setGameTab={setGameTab}
-                />
-              </div>
+              <ActiveGames
+                games={activeGames}
+                setCurrentGame={setCurrentGame}
+                setGameTab={setGameTab}
+              />
             ) : !currentGame ? (
               <div className="p-4">Select a game to view it.</div>
             ) : (

@@ -35,10 +35,11 @@ export type ShallowpinkData = {
 
   // engine / search
   table: Map<bigint, Map<string, number>>;
-  moveHist: string[];
+  move_hist: string[];
   status: string;
 
   // UI
+  // looks redundant, but perspective and currentTeam are separately maintained
   perspective: Color;
   currentTeam: Color;
 
@@ -53,7 +54,7 @@ export const InitShallowpinkState = (): ShallowpinkData => ({
   fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
   states: new Map(),
   table: new Map(),
-  moveHist: [],
+  move_hist: [],
   status: "",
   perspective: "white",
   currentTeam: "white",

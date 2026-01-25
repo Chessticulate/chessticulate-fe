@@ -52,8 +52,8 @@ export default function Challenge({
       const res = await resp.json();
       const game = res[0];
 
-      setGame(prev => {
-        const perspective = prev?.perspective ?? "white";
+      setGame(() => {
+        const perspective = username === game.white_username ? "white" : "black"; 
         const mode = "pvp";
         return {
           ...game,
