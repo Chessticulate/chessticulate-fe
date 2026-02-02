@@ -34,8 +34,6 @@ export default function InvitationsWindow({ currentGame, moveHist }: Props) {
 
         const result = await response.json();
 
-        console.log("invitations", result);
-
         setSent(result.sent);
         setReceived(result.received);
       } catch (error) {

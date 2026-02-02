@@ -32,7 +32,6 @@ export default function ChallengeButton({
       }
 
       const res = await response.json();
-      console.log("Create challenge response", res);
 
       setActiveChallenge(res);
     } catch (error) {
@@ -58,7 +57,6 @@ export default function ChallengeButton({
         throw new Error("Network response was not ok");
       }
 
-      console.log("Challenge cancelled");
       setActiveChallenge(null);
       // later: refetch challenges / clear activeChallenge in parent
     } catch (error) {
@@ -69,9 +67,9 @@ export default function ChallengeButton({
   return (
     <button
       onClick={activeChallenge ? cancelChallenge : createChallenge}
-      className="hover:bg-outline hover:text-background flex border-2 border-outline bg-foreground p-2 md:mt-0 lg:mt-0 md:ml-4 lg:ml-4 w-full md:w-[200px] lg:w-[300px]"
+      className="hover:bg-outline hover:text-background flex border-2 border-outline rounded-md bg-foreground p-2 md:mt-0 lg:mt-0 md:ml-4 lg:ml-4 w-full md:w-[200px] lg:w-[300px]"
     >
-      <p className="text-center w-full whitespace-nowrap">
+      <p className="text-center text-xl w-full whitespace-nowrap pl-5 pr-5">
         {activeChallenge ? "Cancel Challenge" : "Create Challenge"}
       </p>
     </button>

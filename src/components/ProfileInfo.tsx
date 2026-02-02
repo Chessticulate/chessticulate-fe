@@ -48,8 +48,6 @@ export default function ProfileInfo() {
           draws: result.draws,
           losses: result.losses,
         });
-
-        console.log("user info", result);
       } catch (error) {
         setError("failed to load profile information");
         console.error("There was a problem fetching user data:", error);

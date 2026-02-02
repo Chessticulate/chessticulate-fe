@@ -30,6 +30,7 @@ import ProfileInfo from "@/components/ProfileInfo";
 import TeamSwitch from "@/components/TeamSwitch";
 import ActiveGames from "@/components/games/ActiveGames";
 import ActiveGamesToggle from "@/components/games/ActiveGamesToggle";
+import Forfeit from "@/components/Forfeit";
 
 // Chess obj has a type of any since shallowpink does not export any types
 const SHALLOWPINK = require("shallowpink");
@@ -81,6 +82,10 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
     null,
   );
 
+  // pagination
+  const [challengeSkip, setChallengeSkip] = useState(0);
+  const [gameSkip, setGameSkip] = useState(0);
+
   useEffect(() => {
     let cancelled = false;
 
@@ -109,7 +114,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
       const decodedToken = jwtDecode<Jwt>(token);
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/games?player_id=${decodedToken.user_id}&is_active=True`,
+          `${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/games?player_id=${decodedToken.user_id}&is_active=True&limit=5&skip=${gameSkip}`,
           {
             method: "GET",
             headers: {
@@ -130,7 +135,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
         console.error("there was a problem fetching active games:", error);
       }
     })();
-  }, [token, currentGame]);
+  }, [token, currentGame, gameSkip]);
 
   // CHALLENGES
   // activeChallenge is included in dependency array so challenges is refreshed
@@ -142,7 +147,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
     const fetchChallenges = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/challenges`,
+          `${process.env.NEXT_PUBLIC_CHESSTICULATE_API_URL}/challenges?skip=${challengeSkip}&limit=5`,
           {
             method: "GET",
             headers: {
@@ -165,7 +170,7 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
     };
 
     fetchChallenges();
-  }, [token, activeChallenge]);
+  }, [token, activeChallenge, challengeSkip]);
 
   // LONG GET CURRENT GAME
   // currentGame is set when game row is selected
@@ -639,10 +644,12 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
             <ChallengeBoard
               challenges={challenges}
               activeChallenge={activeChallenge}
+              challengeSkip={challengeSkip}
               setActiveChallenge={setActiveChallenge}
               setCurrentGame={setCurrentGame}
               setActiveTab={setActiveTab}
               setGameTab={setGameTab}
+              setChallengeSkip={setChallengeSkip}
             />
           </div>
         );
@@ -662,8 +669,10 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
             {gameTab === "active games" ? (
               <ActiveGames
                 games={activeGames}
+                gameSkip={gameSkip}
                 setCurrentGame={setCurrentGame}
                 setGameTab={setGameTab}
+                setGameSkip={setGameSkip}
               />
             ) : !currentGame ? (
               <div className="p-4">Select a game to view it.</div>
@@ -694,13 +703,26 @@ export default function Dashboard({ activeTab, setActiveTab }: Props) {
                           mode={activeTab}
                         />
                       </div>
+                      <div className="flex-1 ml-1 md:m-0 md:mb-2 lg:m-0 lg:mb-2">
+                        <ActiveGamesToggle
+                          setGameTabAction={setGameTab}
+                          setCurrentGame={setCurrentGame}
+                        />
+                      </div>
                     </div>
                     <FenView fenstr={currentGame.fen} />
                     <MoveHistory
                       moves={currentGame.move_hist}
                       isShallowpink={false}
                     />
-                    <ActiveGamesToggle setGameTabAction={setGameTab} />
+                    <div className="ml-2 mr-2 md:m-0 lg:m-0">
+                      <Forfeit
+                        token={token}
+                        gameId={currentGame.id}
+                        setCurrentGame={setCurrentGame}
+                        setGameTabAction={setGameTab}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

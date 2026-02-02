@@ -55,7 +55,7 @@ export default function Challenge({
 
       setGame(() => {
         const perspective =
-          username === game.white_username ? "white" : "black";
+          username === game.white_username ? "black" : "white";
         const mode = "pvp";
         return {
           ...game,
@@ -71,19 +71,13 @@ export default function Challenge({
   };
 
   return (
-    <div className="flex justify-around pl-5 pr-5 pt-2 pb-2 border-2 rounded-md border-outline mt-2 mb-4 hover:bg-outline hover:text-foreground hover:scale-105 transition">
-      <div className="p-1">Challenge from {username}</div>
-      <>
-        <button
-          className="pl-2"
-          onClick={() => {
-            acceptChallenge();
-          }}
-        >
-          {" "}
-          accept{" "}
-        </button>
-      </>
-    </div>
+    <button
+      onClick={() => {
+        acceptChallenge();
+      }}
+      className="flex justify-around pl-10 pr-10 pt-2 pb-2 border-2 rounded-md border-outline mt-2 mb-4 hover:bg-outline hover:text-foreground hover:scale-105 transition"
+    >
+      <div className="p-1">Challenge {username}</div>
+    </button>
   );
 }

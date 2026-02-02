@@ -12,5 +12,9 @@ export default function LogoutButton() {
     location.reload();
   };
 
-  return <button onClick={handleLogout}>Log out</button>;
+  return (
+    <button className="whitespace-nowrap" onClick={handleLogout}>
+      Log out
+    </button>
+  );
 }

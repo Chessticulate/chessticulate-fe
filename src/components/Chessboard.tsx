@@ -174,9 +174,6 @@ export default function Chessboard({
         return;
       }
 
-      console.log("move str", moveStr);
-      console.log("move index", moveOptions[moveIndex]);
-
       await submitMove({
         move: moveOptions[moveIndex],
         fen: chessObj.toFEN(),
@@ -218,6 +215,9 @@ export default function Chessboard({
       game.perspective === "white" ? rows.indexOf(row) : 7 - rows.indexOf(row);
     const isEvenSquare = (x + y) % 2 === 0;
     const squareColor = isEvenSquare ? "bg-light-square" : "bg-dark-square";
+    const notationColor = !isEvenSquare
+      ? "text-light-square"
+      : "text-dark-square";
     const moveHere = moveOptions.find((move) => move.match(notation));
     const chessObj = new Shallowpink(game.fen, game?.states);
     const piece = chessObj.board.get(x, y);
@@ -266,6 +266,35 @@ export default function Chessboard({
         {lastDest && lastDest[0] === x && lastDest[1] === y && (
           <div className="absolute inset-0 bg-yellow-400 opacity-40 z-10"></div>
         )}
+
+        {row === "1" &&
+          (game.perspective === "white" ? (
+            <div
+              className={`absolute bottom-0 right-0 lg:right-1 text-xs lg:font-bold lg:text-lg ${notationColor}`}
+            >
+              {col}
+            </div>
+          ) : (
+            <div
+              className={`absolute top-0 left-0 lg:left-1 text-xs lg:font-bold lg:text-lg ${notationColor}`}
+            >
+              {col}
+            </div>
+          ))}
+        {col === "a" &&
+          (game.perspective === "white" ? (
+            <div
+              className={`absolute top-0 left-0 lg:left-1 text-xs lg:font-bold lg:text-lg ${notationColor}`}
+            >
+              {row}
+            </div>
+          ) : (
+            <div
+              className={`absolute bottom-0 right-0 lg:right-1 text-xs lg:font-bold lg:text-lg ${notationColor}`}
+            >
+              {row}
+            </div>
+          ))}
       </div>
     );
   };

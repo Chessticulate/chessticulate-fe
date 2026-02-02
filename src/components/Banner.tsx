@@ -26,7 +26,7 @@ function CommonBanner({ title }: CommonBannerProps) {
       >
         Chessticulate - {title}
       </Link>
-      <div className="md:text-xl lg:text-2xl py-3 pr-10">
+      <div className="md:text-xl lg:text-2xl py-3 whitespace-nowrap">
         {!token ? (
           <>
             <Link
